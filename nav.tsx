@@ -34,7 +34,7 @@ import quark, {
 	ViewController, Div, Indep, View,
 	Limit, Button, Text, TextNode, Clip, _CVD,
 } from './index';
-import * as value from './value';
+import * as value from './types';
 import {prop} from './ctr';
 import {event, EventNoticer, Event, ListItem} from './event';
 

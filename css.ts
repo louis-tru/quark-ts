@@ -29,9 +29,9 @@
  * ***** END LICENSE BLOCK ***** */
 
 import utils from './util';
-import * as value from './value';
+import * as value from './types';
 
-const _css = __require__('_css');
+const _css = __bindingModule__('_css');
 const debug = utils.debug;
 
 exports.create = _css.create;

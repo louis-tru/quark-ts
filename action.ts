@@ -30,12 +30,12 @@
 
 import utils from './util';
 import { Propery } from './css';
-import * as value from './value';
+import * as value from './types';
 import { View } from './_view';
 import { Action, ActionIn, KeyframeOptions } from './_action';
 import { ActionEvent } from './event';
 
-const _action = __require__('_action');
+const _action = __bindingModule__('_action');
 
 Object.assign(exports, _action);
 

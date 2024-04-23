@@ -33,11 +33,11 @@
 import utils from './util';
 import {Display} from './display';
 import { Root, View } from './_view';
-import * as value from './value';
+import * as value from './types';
 import event, {EventNoticer, Notification, NativeNotification, Event} from './event';
 import ViewController, { VirtualDOM, _CVD, _CVDD } from './ctr';
 
-const _quark = __require__('_quark');
+const _quark = __bindingModule__('_quark');
 
 var cur: Application | null = null;
 var cur_root_ctr: ViewController | null = null;

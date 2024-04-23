@@ -279,7 +279,7 @@ export declare class FocusMoveEvent<Data = any> extends UIEvent<Data> {
 	readonly focusMove: View | null;
 }
 
-const _util = __require__('_util');
+const _util = __bindingModule__('_util');
 const PREFIX = 'm_on';
 
 /**

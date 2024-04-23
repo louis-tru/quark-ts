@@ -35,12 +35,12 @@ import {
 	ClickEvent, TouchEvent,
 	MouseEvent, ActionEvent,
 } from './event';
-import * as value from './value';
+import * as value from './types';
 import ViewController from './ctr';
 import { StyleSheet } from './css';
 import { Action, ActionIn, KeyframeOptions } from './_action';
 
-const _quark = __require__('_quark');
+const _quark = __bindingModule__('_quark');
 
 export interface DOM {
 	id: string;

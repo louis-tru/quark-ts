@@ -1056,44 +1056,44 @@ export class TextWhiteSpace extends TextValue {
 
 // ----------------------------
 
-function _text_align(value: any) {
+export function _new_text_align(value: any) {
 	return value as TextAlign;
 }
-function _align(value: any) {
+export function _new_align(value: any) {
 	return value as Align;
 }
-function _content_align(value: any) {
+export function _new_content_align(value: any) {
 	return value as ContentAlign;
 }
-function _repeat(value: any) {
+export function _new_repeat(value: any) {
 	return value as Repeat;
 }
-function _direction(value: any) {
+export function _new_direction(value: any) {
 	return value as Direction;
 }
-function _keyboard_type(value: any) {
+export function _new_keyboard_type(value: any) {
 	return value as KeyboardType;
 }
-function _keyboard_return_type(value: any) {
+export function _new_keyboard_return_type(value: any) {
 	return value as KeyboardReturnType;
 }
-function _border(width: number, r: number, g: number, b: number, a: number) {
+export function _new_border(width: number, r: number, g: number, b: number, a: number) {
 	return {
 		__proto__: Border.prototype,
 		_width: width,
-		_color: _color(r, g, b, a),
+		_color: _new_color(r, g, b, a),
 	} as unknown as Border;
 }
-function _shadow(offset_x: number, offset_y: number, size: number, r: number, g: number, b: number, a: number) {
+export function _new_shadow(offset_x: number, offset_y: number, size: number, r: number, g: number, b: number, a: number) {
 	return {
 		__proto__: Shadow.prototype,
 		_offset_x: offset_x,
 		_offset_y: offset_y,
 		_size: size,
-		_color: _color(r, g, b, a),
+		_color: _new_color(r, g, b, a),
 	} as unknown as Shadow;
 }
-function _color(r: number, g: number, b: number, a: number) {
+export function _new_color(r: number, g: number, b: number, a: number) {
 	return {
 		__proto__: Color.prototype,
 		_r: r,
@@ -1102,14 +1102,14 @@ function _color(r: number, g: number, b: number, a: number) {
 		_a: a,
 	} as unknown as Color;
 }
-function _vec2(x: number, y: number) {
+export function _new_vec2(x: number, y: number) {
 	return {
 		__proto__: Vec2.prototype,
 		_x: x,
 		_y: y,
 	} as unknown as Vec2;
 }
-function _vec3(x: number, y: number, z: number) {
+export function _new_vec3(x: number, y: number, z: number) {
 	return {
 		__proto__: Vec3.prototype,
 		_x: x,
@@ -1117,7 +1117,7 @@ function _vec3(x: number, y: number, z: number) {
 		_z: z,
 	} as unknown as Vec3;
 }
-function _vec4(x: number, y: number, z: number, w: number) {
+export function _new_vec4(x: number, y: number, z: number, w: number) {
 	return {
 		__proto__: Vec4.prototype,
 		_x: x,
@@ -1126,7 +1126,7 @@ function _vec4(x: number, y: number, z: number, w: number) {
 		_w: w,
 	} as unknown as Vec4;
 }
-function _curve(p1_x: number, p1_y: number, p2_x: number, p2_y: number) {
+export function _new_curve(p1_x: number, p1_y: number, p2_x: number, p2_y: number) {
 	return {
 		__proto__: Curve.prototype,
 		_p1_x: p1_x,
@@ -1135,7 +1135,7 @@ function _curve(p1_x: number, p1_y: number, p2_x: number, p2_y: number) {
 		_p2_y: p2_y,
 	} as unknown as Curve;
 }
-function _rect(x: number, y: number, width: number, height: number) {
+export function _new_rect(x: number, y: number, width: number, height: number) {
 	return {
 		__proto__: Rect.prototype,
 		_x: x,
@@ -1144,110 +1144,110 @@ function _rect(x: number, y: number, width: number, height: number) {
 		_height: height,
 	} as unknown as Rect;
 }
-function _mat(...value: any[]) {
+export function _new_mat(...value: any[]) {
 	return {
 		__proto__: Mat.prototype,
 		_value: value,
 	} as unknown as Mat;
 }
-function _mat4(...value: any[]) {
+export function _new_mat4(...value: any[]) {
 	return {
 		__proto__: Mat4.prototype,
 		_value: value,
 	} as unknown as Mat4;
 }
-function _value(type: ValueType, value: number) {
+export function _new_value(type: ValueType, value: number) {
 	return {
 		__proto__: Value.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as Value;
 }
-function _background_position(type: BackgroundPositionType, value: number) { 
+export function _new_background_position(type: BackgroundPositionType, value: number) { 
 	return {
 		__proto__: BackgroundPosition.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as BackgroundPosition;
 }
-function _background_size(type: BackgroundSizeType, value: number) { 
+export function _new_background_size(type: BackgroundSizeType, value: number) {
 	return {
 		__proto__: BackgroundSize.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as BackgroundSize;
 }
-function _background_position_collection(type: BackgroundPositionType, value: number, type_y: BackgroundPositionType, value_y: number) { 
+export function _new_background_position_collection(type: BackgroundPositionType, value: number, type_y: BackgroundPositionType, value_y: number) { 
 	return {
 		__proto__: BackgroundPositionCollection.prototype,
-		x: _background_position(type, value),
-		y: _background_position(type_y, value_y),
+		x: _new_background_position(type, value),
+		y: _new_background_position(type_y, value_y),
 	} as BackgroundPositionCollection;
 }
-function _background_size_collection(type: BackgroundSizeType, value: number, type_y: BackgroundSizeType, value_y: number) { 
+export function _new_background_size_collection(type: BackgroundSizeType, value: number, type_y: BackgroundSizeType, value_y: number) { 
 	return {
 		__proto__: BackgroundSizeCollection.prototype,
-		x: _background_size(type, value),
-		y: _background_size(type_y, value_y),
+		x: _new_background_size(type, value),
+		y: _new_background_size(type_y, value_y),
 	} as BackgroundSizeCollection;
 }
-function _text_color(type: TextValueType, r: number, g: number, b: number, a: number) {
+export function _new_text_color(type: TextValueType, r: number, g: number, b: number, a: number) {
 	return {
 		__proto__: TextColor.prototype,
 		_type: type,
-		_value: _color(r, g, b, a),
+		_value: _new_color(r, g, b, a),
 	} as unknown as TextColor;
 }
-function _text_size(type: TextValueType, value: number) {
+export function _new_text_size(type: TextValueType, value: number) {
 	return {
 		__proto__: TextSize.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as TextSize;
 }
-function _text_family(type: TextValueType, value: string) {
+export function _new_text_family(type: TextValueType, value: string) {
 	return {
 		__proto__: TextFamily.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as TextFamily;
 }
-function _text_style(type: TextValueType, value: TextStyleEnum) {
+export function _new_text_style(type: TextValueType, value: TextStyleEnum) {
 	return {
 		__proto__: TextStyle.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as TextStyle;
 }
-function _text_shadow(type: TextValueType, offset_x: number, offset_y: number, size: number, r: number, g: number, b: number, a: number) {
+export function _new_text_shadow(type: TextValueType, offset_x: number, offset_y: number, size: number, r: number, g: number, b: number, a: number) {
 	return {
 		__proto__: TextShadow.prototype,
 		_type: type,
-		_value: _shadow(offset_x, offset_y, size, r, g, b, a),
+		_value: _new_shadow(offset_x, offset_y, size, r, g, b, a),
 	} as unknown as TextShadow;
 }
-function _text_line_height(type: TextValueType, height: number) {
+export function _new_text_line_height(type: TextValueType, height: number) {
 	return {
 		__proto__: TextLineHeight.prototype,
 		_type: type,
 		_height: height,
 	} as unknown as TextLineHeight;
 }
-function _text_decoration(type: TextValueType, value: TextDecorationEnum) {
+export function _new_text_decoration(type: TextValueType, value: TextDecorationEnum) {
 	return {
 		__proto__: TextDecoration.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as TextDecoration;
 }
-function _text_overflow(type: TextValueType, value: TextOverflowEnum) {
+export function _new_text_overflow(type: TextValueType, value: TextOverflowEnum) {
 	return {
 		__proto__: TextOverflow.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as TextOverflow;
 }
-function _text_white_space(type: TextValueType, value: TextWhiteSpaceEnum) {
+export function _new_text_white_space(type: TextValueType, value: TextWhiteSpaceEnum) {
 	return {
 		__proto__: TextWhiteSpace.prototype,
 		_type: type,
@@ -1432,26 +1432,26 @@ export function parseShadow(str: ShadowIn, desc?: string) {
 export function parseColor(str: ColorIn, desc?: string) {
 	if (typeof str == 'string') {
 		if (/^ *none *$/.test(str)) {
-			return _color(0, 0, 0, 0);
+			return _new_color(0, 0, 0, 0);
 		}
 		var m = str.match(/^#([0-9a-f]{3}([0-9a-f])?([0-9a-f]{2})?([0-9a-f]{2})?)$/i);
 		if (m) {
 			if (m[4]) { // 8
-				return _color(parseInt(m[1].substr(0, 2), 16),
+				return _new_color(parseInt(m[1].substr(0, 2), 16),
 											parseInt(m[1].substr(2, 2), 16),
 											parseInt(m[1].substr(4, 2), 16),
 											parseInt(m[1].substr(6, 2), 16));
 			} else if (m[3]) { // 6
-				return _color(parseInt(m[1].substr(0, 2), 16),
+				return _new_color(parseInt(m[1].substr(0, 2), 16),
 											parseInt(m[1].substr(2, 2), 16),
 											parseInt(m[1].substr(4, 2), 16), 255);
 			} else if (m[2]) { // 4
-				return _color(parseInt(m[1].substr(0, 1), 16) * 17,
+				return _new_color(parseInt(m[1].substr(0, 1), 16) * 17,
 											parseInt(m[1].substr(1, 1), 16) * 17,
 											parseInt(m[1].substr(2, 1), 16) * 17,
 											parseInt(m[1].substr(3, 1), 16) * 17);
 			} else { // 3
-				return _color(parseInt(m[1].substr(0, 1), 16) * 17,
+				return _new_color(parseInt(m[1].substr(0, 1), 16) * 17,
 											parseInt(m[1].substr(1, 1), 16) * 17,
 											parseInt(m[1].substr(2, 1), 16) * 17, 255);
 			}
@@ -1460,14 +1460,14 @@ export function parseColor(str: ColorIn, desc?: string) {
 		if (m) {
 			if (m[1] == 'a') { // rgba
 				if (m[5]) { // a
-					return _color(parseInt(m[2]) % 256, 
+					return _new_color(parseInt(m[2]) % 256, 
 												parseInt(m[3]) % 256,
 												parseInt(m[4]) % 256,
 												parseInt(m[6]) % 256);
 				}
 			} else { // rgb
 				if (!m[5]) {
-					return _color(parseInt(m[2]) % 256, 
+					return _new_color(parseInt(m[2]) % 256, 
 												parseInt(m[3]) % 256,
 												parseInt(m[4]) % 256, 255);
 				}
@@ -1476,7 +1476,7 @@ export function parseColor(str: ColorIn, desc?: string) {
 	} else if (str instanceof Color) {
 		return str;
 	} else if (typeof str == 'number') {
-		_color(str >> 24 & 255, // r
+		_new_color(str >> 24 & 255, // r
 					str >> 16 & 255, // g
 					str >> 8 & 255, // b
 					str >> 0 & 255); // a
@@ -1489,16 +1489,16 @@ export function parseVec2(str: Vec2In, desc?: string) {
 		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
 						str.match(/^ *vec2\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
 		if (m) {
-			return _vec2(parseFloat(m[1]), parseFloat(m[2]));
+			return _new_vec2(parseFloat(m[1]), parseFloat(m[2]));
 		}
 	} else if (str instanceof Vec2) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _vec2(str, str);
+		return _new_vec2(str, str);
 	} else if (Array.isArray(str)) {
 		var x = Number(str[0]) || 0;
 		var y = Number(str[1]) || x;
-		return _vec2(x, y);
+		return _new_vec2(x, y);
 	}
 	throw error(str, desc, ['vec2(1,1)', '1 1']);
 }
@@ -1508,17 +1508,17 @@ export function parseVec3(str: Vec3In, desc?: string) {
 		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
 						str.match(/^ *vec3\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
 		if (m) {
-			return _vec3(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]));
+			return _new_vec3(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]));
 		}
 	} else if (str instanceof Vec3) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _vec3(str, str, str);
+		return _new_vec3(str, str, str);
 	} else if (Array.isArray(str)) {
 		var x = Number(str[0]) || 0;
 		var y = Number(str[1]) || x;
 		var z = Number(str[2]) || y;
-		return _vec3(x, y, z);
+		return _new_vec3(x, y, z);
 	}
 	throw error(str, desc, ['vec3(0,0,1)', '0 0 1']);
 }
@@ -1528,18 +1528,18 @@ export function parseVec4(str: Vec4In, desc?: string) {
 		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
 		str.match(/^ *vec4\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
 		if (m) {
-			return _vec4(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
+			return _new_vec4(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
 		}
 	} else if (str instanceof Vec4) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _vec4(str, str, str, str);
+		return _new_vec4(str, str, str, str);
 	} else if (Array.isArray(str)) {
 		var x = Number(str[0]) || 0;
 		var y = Number(str[1]) || x;
 		var z = Number(str[2]) || y;
 		var w = Number(str[3]) || z;
-		return _vec4(x, y, z, w);
+		return _new_vec4(x, y, z, w);
 	}
 	throw error(str, desc, ['vec4(0,0,1,1)', '0 0 1 1']);
 }
@@ -1554,12 +1554,12 @@ export function parseCurve(str: CurveIn, desc?: string) {
 			ease_in_out: [0.42, 0, 0.58, 1],
 		} as Dict<number[]>)[str];
 		if (s) {
-			return _curve(s[0], s[1], s[2], s[3]);
+			return _new_curve(s[0], s[1], s[2], s[3]);
 		}
 		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
 		str.match(/^ *curve\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
 		if (m) {
-			return _curve(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
+			return _new_curve(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
 		}
 	} else if (str instanceof Curve) {
 		return str;
@@ -1572,12 +1572,12 @@ export function parseRect(str: RectIn, desc?: string) {
 		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
 						str.match(/^ *rect\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
 		if (m) {
-			return _rect(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
+			return _new_rect(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
 		}
 	} else if (str instanceof Rect) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _rect(str, str, str, str);
+		return _new_rect(str, str, str, str);
 	}
 	throw error(str, desc, ['rect(0,0,-100,200)', '0 0 -100 200']);
 }
@@ -1597,7 +1597,7 @@ export function parseMat(str: MatIn, desc?: string) {
 				parseFloat(m[5]),
 				parseFloat(m[6]),
 			];
-			return _mat(value);
+			return _new_mat(value);
 		}
 	} else if (str instanceof Mat) {
 		return str;
@@ -1629,7 +1629,7 @@ export function parseMat4(str: Mat4In, desc?: string) {
 				parseFloat(m[15]),
 				parseFloat(m[16]),
 			];
-			return _mat4(value);
+			return _new_mat4(value);
 		}
 	} else if (str instanceof Mat4) {
 		return str;
@@ -1645,9 +1645,9 @@ export function parseValue(str: ValueIn, desc?: string) {
 		var m = str.match(/^((auto)|(full)|(-?(?:\d+)?\.?\d+)(%|!)?)$/);
 		if (m) {
 			if (m[2]) { // auto
-				return _value(enum_object.auto, 0);
+				return _new_value(enum_object.auto, 0);
 			} else if (m[3]) { // full
-				return _value(enum_object.full, 0);
+				return _new_value(enum_object.full, 0);
 			} else { //
 				var type = enum_object.pixel;
 				var value = parseFloat(m[4]);
@@ -1659,13 +1659,13 @@ export function parseValue(str: ValueIn, desc?: string) {
 						type = enum_object.minus;
 					}
 				}
-				return _value(type, value);
+				return _new_value(type, value);
 			}
 		}
 	} else if (str instanceof Value) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _value(enum_object.pixel, str);
+		return _new_value(enum_object.pixel, str);
 	}
 	throw error(str, desc, ['auto', 'full', 10, '20%', '60!']);
 }
@@ -1684,7 +1684,7 @@ export function parseBackgroundPosition(str: BackgroundPositionIn, desc?: string
 		var type = enum_object[str];
 		var value = 0;
 		if (check_enum(background_position_type_2, type)) {
-			return _background_position(type, value);
+			return _new_background_position(type, value);
 		}
 		var m = str.match(/^(-?(?:\d+)?\.?\d+)(%)?$/);
 		if (m) {
@@ -1694,12 +1694,12 @@ export function parseBackgroundPosition(str: BackgroundPositionIn, desc?: string
 				type = enum_object.percent;
 				value /= 100; // %
 			}
-			return _background_position(type, value);
+			return _new_background_position(type, value);
 		}
 	} else if (str instanceof BackgroundPosition) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _background_position(enum_object.pixel, str);
+		return _new_background_position(enum_object.pixel, str);
 	}
 	throw error(str, desc, ['left', 'right', 'center', 'top', 'bottom', 10, '20%']);
 }
@@ -1710,7 +1710,7 @@ export function parseBackgroundSize(str: BackgroundSizeIn, desc?: string) {
 		var m = str.match(/^((auto)|(-?(?:\d+)?\.?\d+)(%)?)$/);
 		if (m) {
 			if (m[2]) { // auto
-				return _background_size(enum_object.auto, 0);
+				return _new_background_size(enum_object.auto, 0);
 			} else {
 				var type = enum_object.pixel;
 				var value = parseFloat(m[3]);
@@ -1718,13 +1718,13 @@ export function parseBackgroundSize(str: BackgroundSizeIn, desc?: string) {
 					type = enum_object.percent;
 					value /= 100; // %
 				}
-				return _background_size(type, value);
+				return _new_background_size(type, value);
 			}
 		}
 	} else if (str instanceof BackgroundSize) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _background_size(enum_object.pixel, str);
+		return _new_background_size(enum_object.pixel, str);
 	}
 	throw error(str, desc, ['auto', 10, '20%']);
 }
@@ -2008,13 +2008,13 @@ export function parseTextSize(str: TextSizeIn, desc?: string) {
 			return new TextSize();
 		} else {
 			if (/^(?:\d+)?\.?\d+$/.test(str)) {
-				return _text_size(TextValueType.VALUE, parseFloat(str));
+				return _new_text_size(TextValueType.VALUE, parseFloat(str));
 			}
 		}
 	} else if (str instanceof TextSize) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _text_size(TextValueType.VALUE, str);
+		return _new_text_size(TextValueType.VALUE, str);
 	}
 	throw error(str, desc, ['inherit', 12]);
 }
@@ -2024,7 +2024,7 @@ export function parseTextFamily(str: TextFamilyIn, desc?: string) {
 		if (str == 'inherit') {
 			return new TextFamily();
 		} else {
-			return _text_family(TextValueType.VALUE, str);
+			return _new_text_family(TextValueType.VALUE, str);
 		}
 	} else if (str instanceof TextFamily) {
 		return str;
@@ -2039,13 +2039,13 @@ export function parseTextStyle(str: TextStyleIn, desc?: string) {
 		} else {
 			var value = enum_object[str];
 			if (check_enum(TextStyleEnum, value)) {
-				return _text_style(TextValueType.VALUE, value);
+				return _new_text_style(TextValueType.VALUE, value);
 			}
 		}
 	} else if (str instanceof TextStyle) {
 		return str;
 	} else if (check_enum(TextStyleEnum, str)) {
-		return _text_style(TextValueType.VALUE, str as TextStyleEnum);
+		return _new_text_style(TextValueType.VALUE, str as TextStyleEnum);
 	}
 	throw error(str, desc, ['inherit'], TextStyleEnum);
 }
@@ -2073,16 +2073,16 @@ export function parseTextLineHeight(str: TextLineHeightIn, desc?: string) {
 		if (str == 'inherit') {
 			return new TextLineHeight();
 		} else if (str == 'auto') {
-			return _text_line_height(TextValueType.VALUE, 0);
+			return _new_text_line_height(TextValueType.VALUE, 0);
 		} else {
 			if (/^(?:\d+)?\.?\d+$/.test(str)) {
-				return _text_line_height(TextValueType.VALUE, parseFloat(str));
+				return _new_text_line_height(TextValueType.VALUE, parseFloat(str));
 			}
 		}
 	} else if (str instanceof TextLineHeight) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _text_line_height(TextValueType.VALUE, str);
+		return _new_text_line_height(TextValueType.VALUE, str);
 	}
 	throw error(str, desc, ['inherit', 24]);
 }
@@ -2094,13 +2094,13 @@ export function parseTextDecoration(str: TextDecorationIn, desc?: string) {
 		} else {
 			var value = enum_object[str];
 			if (check_enum(TextDecorationEnum, value)) {
-				return _text_decoration(TextValueType.VALUE, value);
+				return _new_text_decoration(TextValueType.VALUE, value);
 			}
 		}
 	} else if (str instanceof TextDecoration) {
 		return str;
 	} else if (check_enum(TextDecorationEnum, str)) {
-		return _text_decoration(TextValueType.VALUE, str as TextDecorationEnum);
+		return _new_text_decoration(TextValueType.VALUE, str as TextDecorationEnum);
 	}
 	throw error(str, desc, ['inherit'], TextDecorationEnum);
 }
@@ -2112,13 +2112,13 @@ export function parseTextOverflow(str: TextOverflowIn, desc?: string) {
 		} else {
 			var value = enum_object[str];
 			if (check_enum(TextOverflowEnum, value)) {
-				return _text_overflow(TextValueType.VALUE, value);
+				return _new_text_overflow(TextValueType.VALUE, value);
 			}
 		}
 	} else if (str instanceof TextOverflow) {
 		return str;
 	} else if (check_enum(TextOverflowEnum, str)) {
-		return _text_overflow(TextValueType.VALUE, str as TextOverflowEnum);
+		return _new_text_overflow(TextValueType.VALUE, str as TextOverflowEnum);
 	}
 	throw error(str, desc, ['inherit'], TextOverflowEnum);
 }
@@ -2130,51 +2130,13 @@ export function parseTextWhiteSpace(str: TextWhiteSpaceIn, desc?: string) {
 		} else {
 			var value = enum_object[str];
 			if (check_enum(TextWhiteSpaceEnum, value)) {
-				return _text_white_space(TextValueType.VALUE, value);
+				return _new_text_white_space(TextValueType.VALUE, value);
 			}
 		}
 	} else if (str instanceof TextWhiteSpace) {
 		return str;
 	} else if (check_enum(TextWhiteSpaceEnum, str)) {
-		return _text_white_space(TextValueType.VALUE, str as TextWhiteSpaceEnum);
+		return _new_text_white_space(TextValueType.VALUE, str as TextWhiteSpaceEnum);
 	}
 	throw error(str, desc, ['inherit'], TextWhiteSpaceEnum);
 }
-
-// _priv
-const _priv = exports._priv;
-delete exports._priv;
-Object.assign(_priv, exports);
-
-_priv._Base = Base;
-_priv._TextAlign = _text_align;
-_priv._Align = _align;
-_priv._ContentAlign = _content_align;
-_priv._Repeat = _repeat;
-_priv._Direction = _direction;
-_priv._KeyboardType = _keyboard_type;
-_priv._KeyboardReturnType = _keyboard_return_type;
-_priv._Border = _border;
-_priv._Shadow = _shadow;
-_priv._Color = _color;
-_priv._Vec2 = _vec2;
-_priv._Vec3 = _vec3;
-_priv._Vec4 = _vec4;
-_priv._Curve = _curve;
-_priv._Rect = _rect;
-_priv._Mat = _mat;
-_priv._Mat4 = _mat4;
-_priv._Value = _value;
-_priv._BackgroundPosition = _background_position;
-_priv._BackgroundSize = _background_size;
-_priv._BackgroundPositionCollection = _background_position_collection;
-_priv._BackgroundSizeCollection = _background_size_collection;
-_priv._TextColor = _text_color;
-_priv._TextSize = _text_size;
-_priv._TextFamily = _text_family;
-_priv._TextStyle = _text_style;
-_priv._TextShadow = _text_shadow;
-_priv._TextLine_height = _text_line_height;
-_priv._TextDecoration = _text_decoration;
-_priv._TextOverflow = _text_overflow;
-_priv._TextWhiteSpace = _text_white_space;

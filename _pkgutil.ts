@@ -30,8 +30,8 @@
 
 'use strict';
 
-const _path = __require__('_path');
-const _util = __require__('_util');
+const _path = __bindingModule__('_path');
+const _util = __bindingModule__('_util');
 const { haveNode } = _util;
 const PREFIX = 'file:///';
 const _cwd = _path.cwd;
@@ -43,8 +43,8 @@ var mainPath: string = '';
 export type Optopns = Dict<string|string[]>;
 
 if (!haveNode) {
-	const _console = __require__('_console');
-	const _timer = __require__('_timer');
+	const _console = __bindingModule__('_console');
+	const _timer = __bindingModule__('_timer');
 
 	globalThis.console = _console;
 
@@ -244,7 +244,7 @@ function parseOptions(args: string[], options: Optopns) {
 
 // without error
 function requireWithoutErr(pathname: string) {
-	var _pkg = __require__('_pkg');
+	var _pkg = __bindingModule__('_pkg');
 	try { return _pkg._load(pathname) } catch(e) {}
 }
 
@@ -259,7 +259,7 @@ function readConfigFile(pathname: string, pathname2: string) {
 function getConfig(): Dict {
 	if (!config) {
 		var cfg: Dict | null = null;
-		var mod = __require__('_pkg').mainModule;
+		var mod = __bindingModule__('_pkg').mainModule;
 		if (mod) {
 			var pkg = mod.package;
 			if (pkg) {

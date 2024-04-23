@@ -35,7 +35,7 @@ import quark, {
 import { Navigation } from './nav';
 import { event, EventNoticer, Event, ClickEvent } from './event';
 import { prop } from './ctr';
-import * as value from './value';
+import * as value from './types';
 
 const {atomPixel: px, render} = quark;
 

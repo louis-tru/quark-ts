@@ -47,7 +47,7 @@ export * from './_view';
 export {ViewController, VirtualDOM,_CVD} from './ctr';
 export {Application} from './app';
 
-const _quark = __require__('_quark');
+const _quark = __bindingModule__('_quark');
 
 class _View extends NativeNotification {
 

@@ -29,9 +29,9 @@
  * ***** END LICENSE BLOCK ***** */
 
 import { StyleSheet } from './css';
-import * as value from './value';
+import * as value from './types';
 
-exports.Action = __require__('_action').Action;
+exports.Action = __bindingModule__('_action').Action;
 
 export interface KeyframeOptions extends StyleSheet {
 	curve?: value.CurveIn;

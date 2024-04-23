@@ -28,16 +28,16 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-const _util = __require__('_util');
-const _path = __require__('_path');
-const _fs = __require__('_fs');
-const _http = __require__('_http');
-const _pkgutil = __require__('_pkgutil').default;
+const _util = __bindingModule__('_util');
+const _path = __bindingModule__('_path');
+const _fs = __bindingModule__('_fs');
+const _http = __bindingModule__('_http');
+const _pkgutil = __bindingModule__('_pkgutil').default;
 const { fallbackPath,
 				resolve, isAbsolute, isLocal, isLocalZip, stripShebang,
 				isNetwork, assert, stripBOM, makeRequireFunction } = _pkgutil;
 const { readFile, readFileSync, isFileSync, 
-				isDirectorySync, readdirSync, existsSync } = __require__('_reader');
+				isDirectorySync, readdirSync, existsSync } = __bindingModule__('_reader');
 const { haveNode } = _util;
 const isWindows = _util.platform == 'win32';
 const debug = _pkgutil.debugLog('PKG');
@@ -1341,7 +1341,7 @@ class PackageExtend extends PackageIMPL {
 	}
 
 	static _init() {
-		interface ExtendModule { 
+		interface ExtendModule {
 			filename: string;
 			extname: string;
 		}
