@@ -219,6 +219,7 @@ export declare class UIEvent<Data = any> extends NativeEvent<View, Data, View> {
 	readonly timestamp: number;
 	readonly isDefault: boolean;
 	readonly isBubble: boolean;
+	readonly origin: View;
 	cancelDefault(): void;
 	cancelBubble(): void;
 }

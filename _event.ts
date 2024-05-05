@@ -195,7 +195,6 @@ export class List<T> {
 export class Event<Sender = any, Data = any, Origin = any> {
 	private _data: Data;
 	protected _noticer: any; //EventNoticer<Event<Data, Sender>> | null; // = null;
-	private _origin: any; // = null;
 
 	returnValue: number = 0;
 
@@ -211,22 +210,16 @@ export class Event<Sender = any, Data = any, Origin = any> {
 		return (this._noticer as EventNoticer<Event<Sender, Data, Origin>>).sender as Sender;
 	}
 
-	get origin () {
-		return this._origin;
-	}
-
 	get noticer () {
 		return this._noticer as EventNoticer<Event<Sender, Data, Origin>> | null;
 	}
 
-	constructor(data: Data, origin?: Origin) {
+	constructor(data: Data) {
 		this._data = data;
-		this._origin = origin;
 	}
 }
 
 (Event as any).prototype._noticer = null;
-(Event as any).prototype._origin = null;
 
 type DefaultEvent = Event;
 
