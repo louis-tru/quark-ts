@@ -384,7 +384,7 @@ function get_help(reference?: any[], enum_value?: any) {
 	return message;
 }
 
-class Base {
+export class Base {
 	toString() {
 		return '[object]';
 	}
@@ -1056,44 +1056,44 @@ export class TextWhiteSpace extends TextValue {
 
 // ----------------------------
 
-export function _new_text_align(value: any) {
+export function newTextAlign(value: any) {
 	return value as TextAlign;
 }
-export function _new_align(value: any) {
+export function newAlign(value: any) {
 	return value as Align;
 }
-export function _new_content_align(value: any) {
-	return value as ContentAlign;
-}
-export function _new_repeat(value: any) {
+// export function new_content_align(value: any) {
+// 	return value as ContentAlign;
+// }
+export function newRepeat(value: any) {
 	return value as Repeat;
 }
-export function _new_direction(value: any) {
+export function newDirection(value: any) {
 	return value as Direction;
 }
-export function _new_keyboard_type(value: any) {
+export function newKeyboardType(value: any) {
 	return value as KeyboardType;
 }
-export function _new_keyboard_return_type(value: any) {
+export function newKeyboardReturnType(value: any) {
 	return value as KeyboardReturnType;
 }
-export function _new_border(width: number, r: number, g: number, b: number, a: number) {
-	return {
-		__proto__: Border.prototype,
-		_width: width,
-		_color: _new_color(r, g, b, a),
-	} as unknown as Border;
-}
-export function _new_shadow(offset_x: number, offset_y: number, size: number, r: number, g: number, b: number, a: number) {
+// export function new_border(width: number, r: number, g: number, b: number, a: number) {
+// 	return {
+// 		__proto__: Border.prototype,
+// 		_width: width,
+// 		_color: new_color(r, g, b, a),
+// 	} as unknown as Border;
+// }
+export function newShadow(offset_x: number, offset_y: number, size: number, r: number, g: number, b: number, a: number) {
 	return {
 		__proto__: Shadow.prototype,
 		_offset_x: offset_x,
 		_offset_y: offset_y,
 		_size: size,
-		_color: _new_color(r, g, b, a),
+		_color: newColor(r, g, b, a),
 	} as unknown as Shadow;
 }
-export function _new_color(r: number, g: number, b: number, a: number) {
+export function newColor(r: number, g: number, b: number, a: number) {
 	return {
 		__proto__: Color.prototype,
 		_r: r,
@@ -1102,14 +1102,14 @@ export function _new_color(r: number, g: number, b: number, a: number) {
 		_a: a,
 	} as unknown as Color;
 }
-export function _new_vec2(x: number, y: number) {
+export function newVec2(x: number, y: number) {
 	return {
 		__proto__: Vec2.prototype,
 		_x: x,
 		_y: y,
 	} as unknown as Vec2;
 }
-export function _new_vec3(x: number, y: number, z: number) {
+export function newVec3(x: number, y: number, z: number) {
 	return {
 		__proto__: Vec3.prototype,
 		_x: x,
@@ -1117,7 +1117,7 @@ export function _new_vec3(x: number, y: number, z: number) {
 		_z: z,
 	} as unknown as Vec3;
 }
-export function _new_vec4(x: number, y: number, z: number, w: number) {
+export function newVec4(x: number, y: number, z: number, w: number) {
 	return {
 		__proto__: Vec4.prototype,
 		_x: x,
@@ -1126,7 +1126,7 @@ export function _new_vec4(x: number, y: number, z: number, w: number) {
 		_w: w,
 	} as unknown as Vec4;
 }
-export function _new_curve(p1_x: number, p1_y: number, p2_x: number, p2_y: number) {
+export function newCurve(p1_x: number, p1_y: number, p2_x: number, p2_y: number) {
 	return {
 		__proto__: Curve.prototype,
 		_p1_x: p1_x,
@@ -1135,7 +1135,7 @@ export function _new_curve(p1_x: number, p1_y: number, p2_x: number, p2_y: numbe
 		_p2_y: p2_y,
 	} as unknown as Curve;
 }
-export function _new_rect(x: number, y: number, width: number, height: number) {
+export function newRect(x: number, y: number, width: number, height: number) {
 	return {
 		__proto__: Rect.prototype,
 		_x: x,
@@ -1144,110 +1144,112 @@ export function _new_rect(x: number, y: number, width: number, height: number) {
 		_height: height,
 	} as unknown as Rect;
 }
-export function _new_mat(...value: any[]) {
+export function newMat(...value: number[]) {
 	return {
 		__proto__: Mat.prototype,
 		_value: value,
 	} as unknown as Mat;
 }
-export function _new_mat4(...value: any[]) {
+export function newMat4(...value: number[]) {
 	return {
 		__proto__: Mat4.prototype,
 		_value: value,
 	} as unknown as Mat4;
 }
-export function _new_value(type: ValueType, value: number) {
+export function newValue(type: ValueType, value: number) {
 	return {
 		__proto__: Value.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as Value;
 }
-export function _new_background_position(type: BackgroundPositionType, value: number) { 
-	return {
-		__proto__: BackgroundPosition.prototype,
-		_type: type,
-		_value: value,
-	} as unknown as BackgroundPosition;
-}
-export function _new_background_size(type: BackgroundSizeType, value: number) {
-	return {
-		__proto__: BackgroundSize.prototype,
-		_type: type,
-		_value: value,
-	} as unknown as BackgroundSize;
-}
-export function _new_background_position_collection(type: BackgroundPositionType, value: number, type_y: BackgroundPositionType, value_y: number) { 
-	return {
-		__proto__: BackgroundPositionCollection.prototype,
-		x: _new_background_position(type, value),
-		y: _new_background_position(type_y, value_y),
-	} as BackgroundPositionCollection;
-}
-export function _new_background_size_collection(type: BackgroundSizeType, value: number, type_y: BackgroundSizeType, value_y: number) { 
-	return {
-		__proto__: BackgroundSizeCollection.prototype,
-		x: _new_background_size(type, value),
-		y: _new_background_size(type_y, value_y),
-	} as BackgroundSizeCollection;
-}
-export function _new_text_color(type: TextValueType, r: number, g: number, b: number, a: number) {
+// export function new_background_position(type: BackgroundPositionType, value: number) { 
+// 	return {
+// 		__proto__: BackgroundPosition.prototype,
+// 		_type: type,
+// 		_value: value,
+// 	} as unknown as BackgroundPosition;
+// }
+// export function new_background_size(type: BackgroundSizeType, value: number) {
+// 	return {
+// 		__proto__: BackgroundSize.prototype,
+// 		_type: type,
+// 		_value: value,
+// 	} as unknown as BackgroundSize;
+// }
+// export function new_background_position_collection(type: BackgroundPositionType, value: number, type_y: BackgroundPositionType, value_y: number) { 
+// 	return {
+// 		__proto__: BackgroundPositionCollection.prototype,
+// 		x: new_background_position(type, value),
+// 		y: new_background_position(type_y, value_y),
+// 	} as BackgroundPositionCollection;
+// }
+// export function new_background_size_collection(type: BackgroundSizeType, value: number, type_y: BackgroundSizeType, value_y: number) { 
+// 	return {
+// 		__proto__: BackgroundSizeCollection.prototype,
+// 		x: new_background_size(type, value),
+// 		y: new_background_size(type_y, value_y),
+// 	} as BackgroundSizeCollection;
+// }
+export function newTextColor(type: TextValueType, r: number, g: number, b: number, a: number) {
 	return {
 		__proto__: TextColor.prototype,
 		_type: type,
-		_value: _new_color(r, g, b, a),
+		_value: newColor(r, g, b, a),
 	} as unknown as TextColor;
 }
-export function _new_text_size(type: TextValueType, value: number) {
+export function newTextSize(type: TextValueType, value: number) {
 	return {
 		__proto__: TextSize.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as TextSize;
 }
-export function _new_text_family(type: TextValueType, value: string) {
+export function newTextFamily(type: TextValueType, value: string) {
 	return {
 		__proto__: TextFamily.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as TextFamily;
 }
-export function _new_text_style(type: TextValueType, value: TextStyleEnum) {
+export function newTextStyle(type: TextValueType, value: TextStyleEnum) {
 	return {
 		__proto__: TextStyle.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as TextStyle;
 }
-export function _new_text_shadow(type: TextValueType, offset_x: number, offset_y: number, size: number, r: number, g: number, b: number, a: number) {
+export function newTextShadow(type: TextValueType, offset_x: number, offset_y: number, size: number, r: number, g: number, b: number, a: number) {
 	return {
 		__proto__: TextShadow.prototype,
 		_type: type,
-		_value: _new_shadow(offset_x, offset_y, size, r, g, b, a),
+		_value: newShadow(offset_x, offset_y, size, r, g, b, a),
 	} as unknown as TextShadow;
 }
-export function _new_text_line_height(type: TextValueType, height: number) {
-	return {
-		__proto__: TextLineHeight.prototype,
-		_type: type,
-		_height: height,
-	} as unknown as TextLineHeight;
-}
-export function _new_text_decoration(type: TextValueType, value: TextDecorationEnum) {
+// export function newTextLineHeight(type: TextValueType, height: number) {
+// 	return {
+// 		__proto__: TextLineHeight.prototype,
+// 		_type: type,
+// 		_height: height,
+// 	} as unknown as TextLineHeight;
+// }
+export const newTextLineHeight = newTextSize;
+
+export function newTextDecoration(type: TextValueType, value: TextDecorationEnum) {
 	return {
 		__proto__: TextDecoration.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as TextDecoration;
 }
-export function _new_text_overflow(type: TextValueType, value: TextOverflowEnum) {
+export function newTextOverflow(type: TextValueType, value: TextOverflowEnum) {
 	return {
 		__proto__: TextOverflow.prototype,
 		_type: type,
 		_value: value,
 	} as unknown as TextOverflow;
 }
-export function _new_text_white_space(type: TextValueType, value: TextWhiteSpaceEnum) {
+export function new_text_white_space(type: TextValueType, value: TextWhiteSpaceEnum) {
 	return {
 		__proto__: TextWhiteSpace.prototype,
 		_type: type,
@@ -1432,26 +1434,26 @@ export function parseShadow(str: ShadowIn, desc?: string) {
 export function parseColor(str: ColorIn, desc?: string) {
 	if (typeof str == 'string') {
 		if (/^ *none *$/.test(str)) {
-			return _new_color(0, 0, 0, 0);
+			return newColor(0, 0, 0, 0);
 		}
 		var m = str.match(/^#([0-9a-f]{3}([0-9a-f])?([0-9a-f]{2})?([0-9a-f]{2})?)$/i);
 		if (m) {
 			if (m[4]) { // 8
-				return _new_color(parseInt(m[1].substr(0, 2), 16),
+				return newColor(parseInt(m[1].substr(0, 2), 16),
 											parseInt(m[1].substr(2, 2), 16),
 											parseInt(m[1].substr(4, 2), 16),
 											parseInt(m[1].substr(6, 2), 16));
 			} else if (m[3]) { // 6
-				return _new_color(parseInt(m[1].substr(0, 2), 16),
+				return newColor(parseInt(m[1].substr(0, 2), 16),
 											parseInt(m[1].substr(2, 2), 16),
 											parseInt(m[1].substr(4, 2), 16), 255);
 			} else if (m[2]) { // 4
-				return _new_color(parseInt(m[1].substr(0, 1), 16) * 17,
+				return newColor(parseInt(m[1].substr(0, 1), 16) * 17,
 											parseInt(m[1].substr(1, 1), 16) * 17,
 											parseInt(m[1].substr(2, 1), 16) * 17,
 											parseInt(m[1].substr(3, 1), 16) * 17);
 			} else { // 3
-				return _new_color(parseInt(m[1].substr(0, 1), 16) * 17,
+				return newColor(parseInt(m[1].substr(0, 1), 16) * 17,
 											parseInt(m[1].substr(1, 1), 16) * 17,
 											parseInt(m[1].substr(2, 1), 16) * 17, 255);
 			}
@@ -1460,14 +1462,14 @@ export function parseColor(str: ColorIn, desc?: string) {
 		if (m) {
 			if (m[1] == 'a') { // rgba
 				if (m[5]) { // a
-					return _new_color(parseInt(m[2]) % 256, 
+					return newColor(parseInt(m[2]) % 256, 
 												parseInt(m[3]) % 256,
 												parseInt(m[4]) % 256,
 												parseInt(m[6]) % 256);
 				}
 			} else { // rgb
 				if (!m[5]) {
-					return _new_color(parseInt(m[2]) % 256, 
+					return newColor(parseInt(m[2]) % 256, 
 												parseInt(m[3]) % 256,
 												parseInt(m[4]) % 256, 255);
 				}
@@ -1476,7 +1478,7 @@ export function parseColor(str: ColorIn, desc?: string) {
 	} else if (str instanceof Color) {
 		return str;
 	} else if (typeof str == 'number') {
-		_new_color(str >> 24 & 255, // r
+		newColor(str >> 24 & 255, // r
 					str >> 16 & 255, // g
 					str >> 8 & 255, // b
 					str >> 0 & 255); // a
@@ -1489,16 +1491,16 @@ export function parseVec2(str: Vec2In, desc?: string) {
 		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
 						str.match(/^ *vec2\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
 		if (m) {
-			return _new_vec2(parseFloat(m[1]), parseFloat(m[2]));
+			return newVec2(parseFloat(m[1]), parseFloat(m[2]));
 		}
 	} else if (str instanceof Vec2) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _new_vec2(str, str);
+		return newVec2(str, str);
 	} else if (Array.isArray(str)) {
 		var x = Number(str[0]) || 0;
 		var y = Number(str[1]) || x;
-		return _new_vec2(x, y);
+		return newVec2(x, y);
 	}
 	throw error(str, desc, ['vec2(1,1)', '1 1']);
 }
@@ -1508,17 +1510,17 @@ export function parseVec3(str: Vec3In, desc?: string) {
 		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
 						str.match(/^ *vec3\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
 		if (m) {
-			return _new_vec3(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]));
+			return newVec3(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]));
 		}
 	} else if (str instanceof Vec3) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _new_vec3(str, str, str);
+		return newVec3(str, str, str);
 	} else if (Array.isArray(str)) {
 		var x = Number(str[0]) || 0;
 		var y = Number(str[1]) || x;
 		var z = Number(str[2]) || y;
-		return _new_vec3(x, y, z);
+		return newVec3(x, y, z);
 	}
 	throw error(str, desc, ['vec3(0,0,1)', '0 0 1']);
 }
@@ -1528,18 +1530,18 @@ export function parseVec4(str: Vec4In, desc?: string) {
 		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
 		str.match(/^ *vec4\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
 		if (m) {
-			return _new_vec4(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
+			return newVec4(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
 		}
 	} else if (str instanceof Vec4) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _new_vec4(str, str, str, str);
+		return newVec4(str, str, str, str);
 	} else if (Array.isArray(str)) {
 		var x = Number(str[0]) || 0;
 		var y = Number(str[1]) || x;
 		var z = Number(str[2]) || y;
 		var w = Number(str[3]) || z;
-		return _new_vec4(x, y, z, w);
+		return newVec4(x, y, z, w);
 	}
 	throw error(str, desc, ['vec4(0,0,1,1)', '0 0 1 1']);
 }
@@ -1554,12 +1556,12 @@ export function parseCurve(str: CurveIn, desc?: string) {
 			ease_in_out: [0.42, 0, 0.58, 1],
 		} as Dict<number[]>)[str];
 		if (s) {
-			return _new_curve(s[0], s[1], s[2], s[3]);
+			return newCurve(s[0], s[1], s[2], s[3]);
 		}
 		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
 		str.match(/^ *curve\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
 		if (m) {
-			return _new_curve(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
+			return newCurve(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
 		}
 	} else if (str instanceof Curve) {
 		return str;
@@ -1572,12 +1574,12 @@ export function parseRect(str: RectIn, desc?: string) {
 		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
 						str.match(/^ *rect\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
 		if (m) {
-			return _new_rect(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
+			return newRect(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
 		}
 	} else if (str instanceof Rect) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _new_rect(str, str, str, str);
+		return newRect(str, str, str, str);
 	}
 	throw error(str, desc, ['rect(0,0,-100,200)', '0 0 -100 200']);
 }
@@ -1597,7 +1599,7 @@ export function parseMat(str: MatIn, desc?: string) {
 				parseFloat(m[5]),
 				parseFloat(m[6]),
 			];
-			return _new_mat(value);
+			return newMat(...value);
 		}
 	} else if (str instanceof Mat) {
 		return str;
@@ -1611,7 +1613,7 @@ export function parseMat4(str: Mat4In, desc?: string) {
 	if (typeof str == 'string') {
 		var m = parse_mat4_reg.exec(str);
 		if (m) {
-				var value = [
+			var value = [
 				parseFloat(m[1]),
 				parseFloat(m[2]),
 				parseFloat(m[6]),
@@ -1629,7 +1631,7 @@ export function parseMat4(str: Mat4In, desc?: string) {
 				parseFloat(m[15]),
 				parseFloat(m[16]),
 			];
-			return _new_mat4(value);
+			return newMat4(...value);
 		}
 	} else if (str instanceof Mat4) {
 		return str;
@@ -1645,9 +1647,9 @@ export function parseValue(str: ValueIn, desc?: string) {
 		var m = str.match(/^((auto)|(full)|(-?(?:\d+)?\.?\d+)(%|!)?)$/);
 		if (m) {
 			if (m[2]) { // auto
-				return _new_value(enum_object.auto, 0);
+				return newValue(enum_object.auto, 0);
 			} else if (m[3]) { // full
-				return _new_value(enum_object.full, 0);
+				return newValue(enum_object.full, 0);
 			} else { //
 				var type = enum_object.pixel;
 				var value = parseFloat(m[4]);
@@ -1659,13 +1661,13 @@ export function parseValue(str: ValueIn, desc?: string) {
 						type = enum_object.minus;
 					}
 				}
-				return _new_value(type, value);
+				return newValue(type, value);
 			}
 		}
 	} else if (str instanceof Value) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _new_value(enum_object.pixel, str);
+		return newValue(enum_object.pixel, str);
 	}
 	throw error(str, desc, ['auto', 'full', 10, '20%', '60!']);
 }
@@ -1678,56 +1680,56 @@ enum background_position_type_2 {
 	BOTTOM = Types.BOTTOM,
 }
 
-export function parseBackgroundPosition(str: BackgroundPositionIn, desc?: string) {
-	if (typeof str == 'string') {
-		// left | right | center | top | bottom | 10.1 | 20% 
-		var type = enum_object[str];
-		var value = 0;
-		if (check_enum(background_position_type_2, type)) {
-			return _new_background_position(type, value);
-		}
-		var m = str.match(/^(-?(?:\d+)?\.?\d+)(%)?$/);
-		if (m) {
-			type = enum_object.pixel;
-			value = parseFloat(m[1]);
-			if (m[2]) { // %
-				type = enum_object.percent;
-				value /= 100; // %
-			}
-			return _new_background_position(type, value);
-		}
-	} else if (str instanceof BackgroundPosition) {
-		return str;
-	} else if (typeof str == 'number') {
-		return _new_background_position(enum_object.pixel, str);
-	}
-	throw error(str, desc, ['left', 'right', 'center', 'top', 'bottom', 10, '20%']);
-}
+// export function parseBackgroundPosition(str: BackgroundPositionIn, desc?: string) {
+// 	if (typeof str == 'string') {
+// 		// left | right | center | top | bottom | 10.1 | 20% 
+// 		var type = enum_object[str];
+// 		var value = 0;
+// 		if (check_enum(background_position_type_2, type)) {
+// 			return new_background_position(type, value);
+// 		}
+// 		var m = str.match(/^(-?(?:\d+)?\.?\d+)(%)?$/);
+// 		if (m) {
+// 			type = enum_object.pixel;
+// 			value = parseFloat(m[1]);
+// 			if (m[2]) { // %
+// 				type = enum_object.percent;
+// 				value /= 100; // %
+// 			}
+// 			return new_background_position(type, value);
+// 		}
+// 	} else if (str instanceof BackgroundPosition) {
+// 		return str;
+// 	} else if (typeof str == 'number') {
+// 		return new_background_position(enum_object.pixel, str);
+// 	}
+// 	throw error(str, desc, ['left', 'right', 'center', 'top', 'bottom', 10, '20%']);
+// }
 
-export function parseBackgroundSize(str: BackgroundSizeIn, desc?: string) { 
-	if (typeof str == 'string') {
-		// auto | 10.1 | 20% 
-		var m = str.match(/^((auto)|(-?(?:\d+)?\.?\d+)(%)?)$/);
-		if (m) {
-			if (m[2]) { // auto
-				return _new_background_size(enum_object.auto, 0);
-			} else {
-				var type = enum_object.pixel;
-				var value = parseFloat(m[3]);
-				if (m[4]) { // %
-					type = enum_object.percent;
-					value /= 100; // %
-				}
-				return _new_background_size(type, value);
-			}
-		}
-	} else if (str instanceof BackgroundSize) {
-		return str;
-	} else if (typeof str == 'number') {
-		return _new_background_size(enum_object.pixel, str);
-	}
-	throw error(str, desc, ['auto', 10, '20%']);
-}
+// export function parseBackgroundSize(str: BackgroundSizeIn, desc?: string) { 
+// 	if (typeof str == 'string') {
+// 		// auto | 10.1 | 20% 
+// 		var m = str.match(/^((auto)|(-?(?:\d+)?\.?\d+)(%)?)$/);
+// 		if (m) {
+// 			if (m[2]) { // auto
+// 				return new_background_size(enum_object.auto, 0);
+// 			} else {
+// 				var type = enum_object.pixel;
+// 				var value = parseFloat(m[3]);
+// 				if (m[4]) { // %
+// 					type = enum_object.percent;
+// 					value /= 100; // %
+// 				}
+// 				return new_background_size(type, value);
+// 			}
+// 		}
+// 	} else if (str instanceof BackgroundSize) {
+// 		return str;
+// 	} else if (typeof str == 'number') {
+// 		return new_background_size(enum_object.pixel, str);
+// 	}
+// 	throw error(str, desc, ['auto', 10, '20%']);
+// }
 
 enum BGToken {
 	EOS, // 
@@ -1812,177 +1814,177 @@ function parse_background_paren(scanner: BGScanner, desc?: string): string[] {
 	throw error(scanner.code, desc, [background_help]);
 }
 
-export function parseBackground(str: BackgroundIn, desc?: string): Background {
-	// url(res/image.png) repeat(none,[repeat]) position(left,[20%]) size(auto,[10.1])
-	if (str instanceof Background) {
-		return str;
-	}
-	var r: Background | null = null;
-	if (typeof str == 'string') {
-		var bgi: BackgroundImage | null = null;
-		var prev: Background | null = null;
-		var token: BGToken;
-		var scanner: BGScanner = { code: str, value: '', index: 0 };
+// export function parseBackground(str: BackgroundIn, desc?: string): Background {
+// 	// url(res/image.png) repeat(none,[repeat]) position(left,[20%]) size(auto,[10.1])
+// 	if (str instanceof Background) {
+// 		return str;
+// 	}
+// 	var r: Background | null = null;
+// 	if (typeof str == 'string') {
+// 		var bgi: BackgroundImage | null = null;
+// 		var prev: Background | null = null;
+// 		var token: BGToken;
+// 		var scanner: BGScanner = { code: str, value: '', index: 0 };
 
-		while ( (token = scanner_background_token(scanner)) != BGToken.EOS ) {
-			switch (token) {
-				case BGToken.COMMA: {// ,
-					bgi = null;
-					break;
-				}
-				case BGToken.OTHER: {
-					if (scanner.value == 'url' || scanner.value == 'image') {
-						if (bgi)
-							throw error(str, desc, [background_help]);
-						bgi = new BackgroundImage();
-						bgi.src = parse_background_paren(scanner)[0] as string;
-						if (!r) r = bgi;
-						if (prev) prev.next = bgi;
-						prev = bgi;
-					}
-					// else if (scanner.value == 'gradient') { }
-					else {
-						if (!bgi) throw error(str, desc, [background_help]);
+// 		while ( (token = scanner_background_token(scanner)) != BGToken.EOS ) {
+// 			switch (token) {
+// 				case BGToken.COMMA: {// ,
+// 					bgi = null;
+// 					break;
+// 				}
+// 				case BGToken.OTHER: {
+// 					if (scanner.value == 'url' || scanner.value == 'image') {
+// 						if (bgi)
+// 							throw error(str, desc, [background_help]);
+// 						bgi = new BackgroundImage();
+// 						bgi.src = parse_background_paren(scanner)[0] as string;
+// 						if (!r) r = bgi;
+// 						if (prev) prev.next = bgi;
+// 						prev = bgi;
+// 					}
+// 					// else if (scanner.value == 'gradient') { }
+// 					else {
+// 						if (!bgi) throw error(str, desc, [background_help]);
 
-						switch (scanner.value) {
-							case 'repeat': {
-								if (scanner_background_token(scanner) == BGToken.LPAREN) { // repeat(none)
-									scanner.index--;
-									bgi.repeat = parse_background_paren(scanner).map(e=>parseRepeat(e, desc))[0];
-								} else { // repeat
-									bgi.repeat = Repeat.REPEAT;
-								}
-								break;
-							}
-							case 'position': { // position(10,top)
-								var poss = parse_background_paren(scanner).map(e=>parseBackgroundPosition(e, desc));
-								bgi.position = { x: poss[0], y: poss[1] || poss[0] };
-								break;
-							}
-							case 'size': { // size(10,20%)
-								var sizes = parse_background_paren(scanner).map(e=>parseBackgroundSize(e, desc));
-								bgi.size = { x: sizes[0], y: sizes[1] || sizes[0] };
-								break;
-							}
-							case 'positionX': { // positionX(10)
-								bgi.positionX = parse_background_paren(scanner).map(e=>parseBackgroundPosition(e, desc))[0];
-								break;
-							}
-							case 'positionY': { // positionY(10)
-								bgi.positionY = parse_background_paren(scanner).map(e=>parseBackgroundPosition(e, desc))[0];
-								break;
-							}
-							case 'sizeX': { // sizeX(10)
-								bgi.sizeX = parse_background_paren(scanner).map(e=>parseBackgroundSize(e, desc))[0];
-								break;
-							}
-							case 'sizeY': { // sizeY(10)
-								bgi.sizeY = parse_background_paren(scanner).map(e=>parseBackgroundSize(e, desc))[0];
-								break;
-							}
-							default:
-								throw error(str, desc, [background_help]);
-						}
-					}
-					break;
-				}
-				default:
-					throw error(str, desc, [background_help]);
-			}
-		}
-	} else {
-		if (str.image) {
-			return Object.assign(new BackgroundImage(), str.image);
-		}
-	}
-	if (r)
-		return r;
-	throw error(str, desc, [background_help]);
-}
+// 						switch (scanner.value) {
+// 							case 'repeat': {
+// 								if (scanner_background_token(scanner) == BGToken.LPAREN) { // repeat(none)
+// 									scanner.index--;
+// 									bgi.repeat = parse_background_paren(scanner).map(e=>parseRepeat(e, desc))[0];
+// 								} else { // repeat
+// 									bgi.repeat = Repeat.REPEAT;
+// 								}
+// 								break;
+// 							}
+// 							case 'position': { // position(10,top)
+// 								var poss = parse_background_paren(scanner).map(e=>parseBackgroundPosition(e, desc));
+// 								bgi.position = { x: poss[0], y: poss[1] || poss[0] };
+// 								break;
+// 							}
+// 							case 'size': { // size(10,20%)
+// 								var sizes = parse_background_paren(scanner).map(e=>parseBackgroundSize(e, desc));
+// 								bgi.size = { x: sizes[0], y: sizes[1] || sizes[0] };
+// 								break;
+// 							}
+// 							case 'positionX': { // positionX(10)
+// 								bgi.positionX = parse_background_paren(scanner).map(e=>parseBackgroundPosition(e, desc))[0];
+// 								break;
+// 							}
+// 							case 'positionY': { // positionY(10)
+// 								bgi.positionY = parse_background_paren(scanner).map(e=>parseBackgroundPosition(e, desc))[0];
+// 								break;
+// 							}
+// 							case 'sizeX': { // sizeX(10)
+// 								bgi.sizeX = parse_background_paren(scanner).map(e=>parseBackgroundSize(e, desc))[0];
+// 								break;
+// 							}
+// 							case 'sizeY': { // sizeY(10)
+// 								bgi.sizeY = parse_background_paren(scanner).map(e=>parseBackgroundSize(e, desc))[0];
+// 								break;
+// 							}
+// 							default:
+// 								throw error(str, desc, [background_help]);
+// 						}
+// 					}
+// 					break;
+// 				}
+// 				default:
+// 					throw error(str, desc, [background_help]);
+// 			}
+// 		}
+// 	} else {
+// 		if (str.image) {
+// 			return Object.assign(new BackgroundImage(), str.image);
+// 		}
+// 	}
+// 	if (r)
+// 		return r;
+// 	throw error(str, desc, [background_help]);
+// }
 
-export function parseValues(str: ValuesIn, desc?: string) {
-	if (typeof str == 'string') {
-		var rev: Value[] = [];
-		for (var i of str.split(/\s+/)) {
-			rev.push(parseValue(i, desc));
-		}
-		return rev;
-	} else if (str instanceof Value) {
-		return [str];
-	} else if (Array.isArray(str)) {
-		return str.map(e=>parseValue(e, desc));
-	} else {
-		return [parseValue(str)];
-	}
-	throw error(str, desc, ['auto', 'full', 10, '20%', '60!']);
-}
+// export function parseValues(str: ValuesIn, desc?: string) {
+// 	if (typeof str == 'string') {
+// 		var rev: Value[] = [];
+// 		for (var i of str.split(/\s+/)) {
+// 			rev.push(parseValue(i, desc));
+// 		}
+// 		return rev;
+// 	} else if (str instanceof Value) {
+// 		return [str];
+// 	} else if (Array.isArray(str)) {
+// 		return str.map(e=>parseValue(e, desc));
+// 	} else {
+// 		return [parseValue(str)];
+// 	}
+// 	throw error(str, desc, ['auto', 'full', 10, '20%', '60!']);
+// }
 
-export function parseAligns(str: AlignsIn, desc?: string) {
-	if (typeof str == 'string') {
-		var rev: Align[] = [];
-		for (var i of str.split(/\s+/)) {
-			rev.push(parseAlign(i));
-		}
-		return rev;
-	} else if (Array.isArray(str)) {
-		return str.map(e=>parseAlign(e));
-	} else if (check_enum(Align, str)) {
-		return [str as Align];
-	}
-	throw error(str, desc, ['left', 'top center']);
-}
+// export function parseAligns(str: AlignsIn, desc?: string) {
+// 	if (typeof str == 'string') {
+// 		var rev: Align[] = [];
+// 		for (var i of str.split(/\s+/)) {
+// 			rev.push(parseAlign(i));
+// 		}
+// 		return rev;
+// 	} else if (Array.isArray(str)) {
+// 		return str.map(e=>parseAlign(e));
+// 	} else if (check_enum(Align, str)) {
+// 		return [str as Align];
+// 	}
+// 	throw error(str, desc, ['left', 'top center']);
+// }
 
-export function parseFloats(str: FloatsIn, desc?: string) {
-	if (typeof str == 'string') {
-		var ls = str.split(/\s+/);
-		var rev: number[] = [];
-		for (var i of str.split(/\s+/)) {
-			var mat = i.match(/^(-?(?:\d+)?\.?\d+)$/);
-			if (!mat) {
-				throw error(str, desc, [10, '10 20 30 40']);
-			}
-			rev.push(parseFloat(mat[1]));
-		}
-		return rev;
-	} else if (Array.isArray(str)) {
-		return str.map(e=>Number(e) || 0);
-	} else if (isFinite(str)) {
-		return [str];
-	}
-	throw error(str, desc, [10, '10 20 30 40']);
-}
+// export function parseFloats(str: FloatsIn, desc?: string) {
+// 	if (typeof str == 'string') {
+// 		var ls = str.split(/\s+/);
+// 		var rev: number[] = [];
+// 		for (var i of str.split(/\s+/)) {
+// 			var mat = i.match(/^(-?(?:\d+)?\.?\d+)$/);
+// 			if (!mat) {
+// 				throw error(str, desc, [10, '10 20 30 40']);
+// 			}
+// 			rev.push(parseFloat(mat[1]));
+// 		}
+// 		return rev;
+// 	} else if (Array.isArray(str)) {
+// 		return str.map(e=>Number(e) || 0);
+// 	} else if (isFinite(str)) {
+// 		return [str];
+// 	}
+// 	throw error(str, desc, [10, '10 20 30 40']);
+// }
 
-export function parseBackgroundPositionCollection(str: BackgroundPositionCollectionIn, desc?: string) { 
-	if (typeof str == 'string') {
-		var items: BackgroundPosition[] = [];
-		for (var j of str.split(/\s+/))
-			items.push(parseBackgroundPosition(j, desc));
-		var x = items[0] || new BackgroundPosition();
-		var y = items[1] || x;
-		return { __proto__: BackgroundPositionCollection.prototype, x, y } as BackgroundPositionCollection;
-	} else if (str instanceof BackgroundPositionCollection) {
-		return str;
-	} else if (str instanceof BackgroundPosition) {
-		return { __proto__: BackgroundPositionCollection.prototype, x: str, y: str } as BackgroundPositionCollection;
-	}
-	throw error(str, desc, [10, '20%', 'left', 'right', 'center', 'top', 'bottom']);
-}
+// export function parseBackgroundPositionCollection(str: BackgroundPositionCollectionIn, desc?: string) { 
+// 	if (typeof str == 'string') {
+// 		var items: BackgroundPosition[] = [];
+// 		for (var j of str.split(/\s+/))
+// 			items.push(parseBackgroundPosition(j, desc));
+// 		var x = items[0] || new BackgroundPosition();
+// 		var y = items[1] || x;
+// 		return { __proto__: BackgroundPositionCollection.prototype, x, y } as BackgroundPositionCollection;
+// 	} else if (str instanceof BackgroundPositionCollection) {
+// 		return str;
+// 	} else if (str instanceof BackgroundPosition) {
+// 		return { __proto__: BackgroundPositionCollection.prototype, x: str, y: str } as BackgroundPositionCollection;
+// 	}
+// 	throw error(str, desc, [10, '20%', 'left', 'right', 'center', 'top', 'bottom']);
+// }
 
-export function parseBackgroundSizeCollection(str: BackgroundSizeCollectionIn, desc?: string) {
-	if (typeof str == 'string') {
-		var items: BackgroundSize[] = [];
-		for (var j of str.split(/\s+/))
-			items.push(parseBackgroundSize(j, desc));
-		var x = items[0] || new BackgroundSize();
-		var y = items[1] || x;
-		return { __proto__: BackgroundSizeCollection.prototype, x, y } as BackgroundSizeCollection;
-	} else if (str instanceof BackgroundSizeCollection) {
-		return str;
-	} else if (str instanceof BackgroundSize) {
-		return { __proto__: BackgroundSizeCollection.prototype, x: str, y: str } as BackgroundSizeCollection;
-	}
-	throw error(str, desc, ['auto', 10, '50%']);
-}
+// export function parseBackgroundSizeCollection(str: BackgroundSizeCollectionIn, desc?: string) {
+// 	if (typeof str == 'string') {
+// 		var items: BackgroundSize[] = [];
+// 		for (var j of str.split(/\s+/))
+// 			items.push(parseBackgroundSize(j, desc));
+// 		var x = items[0] || new BackgroundSize();
+// 		var y = items[1] || x;
+// 		return { __proto__: BackgroundSizeCollection.prototype, x, y } as BackgroundSizeCollection;
+// 	} else if (str instanceof BackgroundSizeCollection) {
+// 		return str;
+// 	} else if (str instanceof BackgroundSize) {
+// 		return { __proto__: BackgroundSizeCollection.prototype, x: str, y: str } as BackgroundSizeCollection;
+// 	}
+// 	throw error(str, desc, ['auto', 10, '50%']);
+// }
 
 export function parseTextColor(str: TextColorIn, desc?: string) {
 	if (typeof str == 'string') {
@@ -2008,13 +2010,13 @@ export function parseTextSize(str: TextSizeIn, desc?: string) {
 			return new TextSize();
 		} else {
 			if (/^(?:\d+)?\.?\d+$/.test(str)) {
-				return _new_text_size(TextValueType.VALUE, parseFloat(str));
+				return newTextSize(TextValueType.VALUE, parseFloat(str));
 			}
 		}
 	} else if (str instanceof TextSize) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _new_text_size(TextValueType.VALUE, str);
+		return newTextSize(TextValueType.VALUE, str);
 	}
 	throw error(str, desc, ['inherit', 12]);
 }
@@ -2024,7 +2026,7 @@ export function parseTextFamily(str: TextFamilyIn, desc?: string) {
 		if (str == 'inherit') {
 			return new TextFamily();
 		} else {
-			return _new_text_family(TextValueType.VALUE, str);
+			return newTextFamily(TextValueType.VALUE, str);
 		}
 	} else if (str instanceof TextFamily) {
 		return str;
@@ -2039,13 +2041,13 @@ export function parseTextStyle(str: TextStyleIn, desc?: string) {
 		} else {
 			var value = enum_object[str];
 			if (check_enum(TextStyleEnum, value)) {
-				return _new_text_style(TextValueType.VALUE, value);
+				return newTextStyle(TextValueType.VALUE, value);
 			}
 		}
 	} else if (str instanceof TextStyle) {
 		return str;
 	} else if (check_enum(TextStyleEnum, str)) {
-		return _new_text_style(TextValueType.VALUE, str as TextStyleEnum);
+		return newTextStyle(TextValueType.VALUE, str as TextStyleEnum);
 	}
 	throw error(str, desc, ['inherit'], TextStyleEnum);
 }
@@ -2073,16 +2075,16 @@ export function parseTextLineHeight(str: TextLineHeightIn, desc?: string) {
 		if (str == 'inherit') {
 			return new TextLineHeight();
 		} else if (str == 'auto') {
-			return _new_text_line_height(TextValueType.VALUE, 0);
+			return newTextLineHeight(TextValueType.VALUE, 0);
 		} else {
 			if (/^(?:\d+)?\.?\d+$/.test(str)) {
-				return _new_text_line_height(TextValueType.VALUE, parseFloat(str));
+				return newTextLineHeight(TextValueType.VALUE, parseFloat(str));
 			}
 		}
 	} else if (str instanceof TextLineHeight) {
 		return str;
 	} else if (typeof str == 'number') {
-		return _new_text_line_height(TextValueType.VALUE, str);
+		return newTextLineHeight(TextValueType.VALUE, str);
 	}
 	throw error(str, desc, ['inherit', 24]);
 }
@@ -2094,13 +2096,13 @@ export function parseTextDecoration(str: TextDecorationIn, desc?: string) {
 		} else {
 			var value = enum_object[str];
 			if (check_enum(TextDecorationEnum, value)) {
-				return _new_text_decoration(TextValueType.VALUE, value);
+				return newTextDecoration(TextValueType.VALUE, value);
 			}
 		}
 	} else if (str instanceof TextDecoration) {
 		return str;
 	} else if (check_enum(TextDecorationEnum, str)) {
-		return _new_text_decoration(TextValueType.VALUE, str as TextDecorationEnum);
+		return newTextDecoration(TextValueType.VALUE, str as TextDecorationEnum);
 	}
 	throw error(str, desc, ['inherit'], TextDecorationEnum);
 }
@@ -2112,13 +2114,13 @@ export function parseTextOverflow(str: TextOverflowIn, desc?: string) {
 		} else {
 			var value = enum_object[str];
 			if (check_enum(TextOverflowEnum, value)) {
-				return _new_text_overflow(TextValueType.VALUE, value);
+				return newTextOverflow(TextValueType.VALUE, value);
 			}
 		}
 	} else if (str instanceof TextOverflow) {
 		return str;
 	} else if (check_enum(TextOverflowEnum, str)) {
-		return _new_text_overflow(TextValueType.VALUE, str as TextOverflowEnum);
+		return newTextOverflow(TextValueType.VALUE, str as TextOverflowEnum);
 	}
 	throw error(str, desc, ['inherit'], TextOverflowEnum);
 }
@@ -2130,13 +2132,13 @@ export function parseTextWhiteSpace(str: TextWhiteSpaceIn, desc?: string) {
 		} else {
 			var value = enum_object[str];
 			if (check_enum(TextWhiteSpaceEnum, value)) {
-				return _new_text_white_space(TextValueType.VALUE, value);
+				return new_text_white_space(TextValueType.VALUE, value);
 			}
 		}
 	} else if (str instanceof TextWhiteSpace) {
 		return str;
 	} else if (check_enum(TextWhiteSpaceEnum, str)) {
-		return _new_text_white_space(TextValueType.VALUE, str as TextWhiteSpaceEnum);
+		return new_text_white_space(TextValueType.VALUE, str as TextWhiteSpaceEnum);
 	}
 	throw error(str, desc, ['inherit'], TextWhiteSpaceEnum);
 }
