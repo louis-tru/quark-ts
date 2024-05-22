@@ -30,107 +30,47 @@
 
 ///<reference path="_ext.ts"/>
 
-import utils from './util';
-import {Display} from './display';
-import { Root, View } from './_view';
-import * as value from './types';
+import util from './util';
+import {TextOptions} from './view';
+import {Screen} from './screen';
+import {Window} from './window';
+import {FontPool} from './font';
 import event, {EventNoticer, Notification, NativeNotification, Event} from './event';
-import ViewController, { VirtualDOM, _CVD, _CVDD } from './ctr';
 
-const _quark = __bindingModule__('_quark');
+const _ui = __binding__('_ui');
+let _current: Application | null = null;
+type AEvent = Event<Application>;
 
-var cur: Application | null = null;
-var cur_root_ctr: ViewController | null = null;
-
-export interface Options {
-	anisotropic?: boolean;
-	multisample?: 0|1|2|3|4;
-	x?: number,
-	y?: number,
-	width?: number,
-	height?: number,
-	fullScreen?: boolean,
-	enableTouch?: boolean,
-	background?: number,
-	title?: string;
+declare class NativeApplication extends Notification<AEvent> {
+	readonly isLoaded: boolean; //!< after onLoad event
+	readonly screen: Screen;
+	readonly fontPool: FontPool;
+	readonly activeWindow: Window | null;
+	readonly defaultTextOptions: TextOptions;
+	readonly windows: Window[];
+	maxResourceMemoryLimit: number; //!< get or set max resource memory limit
+	usedResourceMemory(): number; //!< current used resource memory
+	clear(all?: boolean): void; //!< clear resource memory
+	openURL(rul: string): void;
+	sendEmail(recipient: string, subject: string, body?: string, cc?: string, bcc?: string): void;
 }
 
-/**
- * @class NativeApplication
- */
-declare class NativeApplication extends Notification {
-	constructor(options?: Options);
-	clear(full?: boolean): void;
-	openUrl(url: string): void;
-	sendEmail(recipient: string, title: string, body?: string, cc?: string, bcc?: string): void;
-	maxTextureMemoryLimit(): number;
-	setMaxTextureMemoryLimit(limit: number): void;
-	usedMemory(): number;
-	pending(): void;
-	readonly isLoaded: boolean;
-	readonly displayPort: Display;
-	readonly root: Root | null;
-	readonly focusView: View | null;
-	defaultTextBackgroundColor: value.TextColor;
-	defaultTextColor: value.TextColor;
-	defaultTextSize: value.TextSize;
-	defaultTextStyle: value.TextStyle;
-	defaultTextFamily: value.TextFamily;
-	defaultTextShadow: value.TextShadow;
-	defaultTextLineHeight: value.TextLineHeight;
-	defaultTextDecoration: value.TextDecoration;
-	defaultTextOverflow: value.TextOverflow;
-	defaultTextWhiteSpace: value.TextWhiteSpace;
-}
-
-/**
- * @class Application
- */
-export class Application extends (_quark.NativeApplication as typeof NativeApplication) {
-
-	@event readonly onLoad: EventNoticer<Event<void, Application>>;
-	@event readonly onUnload: EventNoticer<Event<void, Application>>;
-	@event readonly onBackground: EventNoticer<Event<void, Application>>;
-	@event readonly onForeground: EventNoticer<Event<void, Application>>;
-	@event readonly onPause: EventNoticer<Event<void, Application>>;
-	@event readonly onResume: EventNoticer<Event<void, Application>>;
-	@event readonly onMemoryWarning: EventNoticer<Event<void, Application>>;
-	
-	constructor(options?: Options) {
-		super(options);
-		cur = this;
+export class Application extends (_ui.Application as typeof NativeApplication) {
+	@event readonly onLoad: EventNoticer<AEvent>;
+	@event readonly onUnload: EventNoticer<AEvent>;
+	@event readonly onBackground: EventNoticer<AEvent>;
+	@event readonly onForeground: EventNoticer<AEvent>;
+	@event readonly onPause: EventNoticer<AEvent>;
+	@event readonly onResume: EventNoticer<AEvent>;
+	@event readonly onMemoryWarning: EventNoticer<AEvent>;
+	constructor() {
+		super();
+		_current = this;
 	}
-
-	/**
-	 * @func start(vdom)
-	 */
-	start(vdom: VirtualDOM) {
-
-		if (!utils.equalsClass(ViewController, vdom.domConstructor)) {
-			vdom = _CVD(ViewController, null, _CVDD(vdom));
-		}
-
-		function render() {
-			var ctr = ViewController.render(vdom) as ViewController;
-			utils.assert(ctr.dom instanceof Root, 'Root view controller first children must be Root view');
-			cur_root_ctr = ctr;
-		}
-
-		if ( this.isLoaded ) {
-			_quark.lock(render);
-		} else {
-			this.onLoad.on(render);
-		}
-
-		return this;
-	}
-
 }
 
-utils.extendClass(Application, NativeNotification);
+util.extendClass(Application, NativeNotification);
 
 export default {
-	get current() { return cur as Application },
-	get root() { return (cur_root_ctr as ViewController).dom as unknown as Root },
-	get rootCtr() { return cur_root_ctr as ViewController },
+	get current() { return _current! },
 };

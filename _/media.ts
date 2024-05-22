@@ -34,7 +34,7 @@ import event, {
 } from './event';
 import { Image } from './_view';
 
-const _media = __bindingModule__('_media');
+const _media = __binding__('_media');
 
 Object.assign(exports, _media);
 

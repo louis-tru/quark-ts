@@ -28,12 +28,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-import './_ext';
 import errno from './errno';
 import {Encoding} from './buffer';
-import _util from './_util';
 
-const _fs = __bindingModule__('_fs');
+const _fs = __binding__('_fs');
 
 export enum FileOpenFlag {
 	FOPEN_ACCMODE = 0o3,
@@ -74,7 +72,7 @@ export enum FileType {
 	FTYPE_BLOCK,
 }
 
-export declare const DEFAULT_MODE: number;
+export declare const defaultMode: number;
 
 export interface Dirent {
 	name: string;
@@ -121,26 +119,22 @@ export interface StreamData {
 }
 
 export class AsyncTask<T> extends Promise<T> {
-
 	private _resolve: any;
 	private _reject: any;
 	private _complete: boolean;
 	private _id: number;
-
 	private _ok(r: T) {
 		if (!this._complete) {
 			this._complete = true;
 			this._resolve(r);
 		}
 	}
-
 	private _err(err: Error) {
 		if (!this._complete) {
 			this._complete = true;
 			this._reject(err);
 		}
 	}
-
 	constructor(exec: (resolve: any, reject: any)=>number) {
 		var _resolve: any;
 		var _reject: any;
@@ -157,7 +151,6 @@ export class AsyncTask<T> extends Promise<T> {
 		this._complete = false;
 		this._id = id;
 	}
-
 	get id() { return this._id }
 	get complete() { return this._complete }
 	abort(): void {
@@ -205,7 +198,7 @@ export declare function writeSync(fd: number, data: string, encoding?: Encoding,
 Object.assign(exports, _fs);
 
 // async
-export function chmod(path: string, mode: number = _fs.DEFAULT_MODE) {
+export function chmod(path: string, mode: number = _fs.defaultMode) {
 	return new Promise<void>(function(resolve, reject) {
 		_fs.chown(path, mode, (err?: Error)=>err?reject(err):resolve());
 	});
@@ -215,7 +208,7 @@ export function chown(path: string, owner: number, group: number) {
 		_fs.chown(path, owner, group, (err?: Error)=>err?reject(err):resolve());
 	});
 }
-export function mkdir(path: string, mode: number = _fs.DEFAULT_MODE) {
+export function mkdir(path: string, mode: number = _fs.defaultMode) {
 	return new Promise<void>(function(resolve, reject) {
 		_fs.mkdir(path, mode, (err?: Error)=>err?reject(err):resolve());
 	});
@@ -280,7 +273,7 @@ export function executable(path: string) {
 		_fs.executable(path, (err?: Error, r?: boolean)=>err?reject(err):resolve(r as boolean));
 	});
 }
-export function chmodr(path: string, mode: number = _fs.DEFAULT_MODE) {
+export function chmodr(path: string, mode: number = _fs.defaultMode) {
 	return new AsyncTask<void>(function(resolve, reject) {
 		return _fs.chmodr(path, mode, (err?: Error)=>err?reject(err):resolve());
 	});
@@ -290,7 +283,7 @@ export function chownr(path: string, owner: number, group: number) {
 		return _fs.chownr(path, owner, group, (err?: Error)=>err?reject(err):resolve());
 	});
 }
-export function mkdirp(path: string, mode: number = _fs.DEFAULT_MODE) {
+export function mkdirp(path: string, mode: number = _fs.defaultMode) {
 	return new Promise<void>(function(resolve, reject) {
 		_fs.mkdirp(path, mode, (err?: Error)=>err?reject(err):resolve());
 	});
@@ -340,6 +333,45 @@ export declare function read(fd: number, out: Uint8Array, size?: number, offsetF
 export declare function write(fd: number, data: Uint8Array, size?: number, offsetFd?: number): Promise<number>;
 export declare function write(fd: number, data: string, offsetFd?: number): Promise<number>;
 export declare function write(fd: number, data: string, encoding?: Encoding, offsetFd?: number): Promise<number>;
+
+// reader
+export interface Reader {
+	readFile(path: string): AsyncTask<Uint8Array>;
+	readFile(path: string, encoding: Encoding): AsyncTask<string>;
+	readStream(path: string, cb: (stream: StreamData)=>void): AsyncTask<void>;
+	readFileSync(path: string): Uint8Array;
+	readFileSync(path: string, encoding: Encoding): string;
+	existsSync(path: string): boolean;
+	isFileSync(path: string): boolean;
+	isDirectorySync(path: string): boolean;
+	readdirSync(path: string): Dirent[];
+	abort(id: number): void;
+	clear(): void; // clear cache
+}
+
+export const reader: Reader = {
+	..._fs.reader,
+	readFile: function(...args: any[]) {
+		return new AsyncTask<any>(function(resolve, reject) {
+			return _fs.reader.readFile((err?: Error, r?: any)=>err?reject(err):resolve(r), ...args);
+		});
+	},
+	readStream: function(path: string, cb: (stream: StreamData)=>void): AsyncTask<void> {
+		return new AsyncTask<void>(function(resolve, reject): number {
+			return _fs.reader.readStream(function(err?: Error, r?: StreamData) {
+				if (err) {
+					reject(err);
+				} else {
+					var stream = r as StreamData;
+					cb(stream);
+					if (stream.complete) {
+						resolve();
+					}
+				}
+			}, path);
+		});
+	},
+};
 
 exports.writeFile = function(...args: any[]) {
 	return new Promise<number>(function(resolve, reject) {

@@ -28,217 +28,143 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-import utils from './util';
-import { Propery } from './css';
-import * as value from './types';
-import { View } from './_view';
-import { Action, ActionIn, KeyframeOptions } from './_action';
+import util from './util';
+import { View } from './view';
 import { ActionEvent } from './event';
+import { Window } from './window';
+import { StyleSheet } from './css';
+import * as types from './types';
 
-const _action = __bindingModule__('_action');
+Object.assign(exports, __binding__('_action'));
 
-Object.assign(exports, _action);
+export type ActionIn = Action | {
+	playing?: boolean;
+	loop?: number;
+	speed?: number;
+	spawn?: ActionIn[];
+	seq?: ActionIn[];
+	keyframe?: StyleSheet[];
+} | StyleSheet[];
 
-export * from './_action';
-
-export declare abstract class GroupAction extends Action {
-	readonly length: number;
-	append(child: Action): void;
-	insert(index: number, child: Action): void;
-	removeChild(index: number): void;
-	children(index: number): Action | null;
+export declare class Keyframe extends StyleSheet {
+	readonly index: number;
+	readonly time: number;
+	readonly curve: types.Curve;
+	readonly itemsCount: number; // StyleSheet items count
+	apply(view: View): void; // apply style to view
+	fetch(view: View): void; // fetch style from view
 }
 
-export declare class SpawnAction extends GroupAction {}
-export declare class SequenceAction extends GroupAction {}
+export declare abstract class Action {
+	readonly duration: number;
+	playing: boolean;
+	loop: number;
+	speed: number;
+	play(): void;
+	stop(): void;
+	seek(time: number): void;
+	seekPlay(time: number): void;
+	seekStop(time: number): void;
+	before(action: Action): void;
+	after(action: Action): void;
+	remove(): void;
+	append(child: Action): void;
+	clear(): void;
+	constructor(win: Window);
+}
+export declare class SpawnAction extends Action {}
+export declare class SequenceAction extends Action {}
 
 export declare class KeyframeAction extends Action {
-	hasProperty(name: Propery): boolean;
-	matchProperty(name: Propery): boolean;
-	frame(index: number): Frame | null;
-	add(style: KeyframeOptions): Frame;
-	add(time?: number, curve?: value.CurveIn): Frame;
-	readonly first: Frame | null;
-	readonly last: Frame | null;
-	readonly length: number;
-	readonly position: number;
-	readonly time: number;
+	readonly time: number; // get play time
+	readonly frame: number; // get play frame
+	readonly length: number; // get frames count
+	readonly [index: number]: Keyframe; // get keyframe for index
+	add(time: number, curve?: types.CurveIn): Keyframe; // add new keyframe
+	addFrame(style: StyleSheet): Keyframe;
 }
+(exports.KeyframeAction as typeof KeyframeAction).prototype.addFrame =
+function(style: StyleSheet): Keyframe {
+	let frame = this.add(style.time || 0, style.curve);
+	Object.assign(frame, style);
+	return frame;
+};
 
-// fetch style attribute by view
-export declare abstract class Frame {
-	fetch(view?: View): void; // fetch style attribute by view
-	flush(): void; // flush frame restore default values
-	readonly index: number;
-	readonly host: KeyframeAction | null;
-	time: number;
-	curve: value.Curve;
-	// Meta attribute
-	x: number;
-	y: number;
-	scaleX: number;
-	scaleY: number;
-	skewX: number;
-	skewY: number;
-	rotateZ: number;
-	originX: number;
-	originY: number;
-	opacity: number;
-	visible: boolean;
-	width: value.Value;
-	height: value.Value;
-	marginTop: value.Value;
-	marginRight: value.Value;
-	marginBottom: value.Value;
-	marginLeft: value.Value;
-	borderTopWidth: number;
-	borderRightWidth: number;
-	borderBottomWidth: number;
-	borderLeftWidth: number;
-	borderTopColor: value.Color;
-	borderRIghtColor: value.Color;
-	borderBottomColor: value.Color;
-	borderLeftColor: value.Color;
-	borderRadiusLeftTop: number;
-	borderRadiusRightTop: number;
-	borderRadiusRightBottom: number;
-	borderRadiusLeftBottom: number;
-	backgroundColor: value.Color;
-	background: value.Background;
-	newline: boolean;
-	clip: boolean;
-	contentAlign: value.ContentAlign;
-	textAlign: value.TextAlign;
-	maxWidth: value.Value;
-	maxHeight: value.Value;
-	startX: number;
-	startY: number;
-	ratioX: number;
-	ratioY: number;
-	repeat: value.Repeat;
-	textBackgroundColor: value.TextColor;
-	textColor: value.TextColor;
-	textSize: value.TextSize;
-	textStyle: value.TextStyle;
-	textFamily: value.TextFamily;
-	textLineHeight: value.TextLineHeight;
-	textShadow: value.TextShadow;
-	textDecoration: value.TextDecoration;
-	textOverflow: value.TextOverflow;
-	textWhiteSpace: value.TextWhiteSpace;
-	alignX: value.Align;
-	alignY: value.Align;
-	shadow: value.Shadow;
-	src: string;
-	// Non meta attribute
-	translate: value.Vec2;
-	scale: value.Vec2;
-	skew: value.Vec2;
-	origin: value.Vec2;
-	margin: value.Value[];
-	border: value.Border;
-	borderWidth: number;
-	borderColor: value.Color;
-	borderRadius: number;
-	borderLeft: value.Border;
-	borderTop: value.Border;
-	borderRight: value.Border;
-	borderBottom: value.Border;
-	minWidth: value.Value;
-	minHeight: value.Value;
-	start: value.Vec2;
-	ratio: value.Vec2;
-	align: value.Align[];
-}
-
- /**
-	* @func create(json[,parent])
-	* @arg json {Object|Action}
-	* @arg [parent] {GroupAction}
-	* @ret {Action}
+/**
+	* @method create(win,arg[,parent])
+	* @param win {Window}
+	* @param arg {Object|Action}
+	* @param parent Optional {Action}
+	* @return {Action}
 	*/
-export function create(In: ActionIn, parent?: GroupAction) {
-	if ( typeof In != 'object' ) {
-		throw new Error('Bad argument.');
-	}
-	var action: Action;
-	if ( In instanceof Action ) {
-		action = In;
+export function create(win: Window, arg: ActionIn, parent?: Action) {
+	let action: Action;
+	if ( arg instanceof Action ) {
+		action = arg;
 	} else {
 		// create
-		if ( Array.isArray(In) ) { // KeyframeAction
-			action = new _action.KeyframeAction();
-			for (var sheet of In)
-				(action as KeyframeAction).add(sheet);
-		} else {
-			if (In.seq) { // SequenceAction
-				var seq = In.seq;
-				utils.assert(Array.isArray(seq));
-				action = Object.assign(new _action.SequenceAction(), In);
+		if ( Array.isArray(arg) ) { // KeyframeAction
+			action = new KeyframeAction(win);
+			for (let sheet of arg)
+				(action as KeyframeAction).addFrame(sheet);
+		} else if (arg) {
+			if (arg.seq) { // SequenceAction
+				let seq = arg.seq;
+				util.assert(Array.isArray(seq));
+				action = Object.assign(new SequenceAction(win), arg);
 				for (let i of seq) {
-					create(i, action as SequenceAction);
+					create(win, i, action as SequenceAction);
 				}
-			} else if (In.spawn) { // SpawnAction
-				var spawn = In.spawn;
-				utils.assert(Array.isArray(spawn));
-				action = Object.assign(new _action.SpawnAction(), In);
+			} else if (arg.spawn) { // SpawnAction
+				let spawn = arg.spawn;
+				util.assert(Array.isArray(spawn));
+				action = Object.assign(new SpawnAction(win), arg);
 				for (let i of spawn) {
-					create(i, action as SequenceAction);
+					create(win, i, action as SequenceAction);
 				}
 			} else { // KeyframeAction
-				action = Object.assign(new _action.KeyframeAction(), In);
-				var keyframe = In.keyframe;
-				if ( Array.isArray(keyframe) ) {
-					for (let i of keyframe) 
-						(action as KeyframeAction).add(i);
+				action = Object.assign(new KeyframeAction(win), arg);
+				let key = arg.keyframe;
+				if ( Array.isArray(key) ) {
+					for (let sheet of key)
+						(action as KeyframeAction).addFrame(sheet);
 				}
 			}
+		} else {
+			throw new Error('Bad argument.');
 		}
 		// end craete
 	}
-	if ( parent ) { // Cannot be KeyframeAction type
+	if (parent) { // Cannot be KeyframeAction type
 		parent.append(action);
 	}
 	return action;
 }
 
- /**
-	* @func transition(view,style,delay?,cb?)
-	* @arg view 	{View}
-	* @arg style  {Object}
-	* @arg [delay]  {uint} ms
-	* @arg [cb]     {Function}
-	* @ret {KeyframeAction}
+/**
+	* @method transition(view,style,delay?,cb?)
+	* @param view   {View}
+	* @param style  {Object}
+	* @param [cb]   {Function}
+	* @return {KeyframeAction}
 	*/
-export declare function transition(view: View, style: KeyframeOptions, cb?: (e: ActionEvent)=>void): KeyframeAction;
-export declare function transition(view: View, style: KeyframeOptions, delay?: number, cb?: (e: ActionEvent)=>void): KeyframeAction;
-
-exports.transition = function(view: View, style: KeyframeOptions, delay?: number, cb?: (e: ActionEvent)=>void) {
-	var action = new _action.KeyframeAction() as KeyframeAction;
-	if ( typeof delay == 'function' ) {
-		cb = delay;
-	} else {
-		if ( typeof delay == 'number' )
-			action.delay = delay;
-		if ( arguments.length > 2 && typeof cb != 'function' )
-			cb = undefined;
-	}
-	action.add(); // add frame 0
-	action.add(style); // add frame 1
-	view.setAction(action);
-	(action.frame(0) as Frame).fetch(); // fetch frame style
+export function transition(view: View, style: StyleSheet, cb?: (e: ActionEvent)=>void): KeyframeAction {
+	let action = new KeyframeAction(view.window);
+	action.add(0).fetch(view); // add frame 0 and fetch frame style
+	action.addFrame(style); // add frame 1
+	view.action = action;
 
 	if ( cb ) {
 		view.onActionKeyframe.on(function(evt) {
 			//console.log('onActionKeyframe');
 			if ( evt.action === action ) {
-				if (evt.frame != 1) return;
-				(cb as any)(evt); // end
+				if (evt.frame != 1)
+					return;
+				cb(evt); // end
 			}
 			view.onActionKeyframe.off('transition-1');
 		}, 'transition-1');
 	}
-
 	action.play(); // start play
 
 	return action;

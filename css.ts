@@ -28,98 +28,91 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-import utils from './util';
-import * as value from './types';
+import * as types from './types';
 
-const _css = __bindingModule__('_css');
-const debug = utils.debug;
-
-exports.create = _css.create;
-
-export enum Propery {
-	// Meta attribute
-	PROPERTY_X,
-	PROPERTY_Y,
-	PROPERTY_SCALE_X,
-	PROPERTY_SCALE_Y,
-	PROPERTY_SKEW_X,
-	PROPERTY_SKEW_Y,
-	PROPERTY_ROTATE_Z,
-	PROPERTY_ORIGIN_X,
-	PROPERTY_ORIGIN_Y,
-	PROPERTY_OPACITY,
-	PROPERTY_VISIBLE,
-	PROPERTY_WIDTH,
-	PROPERTY_HEIGHT,
-	PROPERTY_MARGIN_TOP,
-	PROPERTY_MARGIN_RIGHT,
-	PROPERTY_MARGIN_BOTTOM,
-	PROPERTY_MARGIN_LEFT,
-	PROPERTY_BORDER_TOP_WIDTH,
-	PROPERTY_BORDER_RIGHT_WIDTH,
-	PROPERTY_BORDER_BOTTOM_WIDTH,
-	PROPERTY_BORDER_LEFT_WIDTH,
-	PROPERTY_BORDER_TOP_COLOR,
-	PROPERTY_BORDER_RIGHT_COLOR,
-	PROPERTY_BORDER_BOTTOM_COLOR,
-	PROPERTY_BORDER_LEFT_COLOR,
-	PROPERTY_BORDER_RADIUS_LEFT_TOP,
-	PROPERTY_BORDER_RADIUS_RIGHT_TOP,
-	PROPERTY_BORDER_RADIUS_RIGHT_BOTTOM,
-	PROPERTY_BORDER_RADIUS_LEFT_BOTTOM,
-	PROPERTY_BACKGROUND_COLOR,
-	PROPERTY_BACKGROUND,
-	PROPERTY_NEWLINE,
-	PROPERTY_CLIP,
-	PROPERTY_CONTENT_ALIGN,
-	PROPERTY_TEXT_ALIGN,
-	PROPERTY_MAX_WIDTH,
-	PROPERTY_MAX_HEIGHT,
-	PROPERTY_START_X,
-	PROPERTY_START_Y,
-	PROPERTY_RATIO_X,
-	PROPERTY_RATIO_Y,
-	PROPERTY_REPEAT,
-	PROPERTY_TEXT_BACKGROUND_COLOR,
-	PROPERTY_TEXT_COLOR,
-	PROPERTY_TEXT_SIZE,
-	PROPERTY_TEXT_STYLE,
-	PROPERTY_TEXT_FAMILY,
-	PROPERTY_TEXT_LINE_HEIGHT,
-	PROPERTY_TEXT_SHADOW,
-	PROPERTY_TEXT_DECORATION,
-	PROPERTY_TEXT_OVERFLOW,
-	PROPERTY_TEXT_WHITE_SPACE,
-	PROPERTY_ALIGN_X,
-	PROPERTY_ALIGN_Y,
-	PROPERTY_SHADOW,
-	PROPERTY_SRC,
-	PROPERTY_TIME = -1, // action time
-	// Non meta attribute
-	PROPERTY_TRANSLATE = -2,
-	PROPERTY_SCALE = -3,
-	PROPERTY_SKEW = -4,
-	PROPERTY_ORIGIN = -5,
-	PROPERTY_MARGIN = -6,
-	PROPERTY_BORDER = -7,
-	PROPERTY_BORDER_WIDTH = -8,
-	PROPERTY_BORDER_COLOR = -9,
-	PROPERTY_BORDER_RADIUS = -10,
-	PROPERTY_BORDER_LEFT = -11,
-	PROPERTY_BORDER_TOP = -12,
-	PROPERTY_BORDER_RIGHT = -13,
-	PROPERTY_BORDER_BOTTOM = -14,
-	PROPERTY_MIN_WIDTH = -15,
-	PROPERTY_MIN_HEIGHT = -16,
-	PROPERTY_START = -17,
-	PROPERTY_RATIO = -18,
-	PROPERTY_ALIGN = -19,
-}
+const _css = __binding__('_css');
 
 export interface StyleSheet {
-	// action time attribute
-	time?: number;
+	time?: number; // keyframe time or css transition time
+	curve?: types.CurveIn; // keyframe curve
 	// Meta attribute
+	opacity?: number;
+	visible?: boolean;
+	receive?: boolean;
+	clip?: boolean;
+	align?: types.AlignIn;
+	width?: types.BoxSizeIn;
+	height?: types.BoxSizeIn;
+	widthLimit?: types.BoxSizeIn;
+	heightLimit?: types.BoxSizeIn;
+	margin?: number[] | number;
+	marginTop?: number;
+	marginRight?: number;
+	marginBottom?: number;
+	marginLeft?: number;
+	padding?: number[] | number;
+	paddingTop?: number;
+	paddingRight?: number;
+	paddingBottom?: number;
+	paddingLeft?: number;
+	borderRadius?: number[] | number;
+	borderRadiusLeftTop?: number;
+	borderRadiusRightTop?: number;
+	borderRadiusRightBottom?: number;
+	borderRadiusLeftBottom?: number;
+	border?: types.BoxBorderIn[] | types.BoxBorderIn; // border
+	borderTop?: types.BoxBorderIn;
+	borderRight?: types.BoxBorderIn;
+	borderBottom?: types.BoxBorderIn;
+	borderLeft?: types.BoxBorderIn;
+	borderWidth?: number[] | number;
+	borderColor?: types.ColorIn[] | types.ColorIn;
+	borderWidthTop?: number; // border width
+	borderWidthRight?: number;
+	borderWidthBottom?: number;
+	borderWidthLeft?: number;
+	borderColorTop?: types.ColorIn; // border color
+	borderColorRight?: types.ColorIn;
+	borderColorBottom?: types.ColorIn;
+	borderColorLeft?: types.ColorIn;
+	backgroundColor?: types.ColorIn;
+	background?: types.BoxFilterIn;
+	boxShadow?: types.BoxShadowIn;
+	weight?: number;
+	direction?: types.DirectionIn;
+	itemsAlign?: types.ItemsAlignIn;
+	crossAlign?: types.CrossAlignIn;
+	wrap?: types.WrapIn;
+	wrapAlign?: types.WrapAlignIn;
+	src?: string;
+	textAlign?: types.TextAlignIn;
+	textWeight?: types.TextWeightIn;
+	textSlant?: types.TextSlantIn;
+	textDecoration?: types.TextDecorationIn;
+	textOverflow?: types.TextOverflowIn;
+	textWhiteSpace?: types.TextWhiteSpaceIn;
+	textWordBreak?: types.TextWordBreakIn;
+	textSize?: types.TextSizeIn;
+	textBackgroundColor?: types.TextColorIn;
+	textColor?: types.TextColorIn;
+	textLineHeight?: types.TextSizeIn;
+	textShadow?: types.TextShadowIn;
+	textFamily?: types.TextFamilyIn;
+	security?: boolean;
+	readonly?: boolean;
+	type?: types.KeyboardTypeIn;
+	returnType?: types.KeyboardReturnTypeIn;
+	placeholderColor?: types.ColorIn;
+	cursorColor?: types.ColorIn;
+	maxLength?: number;
+	placeholder?: string;
+	scrollbarColor?: types.ColorIn;
+	scrollbarWidth?: number;
+	scrollbarMargin?: number;
+	translate?: types.Vec2In;
+	scale?: types.Vec2In;
+	skew?: types.Vec2In;
+	origin?: types.BoxOriginIn[] | types.BoxOriginIn
 	x?: number;
 	y?: number;
 	scaleX?: number;
@@ -129,100 +122,14 @@ export interface StyleSheet {
 	rotateZ?: number;
 	originX?: number;
 	originY?: number;
-	opacity?: number;
-	visible?: boolean;
-	width?: value.ValueIn;
-	height?: value.ValueIn;
-	marginTop?: value.ValueIn;
-	marginRight?: value.ValueIn;
-	marginBottom?: value.ValueIn;
-	marginLeft?: value.ValueIn;
-	borderTopWidth?: number;
-	borderRightWidth?: number;
-	borderBottomWidth?: number;
-	borderLeftWidth?: number;
-	borderTopColor?: value.ColorIn;
-	borderRIghtColor?: value.ColorIn;
-	borderBottomColor?: value.ColorIn;
-	borderLeftColor?: value.ColorIn;
-	borderRadiusLeftTop?: number;
-	borderRadiusRightTop?: number;
-	borderRadiusRightBottom?: number;
-	borderRadiusLeftBottom?: number;
-	backgroundColor?: value.ColorIn;
-	background?: value.BackgroundIn;
-	newline?: boolean;
-	clip?: boolean;
-	contentAlign?: value.ContentAlignIn;
-	textAlign?: value.TextAlignIn;
-	maxWidth?: value.ValueIn;
-	maxHeight?: value.ValueIn;
-	startX?: number;
-	startY?: number;
-	ratioX?: number;
-	ratioY?: number;
-	repeat?: value.RepeatIn;
-	textBackgroundColor?: value.TextColorIn;
-	textColor?: value.TextColorIn;
-	textSize?: value.TextSizeIn;
-	textStyle?: value.TextStyleIn;
-	textFamily?: value.TextFamilyIn;
-	textLineHeight?: value.TextLineHeightIn;
-	textShadow?: value.TextShadowIn;
-	textDecoration?: value.TextDecorationIn;
-	textOverflow?: value.TextOverflowIn;
-	textWhiteSpace?: value.TextWhiteSpaceIn;
-	alignX?: value.AlignIn;
-	alignY?: value.AlignIn;
-	shadow?: value.ShadowIn;
-	src?: string;
-	// Non meta attribute
-	translate?: value.Vec2In;
-	scale?: value.Vec2In;
-	skew?: value.Vec2In;
-	origin?: value.Vec2In;
-	margin?: value.ValuesIn;
-	border?: value.BorderIn;
-	borderWidth?: number;
-	borderColor?: value.ColorIn;
-	borderRadius?: number;
-	borderLeft?: value.BorderIn;
-	borderTop?: value.BorderIn;
-	borderRight?: value.BorderIn;
-	borderBottom?: value.BorderIn;
-	minWidth?: value.ValueIn;
-	minHeight?: value.ValueIn;
-	start?: value.Vec2In;
-	ratio?: value.Vec2In;
-	align?: value.AlignsIn;
 }
 
-export declare function create(sheets: Dict<StyleSheet>): void;
-
-/**
- * @func check(css_name)
- * @arg css_name {String}
- * @ret {bool}
- */
-export function check(cssName: string, selected: string = '') {
-	var name = cssName.replace(/([A-Z_]+)/g, '_$1');
-	if ( !('PROPERTY_' + name.toUpperCase() in Propery) ) {
-		console.warn( `---------- Invalid name "${cssName}" in CSS style sheet ${selected}` );
-		return false;
-	}
-	return true;
+export declare class CStyleSheetsClass {
+	set(name: string[] | string): void;
+	add(name: string): void;
+	remove(name: string): void;
+	toggle(name: string): void;
 }
 
-/**
- * @func default(sheets)
- */
-export default function(sheets: Dict<StyleSheet>) {
-	if ( debug ) {
-		for ( var cls in sheets ) {
-			for ( var name in sheets[cls] ) {
-				check(name, cls);
-			}
-		}
-	}
-	_css.create(sheets);
-}
+export const createCss = _css.create as ((sheets: { [key: `.${string}`]: StyleSheet })=>void);
+export default createCss;

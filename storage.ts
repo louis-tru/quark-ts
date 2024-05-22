@@ -28,7 +28,7 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-const _storage = __bindingModule__('_storage');
+const _storage = __binding__('_storage');
 
 export function get(key: string) {
 	var rv = _storage.get(`__${key}`);
@@ -41,8 +41,8 @@ export function set(key: string, value: any) {
 	_storage.set(`__${key}`, JSON.stringify(value));
 }
 
-export function del(key: string) {
-	_storage.del(`__${key}`);
+export function remove(key: string) {
+	_storage.remove(`__${key}`);
 }
 
 export function clear() {

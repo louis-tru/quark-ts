@@ -28,17 +28,39 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-const _timer = __bindingModule__('_timer');
+import util from './util';
+import event, { Event, EventNoticer, NativeNotification, Notification } from './event';
 
-export declare class Timer {
-	loop: boolean;
-	run(arg: number, loop?: number/* -1 is infinite cycle, default is 1. */): void;
-	stop(): boolean;
+const _ui = __binding__('_ui');
+
+export enum Orientation {
+	Invalid,
+	Portrait,
+	Landscape,
+	Reverse_Portrait,
+	Reverse_Landscape,
+	User,
+	User_Portrait,
+	User_Landscape,
+	User_Locked,
+};
+
+export enum StatusBarStyle {
+	White, Black,
+};
+
+export declare class Screen extends Notification<Event<Screen>> {
+	readonly onOrientation: EventNoticer<Event<Screen>>;
+	readonly orientation: Orientation;
+	readonly statusBarHeight: number;
+	setVisibleStatusBar(visible: boolean): void;
+	setStatusBarStyle(style: StatusBarStyle): void;
+	preventScreenSleep(prevent: boolean): void;
 }
 
-export declare function setTimeout<A extends any[]>(cb: (...args: A)=>void, timeout?: number, ...args: A): Timer;
-export declare function setInterval<A extends any[]>(cb: (...args: A)=>void, timeout?: number, ...args: A): Timer;
-export declare function clearTimeout(timer: Timer): void;
-export declare function clearInterval(timer: Timer): void;
-
-Object.assign(exports, _timer);
+class _Screen extends NativeNotification {
+	@event readonly onOrientation: EventNoticer<Event<Screen>>;
+}
+util.extendClass(_ui.Screen, _Screen);
+exports.Screen = _ui.Screen;
+export declare function mainScreenScale(): number;

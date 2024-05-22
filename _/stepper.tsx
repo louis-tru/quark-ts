@@ -59,7 +59,7 @@ quark.css({
 	},
 	
 	'.x_stepper .plus': {
-		borderLeftWidth: 0,
+		borderWidthLeft: 0,
 		borderRadiusRightTop: 6,
 		borderRadiusRightBottom: 6,
 	},

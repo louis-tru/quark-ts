@@ -28,13 +28,16 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-export declare function setDefaultFonts(fontOrFamily: string | string[]): void;
-export declare function defaultFontNames(): string[];
-export declare function familyNames(): string[]; // get current load all family
-export declare function fontNames(family: string): string[]; // get font names for family
-export declare function test(fontOrFamily: string): boolean;
-export declare function registerFont(data: Uint8Array, alias?: string): boolean;
-export declare function registerFontFile(path: string, alias?: string): boolean;
-export declare function setFamilyAlias(family: string, alias?: string): void;
+import * as types from './types';
+Object.assign(exports, __binding__('_font'));
 
-Object.assign(exports, __bindingModule__('_font'));
+export declare class FontPool {
+	readonly countFamilies: number;
+	readonly defaultFamilyNames: string[]
+	readonly defaultFontFamilys: types.FFID;
+	getFontFamilys(familys?: string): types.FFID;
+	addFontFamily(data: Uint8Array, alias?: string): void;
+	getFamilyName(index: number): string;
+}
+export declare function getFontFamilys(familys?: string): types.FFID;
+export declare function getFamilysName(ffid: types.FFID): string;

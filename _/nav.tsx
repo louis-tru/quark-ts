@@ -34,7 +34,7 @@ import quark, {
 	ViewController, Div, Indep, View,
 	Limit, Button, Text, TextNode, Clip, _CVD,
 } from './index';
-import * as value from './types';
+import * as types from './types';
 import {prop} from './ctr';
 import {event, EventNoticer, Event, ListItem} from './event';
 
@@ -155,7 +155,7 @@ export class Navigation extends NavigationStatus {
 	}
 
 	/**
-	 * @func defaultFocus() 导航初始化时,返回一个焦点视图,重写这个函数
+	 * @method defaultFocus() 导航初始化时,返回一个焦点视图,重写这个函数
 	 */
 	defaultFocus(): View | null {
 		return null;
@@ -170,7 +170,7 @@ export class Navigation extends NavigationStatus {
 	}
 
 	/**
-	 * @func registerNavigation()
+	 * @method registerNavigation()
 	 */
 	registerNavigation(animate: number = 0) {
 		if ( !this.m_iterator ) { // No need to repeat it
@@ -194,7 +194,7 @@ export class Navigation extends NavigationStatus {
 	}
 
 	/**
-	 * @func unregisterNavigation(time, data)
+	 * @method unregisterNavigation(time, data)
 	 */
 	unregisterNavigation(animate: number = 0) {
 		if ( this.m_iterator ) {
@@ -261,7 +261,7 @@ export class Navigation extends NavigationStatus {
 }
 
 /**
- * @func refresh_bar_style
+ * @method refresh_bar_style
  */
 function refresh_bar_style(self: NavPageCollection, time: number) {
 	if ( self.IDs.navbar && self.length ) {
@@ -294,7 +294,7 @@ function refresh_bar_style(self: NavPageCollection, time: number) {
 					backgroundColor: toolbar.backgroundColor,
 					time: time,
 				});
-				self.find('page').transition({ height: navbar_height + toolbar_height + '!', time: time }, ()=>{
+				self.find('page').transition({ height: `${navbar_height + toolbar_height}!`, time: time }, ()=>{
 					if ( navbarHidden ) self.find('navbar').hide();
 					if ( toolbarHidden ) self.find('toolbar').hide();
 				});
@@ -314,7 +314,7 @@ function refresh_bar_style(self: NavPageCollection, time: number) {
 				backgroundColor: toolbar.backgroundColor, 
 				visible: !toolbarHidden,
 			};
-			self.IDs.page.style = { height: navbar_height + toolbar_height + '!' };
+			self.IDs.page.style = { height: `${navbar_height + toolbar_height}!` };
 		}
 	}
 }
@@ -375,7 +375,7 @@ export class NavPageCollection extends Navigation {
 	}
 
 	/**
-	 * @func setNavbarHidden
+	 * @method setNavbarHidden
 	 */
 	setNavbarHidden(value: boolean, animate?: boolean) {
 		this.$navbarHidden = !!value;
@@ -383,7 +383,7 @@ export class NavPageCollection extends Navigation {
 	}
 
 	/**
-	 * @func setToolbarHidden
+	 * @method setToolbarHidden
 	 */
 	setToolbarHidden(value: boolean, animate?: boolean) {
 		this.$toolbarHidden = !!value;
@@ -633,7 +633,7 @@ class Bar extends NavigationStatus {
 	}
 	
 	/**
-	 * @fun refreshStyle
+	 * @method refreshStyle
 	 */
 	refreshStyle(time: number) {
 		if (this.isCurrent) {
@@ -674,7 +674,7 @@ export class Navbar extends Bar {
 	@prop titleTextColor = '#fff';
 
 	/**
-	 * @func _navbar_compute_title_layout
+	 * @method _navbar_compute_title_layout
 	 */
 	private _navbar_compute_title_layout() {
 		var self: Navbar = this;
@@ -708,8 +708,8 @@ export class Navbar extends Bar {
 				back_width += min_back_width;
 			}
 			
-			(self.IDs.title_panel as Indep).marginLeft = new value.Value(value.ValueType.PIXEL, marginLeft);
-			(self.IDs.title_panel as Indep).marginRight = new value.Value(value.ValueType.PIXEL, marginRight);
+			(self.IDs.title_panel as Indep).marginLeft = types.newBoxSize(types.BoxSizeKind.Rem, marginLeft);
+			(self.IDs.title_panel as Indep).marginRight = types.newBoxSize(types.BoxSizeKind.Rem, marginRight);
 			(self.IDs.title_panel as Indep).show();
 			(self.IDs.back_text0 as TextNode).visible = backIconVisible;
 			
@@ -736,8 +736,8 @@ export class Navbar extends Bar {
 			var titl_text_num = title_width / (back_width + title_width);
 
 			// 为保证浮点数在转换后之和不超过100,向下保留三位小数
-			(self.IDs.back_text_panel as Div).width = value.parseValue(Math.floor(back_text_num * 100000) / 1000 + '%');
-			(self.IDs.title_text_panel as Div).width = value.parseValue(Math.floor(titl_text_num * 100000) / 1000 + '%');
+			(self.IDs.back_text_panel as Div).width = types.newBoxSize(types.BoxSizeKind.Ratio, back_text_num);
+			(self.IDs.title_text_panel as Div).width = types.newBoxSize(types.BoxSizeKind.Ratio, titl_text_num);
 
 		} else {
 			(self.IDs.title_panel as View).hide(); // hide title text and back text
@@ -766,10 +766,10 @@ export class Navbar extends Bar {
 
 	refreshStyle(time: number) {
 		if (this.isCurrent) {
-			(this.domAs() as Indep).alignY = value.parseAlign('bottom');
-			(this.domAs() as Indep).height = new value.Value(value.ValueType.PIXEL, this.height);
-			(this.IDs.title_text_panel as Text).textLineHeight = value.parseTextLineHeight(this.height);
-			(this.IDs.back_text_btn as Button).textLineHeight = value.parseTextLineHeight(this.height);
+			(this.domAs() as Indep).alignY = types.parseAlign('bottom');
+			(this.domAs() as Indep).height = types.newBoxSize(types.BoxSizeKind.Rem, this.height);
+			(this.IDs.title_text_panel as Text).textLineHeight = types.parseTextLineHeight(this.height);
+			(this.IDs.back_text_btn as Button).textLineHeight = types.parseTextLineHeight(this.height);
 			super.refreshStyle(time);
 		}
 	}
@@ -820,7 +820,7 @@ export class Navbar extends Bar {
 	}
 
 	/**
-	 * @fun setBackText # set navbar back text
+	 * @method setBackText # set navbar back text
 	 */
 	setBackText(value: string) {
 		(this.IDs.back_text1 as TextNode).value = value;
@@ -828,7 +828,7 @@ export class Navbar extends Bar {
 	}
 	
 	/**
-	 * @fun $setTitleText # set navbar title text
+	 * @method $setTitleText # set navbar title text
 	 */
 	setTitleText(value: string) {
 		(this.IDs.title_text_panel as Text).value = value;
@@ -970,7 +970,7 @@ export class Toolbar extends Bar {
 }
 
 /**
- * @func backgroundColorReverse
+ * @method backgroundColorReverse
  */
 function backgroundColorReverse(self: NavPage) {
 	var color = self.domAs<Indep>().backgroundColor.reverse();
@@ -1097,8 +1097,8 @@ export class NavPage extends Navigation {
 		if ( this.status == -1 ) {
 			if ( time && (this.domAs().parent as Div).finalVisible ) {
 				this.domAs().style = { 
-					borderLeftColor: backgroundColorReverse(this), 
-					borderLeftWidth: quark.atomPixel, 
+					borderColorLeft: backgroundColorReverse(this), 
+					borderWidthLeft: quark.atomPixel, 
 					x: (this.domAs().parent as Div).finalWidth, 
 					visible: true,
 				};
@@ -1106,7 +1106,7 @@ export class NavPage extends Navigation {
 					(this.domAs() as Indep).borderLeftWidth = 0;
 				});
 			} else {
-				this.domAs().style = { x: 0, borderLeftWidth: 0, visible: true };
+				this.domAs().style = { x: 0, borderWidthLeft: 0, visible: true };
 			}
 			(this.m_toolbar as any).m_page = this;
 		} 
@@ -1130,8 +1130,8 @@ export class NavPage extends Navigation {
 		if ( this.status == 0 ) {
 			if ( time && (this.domAs().parent as Div).finalVisible ) {
 				this.domAs().style = { 
-					borderLeftColor: backgroundColorReverse(this), 
-					borderLeftWidth: quark.atomPixel, 
+					borderColorLeft: backgroundColorReverse(this), 
+					borderWidthLeft: quark.atomPixel, 
 				};
 				this.domAs().transition({ x: (this.domAs().parent as Div).finalWidth, visible: false, time: time }, ()=>{
 					this.remove();

@@ -28,14 +28,14 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-import {List} from './event';
+import {List} from './_event';
 import errno from './errno';
 
-var id = 10;
-var AsyncFunctionConstructor = (async function() {}).constructor;
-var scopeLockQueue = new Map();
+let id = 10;
+let AsyncFunctionConstructor = (async function() {}).constructor;
+let scopeLockQueue = new Map();
 
-export var currentTimezone = new Date().getTimezoneOffset() / -60; // 当前时区
+export let currentTimezone = new Date().getTimezoneOffset() / -60; // 当前时区
 
 export function isAsync(func: any): boolean {
 	return func && func.constructor === AsyncFunctionConstructor;
@@ -44,13 +44,11 @@ export function isAsync(func: any): boolean {
 class obj_constructor {}
 
 function clone_object(new_obj: any, obj: any): any {
-	for (var name of Object.getOwnPropertyNames(obj)) {
-		var property = <PropertyDescriptor>Object.getOwnPropertyDescriptor(obj, name);
+	for (let name of Object.getOwnPropertyNames(obj)) {
+		let property = Object.getOwnPropertyDescriptor(obj, name)!;
 		if (property.writable) {
 			new_obj[name] = clone(property.value);
-		}//else {
-			// Object.defineProperty(new_obj, name, property);
-		//}
+		}
 	}
 	return new_obj;
 }
@@ -60,13 +58,13 @@ export function getId() {
 }
 
 /**
- * @fun clone # 克隆一个Object对像
- * @arg obj {Object} # 要复制的Object对像
- * @arg {Object}
+ * @method clone # 克隆一个Object对像
+ * @param obj {Object} # 要复制的Object对像
+ * @param {Object}
  */
 export function clone(obj: any): any {
 	if (obj && typeof obj == 'object') {
-		var new_obj: any = null, i;
+		let new_obj: any = null, i;
 
 		switch (obj.constructor) {
 			case Object:
@@ -93,16 +91,16 @@ export function clone(obj: any): any {
 }
 
 /**
- * @func extend(obj, extd)
+ * @method extend (obj, extd, top?)
  */
-export function extend(obj: any, extd: any, end: any): any {
-	if (extd.__proto__ && extd.__proto__ !== end)
-		extend(obj, extd.__proto__, end);
-	for (var i of Object.getOwnPropertyNames(extd)) {
+export function extend(obj: any, extd: any, top: any = Object.prototype): any {
+	if (extd.__proto__ && extd.__proto__ !== top)
+		extend(obj, extd.__proto__, top);
+	for (let i of Object.getOwnPropertyNames(extd)) {
 		if (i != 'constructor') {
-			var desc = <PropertyDescriptor>Object.getOwnPropertyDescriptor(extd, i);
-			desc.enumerable = false;
-			Object.defineProperty(obj, i, desc);
+			let descriptor = Object.getOwnPropertyDescriptor(extd, i)!;
+			descriptor.enumerable = false;
+			Object.defineProperty(obj, i, descriptor);
 		}
 	}
 	return obj;
@@ -114,29 +112,27 @@ export function extend(obj: any, extd: any, end: any): any {
 export function noop() {}
 
 /**
- * @func isNull(value)
+ * @method isNull(value)
  */
 export function isNull(value: any): boolean {
 	return value === null || value === undefined
 }
 
 /**
- * @fun extendClass #  EXT class prototype objects
+ * @method extendClass #  EXT class prototype objects
  */
-export function extendClass(cls: Function, extds: Function[] | Function, end = Object.prototype) {
-	var proto = cls.prototype;
-	var extds_ = Array.isArray(extds)? extds: [extds];
-	for (var extd of extds_) {
+export function extendClass(cls: Function, extds: Function[] | Function, top = Object.prototype) {
+	for (let extd of Array.isArray(extds)? extds: [extds]) {
 		if (extd instanceof Function) {
 			extd = extd.prototype;
 		}
-		extend(proto, extd, end);
+		extend(cls.prototype, extd, top);
 	}
 	return cls;
 }
 
 async function scopeLockDequeue(mutex: any): Promise<void> {
-	var item, queue = scopeLockQueue.get(mutex);
+	let item, queue = scopeLockQueue.get(mutex);
 	while( item = queue.shift() ) {
 		try {
 			item.resolve(await item.cb());
@@ -148,7 +144,7 @@ async function scopeLockDequeue(mutex: any): Promise<void> {
 }
 
 /**
- * @func scopeLock(mutex, cb)
+ * @method scopeLock (mutex, cb)
  */
 export function scopeLock<R>(mutex: any, cb: ()=>Promise<R>|R): Promise<R> {
 	assert(mutex, 'Bad argument');
@@ -157,22 +153,21 @@ export function scopeLock<R>(mutex: any, cb: ()=>Promise<R>|R): Promise<R> {
 		if (scopeLockQueue.has(mutex)) {
 			scopeLockQueue.get(mutex).push({resolve, reject, cb});
 		} else {
-			scopeLockQueue.set(mutex, new List().push({resolve, reject, cb}).host);
+			scopeLockQueue.set(mutex, new List().pushBack({resolve, reject, cb}).host);
 			scopeLockDequeue(mutex); // dequeue
 		}
 	})
 }
 
 /**
- * @fun get(name[,self]) # get object value by name
- * @arg name {String} 
- * @arg [self] {Object}
- * @ret {Object}
+ * @method get(name[,self]) # get object value by name
+ * @param name {String} 
+ * @param [self] {Object}
+ * @return {Object}
  */
-export function get(name: string, self: any): any {
-	var names = name.split('.');
-	var item;
-	while ( (item = names.shift()) ) {
+export function getProp(name: string, self: any): any {
+	let names = name.split('.');
+	for ( let item of names ) {
 		self = self[item];
 		if (!self)
 			return self;
@@ -181,68 +176,69 @@ export function get(name: string, self: any): any {
 }
 
 /**
-* @fun set(name,value[,self]) # Setting object value by name
-* @arg name {String} 
-* @arg value {Object} 
-* @arg [self] {Object}
-* @ret {Object}
+* @method set(name,value[,self]) # Setting object value by name
+* @param name {String} 
+* @param value {Object} 
+* @param [self] {Object}
+* @return {Object}
 */
-export function set(name: string, value: any, self: any): any {
-	var item = null;
-	var names = name.split('.');
-	var _name = <string>names.pop();
-	while ( (item = names.shift()) ){
-		self = self[item] || (self[item] = {});
+export function setProp(name: string, value: any, self: any): any {
+	let names = name.split('.');
+	let last = names.pop()!;
+	for ( let item of names ) {
+		self = self[item];
+		if (!self)
+			self = self[item] = {};
 	}
-	self[_name] = value;
+	self[last] = value;
 	return self;
 }
 
 /**
- * @fun def(name[,self]) # Delete object value by name
- * @arg name {String} 
- * @arg [self] {Object}
+ * @method def(name[,self]) # Delete object value by name
+ * @param name {String} 
+ * @param [self] {Object}
  */
-export function del(name: string, self: any): void {
-	var names = name.split('.');
-	var _name = <string>names.pop();
-	self = get(names.join('.'), self);
+export function removeProp(name: string, self: any): void {
+	let names = name.split('.');
+	let last = names.pop()!;
+	self = getProp(names.join('.'), self);
 	if (self)
-		delete self[_name];
+		delete self[last];
 }
 
 /**
- * @fun random # 创建随机数字
- * @arg [start] {Number} # 开始位置
- * @arg [end] {Number}   # 结束位置
- * @ret {Number}
+ * @method random # 创建随机数字
+ * @param [start] {Number} # 开始位置
+ * @param [end] {Number}   # 结束位置
+ * @return {Number}
  */
 export function random(start: number = 0, end: number = 1E8): number {
 	if (start == end)
 		return start;
-	var r = Math.random();
+	let r = Math.random();
 	start = start || 0;
 	end = end || (end===0?0:1E8);
 	return Math.floor(start + r * (end - start + 1));
 }
 
 /**
-* @fun fixRandom # 固定随机值,指定几率返回常数
-* @arg args.. {Number} # 输入百分比
-* @ret {Number}
+* @method fixRandom # 固定随机值,指定几率返回常数
+* @param args.. {Number} # 输入百分比
+* @return {Number}
 */
 export function fixRandom(arg: number, ...args: number[]): number {
 	if (!args.length)
 		return 0;
-	var total = arg;
-	var argus = [arg];
-	var len = args.length;
-	for (var i = 0; i < len; i++) {
+	let total = arg;
+	let argus = [arg];
+	let len = args.length;
+	for (let i = 0; i < len; i++) {
 		total += args[i];
 		argus.push(total);
 	}
-	var r = random(0, total - 1);
-	for (var i = 0; (i < len); i++) {
+	let r = random(0, total - 1);
+	for (let i = 0; (i < len); i++) {
 		if (r < argus[i])
 			return i;
 	}
@@ -250,25 +246,25 @@ export function fixRandom(arg: number, ...args: number[]): number {
 }
 
 /**
-* @fun filter # object filter
-* @arg obj {Object}  
-* @arg exp {Object}  #   filter exp
-* @arg non {Boolean} #   take non
-* @ret {Object}
+* @method filter # object filter
+* @param obj {Object}  
+* @param exp {Object}  #   filter exp
+* @param non {Boolean} #   take non
+* @return {Object}
 */
 export function filter(obj: any, exp: string[] | ((key: string, value: any)=>boolean), non: boolean = false): any {
-	var rev: any = {};
-	var isfn = (typeof exp == 'function');
+	let rev: any = {};
+	let isfn = (typeof exp == 'function');
 	
 	if (isfn || non) {
-		for (var key in obj) {
-			var value = obj[key];
-			var b: boolean = isfn ? (<any>exp)(key, value) : ((<string[]>exp).indexOf(key) != -1);
+		for (let key in obj) {
+			let value = obj[key];
+			let b: boolean = isfn ? (<any>exp)(key, value) : ((<string[]>exp).indexOf(key) != -1);
 			if (non ? !b : b)
 				rev[key] = value;
 		}
 	} else {
-		for (var item of <string[]>exp) {
+		for (let item of <string[]>exp) {
 			item = String(item);
 			if (item in obj)
 				rev[item] = obj[item];
@@ -278,13 +274,13 @@ export function filter(obj: any, exp: string[] | ((key: string, value: any)=>boo
 }
 
 /**
- * @fun update # update object property value
- * @arg obj {Object}      #        need to be updated for as
- * @arg extd {Object}    #         update object
- * @arg {Object}
+ * @method update # update object property value
+ * @param obj {Object}      #        need to be updated for as
+ * @param extd {Object}    #         update object
+ * @param {Object}
  */
-export function update<T>(obj: T, extd: any): T {
-	for (var key in extd) {
+export function update<T extends object>(obj: T, extd: any): T {
+	for (let key in extd) {
 		if (key in obj) {
 			(<any>obj)[key] = select((<any>obj)[key], extd[key]);
 		}
@@ -293,9 +289,9 @@ export function update<T>(obj: T, extd: any): T {
 }
 
 /**
- * @fun select
- * @arg default {Object} 
- * @arg value   {Object} 
+ * @method select
+ * @param default {Object} 
+ * @param value   {Object} 
  * @reg {Object}
  */
 export function select<T>(default_: T, value: any): T {
@@ -307,9 +303,9 @@ export function select<T>(default_: T, value: any): T {
 }
 
 /**
- * @fun equalsClass  # Whether this type of sub-types
- * @arg baseclass {class}
- * @arg subclass {class}
+ * @method equalsClass  # Whether this type of sub-types
+ * @param baseclass {class}
+ * @param subclass {class}
  */
 export function equalsClass(baseclass: any, subclass: any): boolean {
 	if (!baseclass || !subclass || !subclass.prototype)
@@ -317,10 +313,10 @@ export function equalsClass(baseclass: any, subclass: any): boolean {
 	if (baseclass === subclass)
 		return true;
 	
-	var prototype = baseclass.prototype;
-	var subprototype = subclass.prototype;
+	let prototype = baseclass.prototype;
+	let subprototype = subclass.prototype;
 	if (!subprototype) return false;
-	var obj = subprototype.__proto__;
+	let obj = subprototype.__proto__;
 	
 	while (obj) {
 		if (prototype === obj)
@@ -331,7 +327,7 @@ export function equalsClass(baseclass: any, subclass: any): boolean {
 }
 
 /**
- * @fun assert
+ * @method assert
  */
 export function assert(condition: any, code?: number | ErrorNewArg): void {
 	if (condition)
@@ -344,7 +340,7 @@ export function assert(condition: any, code?: number | ErrorNewArg): void {
 }
 
 /**
- * @func sleep()
+ * @method sleep()
  */
 export function sleep<T = number>(time: number, defaultValue?: T): Promise<T> {
 	return new Promise((ok, err)=>setTimeout(()=>ok((defaultValue || 0) as any), time));
@@ -353,12 +349,12 @@ export function sleep<T = number>(time: number, defaultValue?: T): Promise<T> {
 export function timeout<T>(promise: Promise<T> | T, time: number): Promise<T> {
 	if (promise instanceof Promise) {
 		return new Promise(function(_resolve, _reject) {
-			var id: any = setTimeout(function() {
+			let id: any = setTimeout(function() {
 				id = 0;
 				_reject(Error.new(errno.ERR_EXECUTE_TIMEOUT));
 			}, time);
 
-			var ok = (err: any, r?: any)=>{
+			let ok = (err: any, r?: any)=>{
 				if (id) {
 					clearTimeout(id);
 					id = 0;
@@ -383,8 +379,8 @@ interface PromiseExecutor<T> {
 export class PromiseNx<T extends any> extends Promise<T> {
 	protected _executor?: PromiseExecutor<T>;
 	constructor(executor?: (resolve: (value?: T)=>void, reject: (reason?: any)=>void, promise: Promise<T>)=>any) {
-		var _resolve: any;
-		var _reject: any;
+		let _resolve: any;
+		let _reject: any;
 
 		super(function(resolve: (value: T)=>void, reject: (reason?: any)=>void) {
 			_resolve = resolve;
@@ -394,7 +390,7 @@ export class PromiseNx<T extends any> extends Promise<T> {
 		this._executor = executor;
 
 		try {
-			var r = this.executor(_resolve, _reject);
+			let r = this.executor(_resolve, _reject);
 			if (r instanceof Promise) {
 				r.catch(_reject);
 			}
@@ -414,7 +410,7 @@ export class PromiseNx<T extends any> extends Promise<T> {
 }
 
 /**
- * @func promise(executor)
+ * @method promise(executor)
  */
 export function promise<T extends any>(executor: (resolve: (value?: T)=>void, reject: (reason?: any)=>void, promise: Promise<T>)=>any) {
 	return new PromiseNx<T>(executor) as Promise<T>;

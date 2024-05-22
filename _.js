@@ -12,7 +12,7 @@ pkg.types = pkg.main.replace(/\.js/, '.d.ts');
 // gen native
 const source = __dirname;
 const out = path.resolve(source, 'out', pkg.name);
-const out_ = path.resolve(source, '../../out');
+const out_ = path.resolve(source, 'out');
 const out_types = path.resolve(source, 'out/@types', pkg.name);
 
 fs.writeFileSync(
@@ -30,10 +30,10 @@ function mkdirp(dir) {
 mkdirp(out);
 mkdirp(out_);
 
-for ( var i of ['_event', 'types', 'pkg', '_pkgutil'] ) {
+for ( var i of ['_event', 'types', 'pkg', '_util', '_ext'] ) {
 	var j = i.substring(0, 1) == '_' ? i : '_' + i;
 	fs.writeFileSync(`${out_}/${j}.js`, fs.readFileSync(`${out}/${i}.js`));
-	fs.writeFileSync(`${out}/${i}.js`, `module.exports=__bindingModule__('${j}')`);
+	fs.writeFileSync(`${out}/${i}.js`, `module.exports=__binding__('${j}')`);
 }
 
 function copy_files(source, target, ext) {
@@ -68,7 +68,7 @@ copy_files(out, out_types, ['.ts','.md','.json']);
 fs.writeFileSync(`${source}/out/files.gypi`, JSON.stringify({
 	'variables': {
 		'libs_quark_ts_in': get_files(source, ['.ts','.tsx','.json']).map(e=>`libs/quark/${e}`),
-		'libs_quark_js_out': get_files(out,    ['.js','.json']).map(e=>`libs/quark/out/quark/${e}`),
+		'libs_quark_js_out': get_files(out, ['.js','.json']).map(e=>`libs/quark/out/quark/${e}`),
 	},
 }, null, 2));
 

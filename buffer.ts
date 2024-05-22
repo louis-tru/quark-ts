@@ -28,10 +28,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-const _buffer = __bindingModule__('_buffer');
+const _buffer = __binding__('_buffer');
 
 Object.assign(exports, _buffer);
 
-export type Encoding = 'binary'|'ascii'|'base64'|'hex'|'utf8'|'ucs2'|'utf16'|'utf32';
+export type Encoding = 'binary'|'ascii'|'base64'|'hex'|'utf-8'|'utf8'|'utf-16'|'utf16'|'ucs4';
 export declare function fromString(str: string, encoding?: Encoding): Uint8Array;
 export declare function convertString(uint8array: Uint8Array, encoding?: Encoding, start?: number, end?: number): string;

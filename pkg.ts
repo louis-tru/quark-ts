@@ -28,27 +28,25 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-const _util = __bindingModule__('_util');
-const _path = __bindingModule__('_path');
-const _fs = __bindingModule__('_fs');
-const _http = __bindingModule__('_http');
-const _pkgutil = __bindingModule__('_pkgutil').default;
+__binding__('_ext');
+const _fs = __binding__('_fs');
+const _http = __binding__('_http');
+const _util = __binding__('_util');
 const { fallbackPath,
 				resolve, isAbsolute, isLocal, isLocalZip, stripShebang,
-				isNetwork, assert, stripBOM, makeRequireFunction } = _pkgutil;
+				isNetwork, assert, stripBOM, makeRequireFunction, default: _dutil } = _util;
 const { readFile, readFileSync, isFileSync, 
-				isDirectorySync, readdirSync, existsSync } = __bindingModule__('_reader');
-const { haveNode } = _util;
-const isWindows = _util.platform == 'win32';
-const debug = _pkgutil.debugLog('PKG');
-const _debug = _util.debug as boolean;
+				isDirectorySync, readdirSync, existsSync } = __binding__('_reader');
+const debug = _util.debugLog('PKG');
+const _debug = _dutil.debug as boolean;
+const isWindows = _dutil.platform == 'win32';
 
 type Optopns = Dict<string|string[]>;
 
 function format_msg(args: any[]) {
-	var msg = [];
-	for (var i = 0; i < args.length; i++) {
-		var arg = args[i];
+	let msg = [];
+	for (let i = 0; i < args.length; i++) {
+		let arg = args[i];
 		msg.push( arg instanceof Error ? arg.message: arg );
 	}
 	return msg;
@@ -66,7 +64,7 @@ function new_err(e: any, code?: string) {
 			e = new Error(e);
 		}
 	}
-	var err = e as Error;
+	let err = e as Error;
 	if (code)
 		err.code = code;
 	return err;
@@ -74,7 +72,7 @@ function new_err(e: any, code?: string) {
 
 function set_url_args(path: string, arg?: string) {
 	if (/^(https?):\/\//i.test(path)) {
-		var url_arg = arg || options.url_arg;
+		let url_arg = arg || options.url_arg;
 		if ( url_arg ) {
 			return path + (path.indexOf('?') == -1 ? '?' : '&') + url_arg;
 		}
@@ -86,7 +84,7 @@ function readText(path: string) {
 	return new Promise<string>(function(resolve, reject) {
 		if ('ext://' == path.substring(0, 6)) {
 			try {
-				var r = _util.__extendModuleContent(path.substring(6));
+				let r = _dutil.__extendModuleContent(path.substring(6));
 				assert(r, `Cannot find module ${path}`);
 				return resolve(r);
 			} catch(err) {
@@ -100,7 +98,7 @@ function readText(path: string) {
 
 function readTextSync(path: string): string {
 	if ('ext://' == path.substring(0, 6)) {
-		var r = _util.__extendModuleContent(path.substring(6));
+		let r = _dutil.__extendModuleContent(path.substring(6));
 		assert(r, `Cannot find module ${path}`);
 		return r;
 	} else {
@@ -134,19 +132,19 @@ async function readJSON(filename: string) {
 }
 
 function throw_MODULE_NOT_FOUND(request: string, parent?: Module) {
-	var msg = `Cannot find module '${request}'`;
+	let msg = `Cannot find module '${request}'`;
 	if (parent) {
 		msg += ` in module ${parent.filename}`;
 	}
-	var err = new Error(msg);
+	let err = new Error(msg);
 	err.code = 'MODULE_NOT_FOUND';
 	throw err;
 }
 
 function readLocalPackageLinkSync(pathname: string) {
-	if (_path.extname(pathname) == '.link') {
+	if (_fs.extname(pathname) == '.link') {
 		if (isFileSync(pathname)) {
-			var link = readTextSync(pathname);
+			let link = readTextSync(pathname);
 			link = isAbsolute(link) ? resolve(link): resolve(pathname, '..', link);
 			if (isDirectorySync(link)) {
 				if ( isFileSync(link + '/package.json') ) {
@@ -160,7 +158,7 @@ function readLocalPackageLinkSync(pathname: string) {
 function std_package_main(main?: string) {
 	if (main) {
 		main = String(main);
-		var i = 0, len = main.length;
+		let i = 0, len = main.length;
 		while (i < len && './\\'.indexOf(main[i]) >= 0) {
 			i++;
 		}
@@ -206,9 +204,9 @@ class ModulePath {
 	}
 
 	private setPackagesPath(pkgName: string) {
-		var json = (this._packagesJson as Dict<PackageJson>)[pkgName] ;
-		var path: string;
-		var link = json.symlink as string;
+		let json = (this._packagesJson as Dict<PackageJson>)[pkgName] ;
+		let path: string;
+		let link = json.symlink as string;
 		if (link) {
 			// delete json.symlink;
 			path = isAbsolute(link) ? resolve(link): resolve(this.path, link);
@@ -221,13 +219,13 @@ class ModulePath {
 	private loadLocalSync() {
 		// local read mode
 		assert(isDirectorySync(this.path), `"${this.path}" is not a directory`);
-		for (var dirent of readdirSync(this.path) ) {
+		for (let dirent of readdirSync(this.path) ) {
 			if (dirent.type == 2/*dir*/ || (dirent.type == 3/*link*/ && isDirectorySync(dirent.pathname))) { // directory
 				if ( isFileSync(dirent.pathname + '/package.json') ) {
 					this._packagesPath.set(dirent.name, dirent.pathname);
 				}
 			} else { // has package link
-				var link = readLocalPackageLinkSync(dirent.pathname);
+				let link = readLocalPackageLinkSync(dirent.pathname);
 				if (link) {
 					this._packagesPath.set(dirent.name.substring(0, dirent.name.length - 5), link);
 				}
@@ -249,7 +247,7 @@ class ModulePath {
 	loadSync() {
 		if (this.network) {
 			// load packages.json `packages.json`
-			var {resolve: filename} = resolveFilename(this.path + '/packages.json', undefined, true);
+			let {resolve: filename} = resolveFilename(this.path + '/packages.json', undefined, true);
 			this._packagesJson = readJSONSync(filename) as Dict<PackageJson>; // symlink
 			Object.keys(this._packagesJson).forEach(k=>this.setPackagesPath(k));
 		} else { // local
@@ -271,13 +269,13 @@ class ModulePath {
 	}
 
 	isNetwork(name: string) {
-		var path = this._packagesPath.get(name);
+		let path = this._packagesPath.get(name);
 		assert(path);
 		return isNetwork(path) ? true : false;
 	}
 
 	packageJson(name: string): PackageJson {
-		var path = this._packagesPath.get(name);
+		let path = this._packagesPath.get(name);
 		assert(path, `package ${name} does not exist in ${this.path} path`);
 		if (this._packagesJson) {
 			return this._packagesJson[name];
@@ -288,11 +286,11 @@ class ModulePath {
 	}
 
 	createPackage(pkgName: string) {
-		var path = this._packagesPath.get(pkgName) as string;
-		var pkg = packages.get(path);
+		let path = this._packagesPath.get(pkgName) as string;
+		let pkg = packages.get(path);
 		if (!pkg)
 			pkg = new PackageIMPL(path, this.packageJson(pkgName));
-		var rawpath = this.path + '/' + pkgName;
+		let rawpath = this.path + '/' + pkgName;
 		if (!packages.has(rawpath)) {
 			packages.set(rawpath, pkg);
 		}
@@ -305,18 +303,18 @@ const modulePaths: string[] = [];
 const modulePathCache: Map<string, ModulePath> = new Map();
 const packages: Map<string, PackageIMPL> = new Map();
 const lookupCaches: Map<string, LookupResult> = new Map(); // absolute path cache
-const options: Optopns = _pkgutil.options;
-var mainModule: Module | null = null;
+const options: Optopns = _dutil.options;
+let mainModule: Module | null = null;
 
 interface LookupResult {
 	pkg: PackageIMPL;
 	relativePath: string;
 }
 
-if (haveNode) {
-	var NativeModule: any, vm: any, path: any;
-	var process = (globalThis as any).process;
-}
+// if (isNode) {
+// 	var NativeModule: any, vm: any, path: any;
+// 	var process = (globalThis as any).process;
+// }
 
 const wrapper = [
 	'(function (exports, require, module, __filename, __dirname) { ', '\n})'
@@ -328,7 +326,7 @@ const nmLen = nmChars.length;
 const CHAR_FORWARD_SLASH = '/'.charCodeAt(0);
 
 function updateChildren(parent: Module, child: Module) {
-	var children = parent.children;
+	let children = parent.children;
 	if (!children.includes(child))
 		children.push(child);
 }
@@ -359,7 +357,7 @@ export class Module implements NodeModule {
 
 		assert(!this.loaded);
 		this.filename = filename;
-		this.dirname = _path.dirname(filename);
+		this.dirname = _fs.dirname(filename);
 
 		if (isNetwork(filename)) {
 			if (this.package) {
@@ -369,7 +367,7 @@ export class Module implements NodeModule {
 			this.paths = Module._nodeModulePaths(this.dirname);
 		}
 
-		var extension = _path.extname(filename) || '.js';
+		let extension = _fs.extname(filename) || '.js';
 		if (!Module._extensions[extension])
 			extension = '.js';
 		Module._extensions[extension](this, resolveFilename);
@@ -388,20 +386,20 @@ export class Module implements NodeModule {
 	// Returns exception, if any.
 	private _compile(content: string, resolveFilename: string) {
 		content = stripShebang(content);
-
-		var filename = this.filename;
+		let result;
+		let filename = this.filename;
 
 		// create wrapper function
-		var wrapper = Module.wrap(content);
+		let wrapper = Module.wrap(content);
 
-		if (haveNode) {
-			var compiledWrapper = vm.runInThisContext(wrapper, {
+		/*if (isNode) {
+			let compiledWrapper = vm.runInThisContext(wrapper, {
 				filename: filename,// + '#->' + resolveFilename,
 				lineOffset: 0,
 				displayErrors: true
 			});
 
-			var inspectorWrapper = null;
+			let inspectorWrapper = null;
 			// needed for setting breakpoint when called with --inspect-brk
 			if (process._breakFirstLine && process._eval == null) {
 				// Set breakpoint on module start
@@ -416,21 +414,21 @@ export class Module implements NodeModule {
 			}
 
 			filename = fallbackPath(filename);
-			var dirname = path.dirname(filename);
-			var require = makeRequireFunction(this, mainModule);
-			var result;
+			let dirname = path.dirname(filename);
+			let require = makeRequireFunction(this, mainModule);
+
 			if (inspectorWrapper) {
 				result = inspectorWrapper(compiledWrapper, this.exports, this.exports, require, this, filename, dirname);
 			} else {
 				result = compiledWrapper.call(this.exports, this.exports, require, this, filename, dirname);
 			}
-		} else {
-			var wrapper = Module.wrap(content);
-			var compiledWrapper = _util.runScript(wrapper, filename/* + '#->' + resolveFilename*/);
+		} else */{
+			let wrapper = Module.wrap(content);
+			let compiledWrapper = _dutil.runScript(wrapper, filename/* + '#->' + resolveFilename*/);
 			filename = fallbackPath(filename);
-			var dirname = _path.dirname(filename);
-			var require = makeRequireFunction(this, mainModule);
-			var result = compiledWrapper.call(this.exports, this.exports, require, this, filename, dirname);
+			let dirname = _fs.dirname(filename);
+			let require = makeRequireFunction(this, mainModule);
+			result = compiledWrapper.call(this.exports, this.exports, require, this, filename, dirname);
 		}
 		return result;
 	}
@@ -480,9 +478,9 @@ export class Module implements NodeModule {
 	}
 
 	private static _resolveFilename(request: string, parent?: Module, isMain?: boolean, options?: { paths?: string[]; }) {
-		if (haveNode && NativeModule.nonInternalExists(request)) {
-			return request;
-		}
+		// if (isNode && NativeModule.nonInternalExists(request)) {
+		// 	return request;
+		// }
 		return resolveFilename(request, parent).resolve;
 	}
 
@@ -491,26 +489,26 @@ export class Module implements NodeModule {
 			debug('Module._load REQUEST %s parent: %s', request, parent.id);
 		}
 
-		if (haveNode && NativeModule.nonInternalExists(request)) {
-			debug('load native module %j', request);
-			return NativeModule.require(request);
-		}
+		// if (isNode && NativeModule.nonInternalExists(request)) {
+		// 	debug('load native module %j', request);
+		// 	return NativeModule.require(request);
+		// }
 
-		var { filename, resolve, pkg } = resolveFilename(request, parent);
+		let { filename, resolve, pkg } = resolveFilename(request, parent);
 
-		var cachedModule = Module._cache[filename];
+		let cachedModule = Module._cache[filename];
 		if (cachedModule) {
 			if (parent)
 				updateChildren(parent, cachedModule);
 			return cachedModule.exports;
 		}
 
-		var module = new Module(filename, parent, pkg && pkg.host);
+		let module = new Module(filename, parent, pkg && pkg.host);
 
 		if (isMain) {
 			assert(!mainModule);
-			if (haveNode)
-				process.mainModule = module;
+			// if (isNode)
+			// 	process.mainModule = module;
 			module.id = '.';
 			mainModule = module;
 		}
@@ -528,10 +526,10 @@ export class Module implements NodeModule {
 
 		(async ()=>{ // startup
 
-			var addModulePathWithoutErr = async (path: string)=>{
+			let addModulePathWithoutErr = async (path: string)=>{
 				try {
 					if ( !modulePathCache.hasOwnProperty(path) ) {
-						var mp = new ModulePath(path);
+						let mp = new ModulePath(path);
 						await mp.load();
 						if ( !modulePathCache.hasOwnProperty(path) ) {
 							modulePaths.unshift(mp.path); // add First
@@ -542,15 +540,15 @@ export class Module implements NodeModule {
 					print_warn(err);
 				}
 			};
-			await addModulePathWithoutErr(_path.resources());
+			await addModulePathWithoutErr(_fs.resources());
 
-			var main = _pkgutil.mainPath as string;
+			let main = _util.mainPath as string;
 			if (main) {
 				if (isNetwork(main)) { // 这是一个网络启动,添加一些默认搜索路径
 					if (_debug) {
 						// load `project/node_modules`
 						// add http://127.0.0.1:1026/node_modules to global search path
-						var mat = main.match(/^https?:\/\/[^\/]+/) as RegExpMatchArray;
+						let mat = main.match(/^https?:\/\/[^\/]+/) as RegExpMatchArray;
 						await addModulePathWithoutErr(mat[0] + '/node_modules');
 					}
 					// pkg http://127.0.0.1:1026/aaa/bbb/node_modules/pkg
@@ -562,72 +560,72 @@ export class Module implements NodeModule {
 				if (existsSync(main)) {
 					main = resolve(main);
 				}
-				var _lookup = lookup(main);
+				let _lookup = lookup(main);
 				if (_lookup) {
 					await _lookup.pkg.host.install();
 				}
 				Module._load(main, undefined, true);
 			}
 		})().catch((err: Error)=>{
-			if (haveNode) {
-				console.error(err.stack || err.message);
-				process.exit(-20045); // ERR_UNHANDLED_REJECTION
-			} else {
-				throw err;
-			}
+			// if (isNode) {
+			// 	console.error(err.stack || err.message);
+			// 	process.exit(-20045); // ERR_UNHANDLED_REJECTION
+			// } else {
+			throw err;
+			// }
 		});
 
-		if (haveNode)
-			// Handle any nextTicks added in the first tick of the program
-			process._tickCallback();
+		// if (isNode)
+		// 	// Handle any nextTicks added in the first tick of the program
+		// 	process._tickCallback();
 	}
 
 	static _initPaths() {
-		if (!haveNode)
-			return;
+		// if (!isNode)
+		// 	return;
 
-		const isWindows = process.platform === 'win32';
+		// const isWindows = process.platform === 'win32';
 
-		var homeDir;
-		if (isWindows) {
-			homeDir = process.env.USERPROFILE;
-		} else {
-			homeDir = process.env.HOME;
-		}
+		// let homeDir;
+		// if (isWindows) {
+		// 	homeDir = process.env.USERPROFILE;
+		// } else {
+		// 	homeDir = process.env.HOME;
+		// }
 
-		// $PREFIX/lib/node, where $PREFIX is the root of the Node.js installation.
-		var prefixDir;
-		// process.execPath is $PREFIX/bin/node except on Windows where it is
-		// $PREFIX\node.exe.
-		if (isWindows) {
-			prefixDir = resolve(process.execPath, '..');
-		} else {
-			prefixDir = resolve(process.execPath, '..', '..');
-		}
-		var paths: string[] = [resolve(prefixDir, 'lib', 'node')];
+		// // $PREFIX/lib/node, where $PREFIX is the root of the Node.js installation.
+		// let prefixDir;
+		// // process.execPath is $PREFIX/bin/node except on Windows where it is
+		// // $PREFIX\node.exe.
+		// if (isWindows) {
+		// 	prefixDir = resolve(process.execPath, '..');
+		// } else {
+		// 	prefixDir = resolve(process.execPath, '..', '..');
+		// }
+		// let paths: string[] = [resolve(prefixDir, 'lib', 'node')];
 
-		if (homeDir) {
-			paths.unshift(resolve(homeDir, '.node_libraries'));
-			paths.unshift(resolve(homeDir, '.node_modules'));
-		}
+		// if (homeDir) {
+		// 	paths.unshift(resolve(homeDir, '.node_libraries'));
+		// 	paths.unshift(resolve(homeDir, '.node_modules'));
+		// }
 
-		var nodePath = process.env['NODE_PATH'];
-		if (nodePath) {
-			paths = nodePath.split(_pkgutil.delimiter).filter(function(path: string) {
-				return !!path;
-			}).concat(paths);
-		}
+		// let nodePath = process.env['NODE_PATH'];
+		// if (nodePath) {
+		// 	paths = nodePath.split(_util.delimiter).filter(function(path: string) {
+		// 		return !!path;
+		// 	}).concat(paths);
+		// }
 
-		for (var path of paths) {
-			try {
-				if (!modulePathCache.hasOwnProperty(path)) {
-					var mp = new ModulePath(path);
-					mp.loadSync();
-					modulePaths.push(mp.path);
-					modulePathCache.set(mp.path, mp);
-				}
-			} catch(err) {}
-		}
+		// for (let path of paths) {
+		// 	try {
+		// 		if (!modulePathCache.hasOwnProperty(path)) {
+		// 			let mp = new ModulePath(path);
+		// 			mp.loadSync();
+		// 			modulePaths.push(mp.path);
+		// 			modulePathCache.set(mp.path, mp);
+		// 		}
+		// 	} catch(err) {}
+		// }
 	}
 
 	static wrap(script: string) {
@@ -641,30 +639,30 @@ export class Module implements NodeModule {
 		// Preloaded modules have a dummy parent module which is deemed to exist
 		// in the current working directory. This seeds the search path for
 		// preloaded modules.
-		var parent = new Module('internal/preload');
+		let parent = new Module('internal/preload');
 		try {
-			parent.paths = Module._nodeModulePaths(_path.cwd());
+			parent.paths = Module._nodeModulePaths(_fs.cwd());
 		} catch (e: any) {
 			if (e.code !== 'ENOENT') {
 				throw e;
 			}
 		}
-		for (var n = 0; n < requests.length; n++)
+		for (let n = 0; n < requests.length; n++)
 			parent.require(requests[n]);
 	}
 
 	private static _initNode(nm: any) {
 		delete (Module as any)._initNode;
-		if (haveNode) {
-			NativeModule = nm;
-			vm = NativeModule.require('vm');
-			path = NativeModule.require('path');
+		// if (isNode) {
+		// 	NativeModule = nm;
+		// 	vm = NativeModule.require('vm');
+		// 	path = NativeModule.require('path');
 
-			Object.keys(NativeModule._source)
-				.filter(NativeModule.nonInternalExists)
-				.forEach(e=>Module.builtinModules.push(e));
-			Object.freeze(Module.builtinModules);
-		}
+		// 	Object.keys(NativeModule._source)
+		// 		.filter(NativeModule.nonInternalExists)
+		// 		.forEach(e=>Module.builtinModules.push(e));
+		// 	Object.freeze(Module.builtinModules);
+		// }
 	}
 
 	static get globalPaths() {
@@ -674,26 +672,26 @@ export class Module implements NodeModule {
 	static readonly wrapper = wrapper;
 	static readonly _cache: Dict<Module> = {};
 	static readonly _pathCache: Dict<string> = {};
-	static readonly _debug = _pkgutil.debugLog('module');
+	static readonly _debug = _util.debugLog('module');
 
 	static readonly _extensions: Dict<(m: NodeModule, filename: string) => any> = {
 		'.js': function(module: NodeModule, filename: string) {
-			var content = readTextSync(filename);
+			let content = readTextSync(filename);
 			(module as Module)._compile(stripBOM(content), filename);
 		},
 		'.json': function(module: NodeModule, filename: string) {
 			module.exports = readJSONSync(filename);
 		},
-		'.node': haveNode ? function(module: NodeModule, filename: string) {
+		'.node': /*isNode ? function(module: NodeModule, filename: string) {
 			return process.dlopen(module, path._makeLong(fallbackPath(filename)));
-		}: function() {
+		}: */function() {
 			throw new Error('unrealized');
 		},
 	};
 }
 
 function tryModuleLoad(module: Module, filename: string, rawPathname: string) {
-	var threw = true;
+	let threw = true;
 	try {
 		module.load(filename, rawPathname);
 		threw = false;
@@ -705,20 +703,20 @@ function tryModuleLoad(module: Module, filename: string, rawPathname: string) {
 }
 
 function resolveFilename(request: string, parent?: Module, nocache?: boolean): { filename: string, resolve: string, pkg?: PackageIMPL } {
-	var _lookup = lookup(request, parent, nocache);
+	let _lookup = lookup(request, parent, nocache);
 	if (_lookup) {
-		var rr = _lookup.pkg.resolveRelative(_lookup.relativePath);
+		let rr = _lookup.pkg.resolveRelative(_lookup.relativePath);
 		return { 
 			filename: _lookup.pkg.path + '/' + rr.pathname, 
 			resolve: rr.resolve,
 			pkg: _lookup.pkg,
 		};
 	} else {
-		var filename = resolve(request);
-		var resolveFilename = filename;
+		let filename = resolve(request);
+		let resolveFilename = filename;
 		if (isLocal(filename)) {
 			if (!isFileSync(filename)) {
-				if (!_path.extname(filename)) {
+				if (!_fs.extname(filename)) {
 					filename += '.js';
 					if (isFileSync(filename)) {
 						return { filename, resolve: filename };
@@ -736,13 +734,13 @@ function resolveFilename(request: string, parent?: Module, nocache?: boolean): {
 }
 
 function getOrigin(from: string) {
-	var origin: string = '';
+	let origin: string = '';
 
 	if (!from)
 		return '';
 
 	if (isNetwork(from)) {
-		var index = from.indexOf('/', from[4] == 's' ? 9: 8);
+		let index = from.indexOf('/', from[4] == 's' ? 9: 8);
 		if (index == -1) {
 			return from;
 		} else {
@@ -757,7 +755,7 @@ function getOrigin(from: string) {
 			}
 		}
 	} else {
-		var mat = from.match(/^file:\/\/(\/[a-z]:\/)?/i);
+		let mat = from.match(/^file:\/\/(\/[a-z]:\/)?/i);
 		origin = mat ? mat[0]: '';
 	}
 
@@ -768,7 +766,7 @@ function levelPaths(from: string, begin?: string): string[] {
 	// Guarantee that 'from' is absolute.
 	// from = resolve(from);
 
-	var prefix = begin ? begin: getOrigin(from);
+	let prefix = begin ? begin: getOrigin(from);
 
 	if (!prefix) // invalid origin
 		return [];
@@ -807,9 +805,9 @@ function levelPaths(from: string, begin?: string): string[] {
 }
 
 function slicePackageName(request: string) {
-	var pkgName = request;
-	var relativePath = '';
-	var index = request.indexOf('/');
+	let pkgName = request;
+	let relativePath = '';
+	let index = request.indexOf('/');
 	if (index != -1) {
 		pkgName = request.substring(0, index);
 		relativePath = request.substring(index + 1);
@@ -819,9 +817,9 @@ function slicePackageName(request: string) {
 
 function lookupFromExtend(pkgName: string, relativePath: string): LookupResult | null {
 	// extend pkg
-	var pkg = packages.get('ext://' + pkgName);
+	let pkg = packages.get('ext://' + pkgName);
 	if (pkg) {
-		var r = { pkg, relativePath };
+		let r = { pkg, relativePath };
 		lookupCaches.set('ext://' + pkgName + (relativePath ? '/' + relativePath : ''), r);
 		return r;
 	}
@@ -831,34 +829,34 @@ function lookupFromExtend(pkgName: string, relativePath: string): LookupResult |
 function lookupFromAbsolute(request: string, lazy?: boolean): LookupResult | null {
 	request = resolve(request);
 
-	var cached = lookupCaches.get(request);
+	let cached = lookupCaches.get(request);
 	if (cached)
 		return cached;
 
 	if (request.substring(0, 4) == 'ext:') {
-		var {pkgName,relativePath} = slicePackageName(request.substring(6));
+		let {pkgName,relativePath} = slicePackageName(request.substring(6));
 		return lookupFromExtend(pkgName, relativePath);
 	}
 
-	var paths = levelPaths(request);
+	let paths = levelPaths(request);
 	paths.pop();
 
 	if (paths.length === 0) { // file:///aaa -> aaa module, file:/// -> No directory
 		return null;
 	}
-	var is_local = isLocal(request);
+	let is_local = isLocal(request);
 
-	for (var pkgPath of paths) {
-		var pkg = packages.get(pkgPath);
+	for (let pkgPath of paths) {
+		let pkg = packages.get(pkgPath);
 		if (!pkg) {
 			if (is_local) {
 				if (isDirectorySync(pkgPath)) {
-					var json_path = pkgPath + '/package.json';
+					let json_path = pkgPath + '/package.json';
 					if (isFileSync(json_path)) {
 						pkg = new PackageIMPL(pkgPath, readJSONSync(json_path));
 					}
 				} else { // try package link
-					var link = readLocalPackageLinkSync(pkgPath + '.link');
+					let link = readLocalPackageLinkSync(pkgPath + '.link');
 					if (link) {
 						pkg = packages.get(link);
 						if (!pkg)
@@ -867,10 +865,10 @@ function lookupFromAbsolute(request: string, lazy?: boolean): LookupResult | nul
 					}
 				}
 			} else { // network
-				var searchPath = pkgPath.substring(0, pkgPath.lastIndexOf('/'));
-				var modulePath = modulePathCache.get(searchPath);
+				let searchPath = pkgPath.substring(0, pkgPath.lastIndexOf('/'));
+				let modulePath = modulePathCache.get(searchPath);
 				if (modulePath) {
-					var pkgName = pkgPath.substring(searchPath.length + 1);
+					let pkgName = pkgPath.substring(searchPath.length + 1);
 					if (modulePath.hasPackage(pkgName)) {
 						pkg = modulePath.createPackage(pkgName);
 					}
@@ -879,16 +877,16 @@ function lookupFromAbsolute(request: string, lazy?: boolean): LookupResult | nul
 		}
 
 		if (pkg) {
-			var relativePath = request.substring(pkgPath.length + 1);
+			let relativePath = request.substring(pkgPath.length + 1);
 			if (!is_local && !lazy) { // network
 				// TODO network, if relativePath = 'node_modules/pkgName/xxx.js' then ?
-				var index = relativePath.indexOf('node_modules');
+				let index = relativePath.indexOf('node_modules');
 				if (index != -1) {
-					var searchPath = pkg.path + '/' + relativePath.substring(0, index + 12);
-					var modulePath = modulePathCache.get(searchPath);
+					let searchPath = pkg.path + '/' + relativePath.substring(0, index + 12);
+					let modulePath = modulePathCache.get(searchPath);
 					if (!modulePath) {
 						modulePath = new ModulePath(searchPath);
-						var ok = modulePath.loadSyncWithoutErr();
+						let ok = modulePath.loadSyncWithoutErr();
 						modulePathCache.set(searchPath, modulePath);
 						if (ok) { // relookup
 							return lookupFromAbsolute(request);
@@ -896,7 +894,7 @@ function lookupFromAbsolute(request: string, lazy?: boolean): LookupResult | nul
 					}
 				}
 			}
-			var r = { pkg, relativePath };
+			let r = { pkg, relativePath };
 			lookupCaches.set(request, r);
 			return r;
 		}
@@ -906,19 +904,19 @@ function lookupFromAbsolute(request: string, lazy?: boolean): LookupResult | nul
 }
 
 function lookupFromPackage(request: string, parent?: Module): LookupResult | null {
-	var paths = modulePaths;
+	let paths = modulePaths;
 	if (parent && parent.paths && parent.paths.length) {
 		paths = parent.paths.concat(paths);
 	}
 
 	debug('lookupFromPackage pkg for %j in %j', request, paths);
 
-	var {pkgName,relativePath} = slicePackageName(request);
+	let {pkgName,relativePath} = slicePackageName(request);
 
-	for (var searchPath of paths) {
-		var pkg = packages.get(searchPath + '/' + pkgName);
+	for (let searchPath of paths) {
+		let pkg = packages.get(searchPath + '/' + pkgName);
 		if (!pkg) {
-			var modulePath = modulePathCache.get(searchPath);
+			let modulePath = modulePathCache.get(searchPath);
 			if (!modulePath) {
 				modulePath = new ModulePath(searchPath);
 				modulePath.loadSyncWithoutErr();
@@ -976,7 +974,7 @@ class Exports {
 
 	async addModulePath(path: string) {
 		if ( !modulePathCache.hasOwnProperty(path) ) {
-			var mp = new ModulePath(path);
+			let mp = new ModulePath(path);
 			await mp.load();
 			if ( !modulePathCache.hasOwnProperty(path) ) {
 				modulePaths.push(mp.path);
@@ -986,7 +984,7 @@ class Exports {
 	}
 
 	lookupPackage(name: string, parent?: Module): Package | null {
-		var _lookup = lookup(name, parent);
+		let _lookup = lookup(name, parent);
 		return _lookup ? _lookup.pkg.host: null;
 	}
 
@@ -1022,7 +1020,7 @@ class PackageIMPL {
 		this.build = !!json.hash;
 		this.isNetwork = isNetwork(path);
 
-		var pathname = _path.basename(path);
+		let pathname = _fs.basename(path);
 
 		// assert(json.name == name, `Lib name must be consistent with the folder name, ${json.name} != ${name}`);
 		assert(!packages.has(path), `${path} package repeat create`);
@@ -1032,10 +1030,10 @@ class PackageIMPL {
 
 		if (this.isNetwork && this.build) {
 			// query helper package from global modulePaths
-			for (var path of modulePaths) {
-				var mp = modulePathCache.get(path) as ModulePath;
+			for (let path of modulePaths) {
+				let mp = modulePathCache.get(path) as ModulePath;
 				if (mp.hasPackage(pathname) && !mp.isNetwork(pathname)) {
-					var json = mp.packageJson(pathname);
+					let json = mp.packageJson(pathname);
 					if (json.hash) { // is build
 						this.helper = mp.createPackage(pathname);
 						break;
@@ -1046,11 +1044,11 @@ class PackageIMPL {
 	}
 
 	private _resolveRelativeAfter(key: string, pathname: string, version: string) {
-		var self = this;
-		var resolve: string = '';
+		let self = this;
+		let resolve: string = '';
 	
 		if (self.helper) { // 读取本地旧文件
-			var helper = self.helper;
+			let helper = self.helper;
 			// 版本相同,完全可以使用本地旧文件路径,这样可以避免从网络下载新资源
 			if ( helper.versions[pathname] === version ) {
 				if ( helper.pkg_files.has(pathname) ) {
@@ -1077,14 +1075,14 @@ class PackageIMPL {
 	}
 
 	resolveRelative(relativePath: string): { pathname: string, resolve: string } {
-		var self = this; 
+		let self = this; 
 		self.installSync();
 
 		if (self.helperAll)
 			return (self.helper as PackageIMPL).resolveRelative(relativePath);
 	
-		var pathname = relativePath;
-		var cached = self.path_cache.get(pathname);
+		let pathname = relativePath;
+		let cached = self.path_cache.get(pathname);
 		if (cached) {
 			return { pathname: cached[0], resolve: cached[1] };
 		}
@@ -1093,13 +1091,13 @@ class PackageIMPL {
 			pathname = std_package_main(self.json.main);
 		}
 
-		var ver: string | undefined, file_pathnames: string[];
+		let ver: string | undefined, file_pathnames: string[];
 	
-		if (_path.extname(pathname)) {
+		if (_fs.extname(pathname)) {
 			ver = self.versions[pathname];
 			if ( ver === undefined ) { // 找不到版本信息
 				if (!this.isNetwork) { // local
-					var src = self.path + '/' + pathname;
+					let src = self.path + '/' + pathname;
 					if (isFileSync(src)) { // 尝试访问本地文件系统,是否能找到文件信息
 						return self._resolveRelativeAfter(relativePath, pathname, '');
 					}
@@ -1113,19 +1111,19 @@ class PackageIMPL {
 			file_pathnames = pathname ? [pathname, pathname + '/index']: ['index'];
 		}
 
-		var extnames = Object.keys(Module._extensions);
+		let extnames = Object.keys(Module._extensions);
 
 		// 尝试使用尝试默认扩展名不同的扩展名查找, and `${pathname}/index`
-		for (var pathname of file_pathnames) {
-			for (var ext of extnames) {
+		for (let pathname of file_pathnames) {
+			for (let ext of extnames) {
 				ver = self.versions[pathname + ext];
 				if (ver !== undefined) {
 					return self._resolveRelativeAfter(relativePath, pathname + ext, ver);
 				}
 			}
 			if (!this.isNetwork) { // 尝试访问本地文件系统,是否能找到文件信息
-				for (var ext of extnames) {
-					var src = self.path + '/' + pathname + ext;
+				for (let ext of extnames) {
+					let src = self.path + '/' + pathname + ext;
 					if ( isFileSync(src) ) { // find local
 						return self._resolveRelativeAfter(relativePath, pathname + ext, '');
 					}
@@ -1138,20 +1136,20 @@ class PackageIMPL {
 	}
 
 	private _installComplete(versions_path: string, cb?: Cb) {
-		var self = this;
+		let self = this;
 
 		if (self.build || isNetwork(versions_path)) {
 			// 读取package内部资源文件版本信息
-			var versions_json = versions_path + '/versions.json';
+			let versions_json = versions_path + '/versions.json';
 			// 这里如果非build状态,不使用缓存
-			var versions_json_arg = set_url_args(versions_json, self.hash || '__no_cache');
+			let versions_json_arg = set_url_args(versions_json, self.hash || '__no_cache');
 	
-			var read_versions_ok = function(str: string) {
-				var data = _parseJSON(str, versions_json);
+			let read_versions_ok = function(str: string) {
+				let data = _parseJSON(str, versions_json);
 				self.versions = data.versions || {};
 				self.status = PackageStatus.INSTALLED;
 				if (self.pkg_path) {
-					for (var [file, ver] of Object.entries(self.versions)) {
+					for (let [file, ver] of Object.entries(self.versions)) {
 						if (ver.charCodeAt(0) != 46 /*.*/)
 							self.pkg_files.add(file); // .pkg 中包含的文件列表 
 					}
@@ -1168,9 +1166,9 @@ class PackageIMPL {
 			cb && cb(); // ok
 		}
 	}
-	
+
 	private _installNetwork(cb?: Cb) {
-		var self = this;
+		let self = this;
 		if (self.helper) {
 			if (self.hash == self.helper.hash) { // 完全相同的两个包
 				self.helperAll = true;
@@ -1178,24 +1176,21 @@ class PackageIMPL {
 				return cb && cb();
 			}
 		}
-	
 		// 如果本地不存在相应版本的文件,下载远程.pkg文件到本地
 		// 远程.pkg文件必须存在否则抛出异常
-		var hash = self.hash;
-		var path = _path.temp(`${self.name}.pkg`);
-		var pathname = `${path}.${hash}`;
-	
+		let hash = self.hash;
+		let path = _fs.temp(`${self.name}.pkg`);
+		let pathname = `${path}.${hash}`;
 		// zip:///Users/pppp/sasa/aa.apk@/aaaaa/bbbb/aa.js
-	
+
 		if (_fs.existsSync(pathname)) { // 文件存在,无需下载
 			// 设置一个本地zip文件读取协议路径,使用这种路径可直接读取zip内部文件
 			self.pkg_path = `zip:///${pathname.substring(8)}@`;  // file:///
 			self._installComplete(self.pkg_path, cb);
 		} else { // downloading ...
-			var url = set_url_args(`${self.path}/${self.name}.pkg`, hash);
-			var save = pathname + '.~';
-	
-			var tryOld = function() {
+			let url = set_url_args(`${self.path}/${self.name}.pkg`, hash);
+			let save = pathname + '.~';
+			let tryOld = function() {
 				// TODO ... Try to query the old package
 				// TODO ...
 				if (self.helper) { // use helper pkg
@@ -1205,10 +1200,10 @@ class PackageIMPL {
 					return true;
 				}
 			};
-	
+
 			// TODO 文件比较大时需要断点续传下载
 			// TODO 还应该使用读取数据流方式,实时回调通知下载进度
-			var ok = function(err?: Error) { // 下载成功
+			let ok = function(err?: Error) { // 下载成功
 				if (err) {
 					if (!tryOld()) {
 						throwErr(err, cb);
@@ -1234,8 +1229,8 @@ class PackageIMPL {
 	}
 
 	install(cb?: Cb) {
-		var self = this;
-		var path = self.path;
+		let self = this;
+		let path = self.path;
 	
 		if (self.status != PackageStatus.NO_INSTALL) {
 			return throwErr(`${path} package installing repeat call`, cb);
@@ -1275,7 +1270,7 @@ class PackageIMPL {
 	}
 
 	installSync() {
-		var self = this;
+		let self = this;
 		if (self.status !== 0) {
 			if (self.helper) // install helper
 				self.helper.installSync();
@@ -1308,10 +1303,10 @@ class PackageExtend extends PackageIMPL {
 	}
 
 	resolveRelative(relativePath: string): { pathname: string, resolve: string } {
-		var self = this;
+		let self = this;
 
-		var pathname = relativePath;
-		var cached = self.path_cache.get(pathname);
+		let pathname = relativePath;
+		let cached = self.path_cache.get(pathname);
 		if (cached) {
 			return { pathname: cached[0], resolve: cached[1] };
 		}
@@ -1322,9 +1317,9 @@ class PackageExtend extends PackageIMPL {
 		}
 
 		if (!this.versions.hasOwnProperty(pathname)) {
-			var paths = Object.keys(Module._extensions).map(e=>pathname + e);
+			let paths = Object.keys(Module._extensions).map(e=>pathname + e);
 			pathname = '';
-			for (var path of paths) {
+			for (let path of paths) {
 				if (this.versions.hasOwnProperty(path)) {
 					pathname = path; break;
 				}
@@ -1333,7 +1328,7 @@ class PackageExtend extends PackageIMPL {
 				throw_MODULE_NOT_FOUND(self.path + '/' + relativePath);
 		}
 
-		var resolve = this.path + '/' + pathname;
+		let resolve = this.path + '/' + pathname;
 
 		self.path_cache.set(relativePath, [pathname, resolve]);
 
@@ -1345,12 +1340,12 @@ class PackageExtend extends PackageIMPL {
 			filename: string;
 			extname: string;
 		}
-		var tmps: Dict<string[]> = {};
-		for ( var [, v] of Object.entries<ExtendModule>(_util.__extendModule) ) {
-			var i = v.filename.indexOf('/');
+		let tmps: Dict<string[]> = {};
+		for ( let [, v] of Object.entries<ExtendModule>(_dutil.__extendModule) ) {
+			let i = v.filename.indexOf('/');
 			if (i > 0) { // 没有目录的扩展包被忽略  quark/value
-				var mname = v.filename.substring(0, i);
-				var m = tmps[mname];
+				let mname = v.filename.substring(0, i);
+				let m = tmps[mname];
 				if (!m) {
 					tmps[mname] = m = [];
 				}
@@ -1358,7 +1353,7 @@ class PackageExtend extends PackageIMPL {
 			}
 		}
 
-		for ( var [name, files] of Object.entries(tmps)) {
+		for ( let [name, files] of Object.entries(tmps)) {
 			new PackageExtend(name, files);
 		}
 	}
@@ -1380,7 +1375,7 @@ class Package {
 	}
 
 	async install() {
-		var self = this._impl;
+		let self = this._impl;
 		if (self.status !== 0) {
 			if (self.helper) // install helper
 				await self.helper.host.install();

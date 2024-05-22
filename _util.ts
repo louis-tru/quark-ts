@@ -28,112 +28,397 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-import './_ext';
-import {Event, Notification, EventNoticer} from './event';
+'use strict';
 
-const _util = __bindingModule__('_util');
+const _init = __binding__('_init');
+const _fs = __binding__('_fs');
+const PREFIX = 'file:///';
+let config: Dict | null = null;
+const debug = _init.debug as boolean;
+const options: Optopns = {};  // start options
 
-type Platform = 'darwin' | 'linux' | 'win32' | 'android';
+export const executable = _fs.executable as ()=>string;
+export const documents = _fs.documents as (path?: string)=>string;
+export const temp = _fs.temp as (path?: string)=>string;
+export const resources = _fs.resources as (path?: string)=>string;
+export const cwd = _fs.cwd as ()=>string;
+export const chdir = _fs.chdir as (path: string)=>boolean;
+export type Optopns = Dict<string|string[]>;
+export const timeMonotonic = _init.timeMonotonic as ()=>number;
 
-function nextTick<A extends any[], R>(cb: (...args: A) => R, ...args: A): void {
-	if (typeof cb != 'function')
-		throw new Error('callback must be a function');
-	_util.nextTick(function(){ cb(...args) });
+let setTimer_ = (globalThis as any).setTimer;
+let setTimeout_ = globalThis.setTimeout;
+let setInterval_ = globalThis.setInterval;
+let setImmediate_ = globalThis.setImmediate;
+
+function setTimeout<A extends any[]>(cb: (...args: A)=>void, timeout?: number, ...args: A): any {
+	return setTimeout_(args.length ? ()=>cb(...args): cb, timeout);
+}
+function setInterval<A extends any[]>(cb: (...args: A)=>void, timeout?: number, ...args: A): any {
+	return setInterval_(args.length ? ()=>cb(...args): cb, timeout);
+}
+function setImmediate<A extends any[]>(cb: (...args: A)=>void, ...args: A): any {
+	return setImmediate_(args.length ? ()=>cb(...args): cb as any);
+}
+globalThis.setTimeout = setTimeout as any;
+globalThis.setInterval = setInterval as any;
+globalThis.setImmediate = setImmediate as any;
+
+export function setTimer<A extends any[]>(cb: (...args: A)=>void, timeout?: number, repeat?: number, ...args: A): any {
+	return setTimer_(args.length ? ()=>cb(...args): cb, timeout, repeat);
+}
+export const clearTimer = (globalThis as any).clearTimer as (id?: any)=>void;
+
+const win32 = {
+	fallbackPath: function(url: string) {
+		return url.replace(/^file:\/\//i, '').replace(/^\/([a-z]:)?/i, '$1').replace(/\//g, '\\');
+	},
+	joinPath: function(args: any[]) {
+		let ls = [];
+		for (let i = 0; i < args.length; i++) {
+			let item = args[i];
+			if (item)
+				ls.push(item.replace(/\\/g, '/'));
+		}
+		return ls.join('/');
+	},
+	resolve: /^((\/|[a-z]:)|([a-z]{2,}:\/\/[^\/]+)|((file|zip):\/\/\/))/i,
+	isAbsolute: /^([\/\\]|[a-z]:|[a-z]{2,}:\/\/[^\/]+|(file|zip):\/\/\/)/i,
+	isLocal: /^([\/\\]|[a-z]:|(file|zip):\/\/\/)/i,
+	delimiter: ';',
+};
+
+const posix = {
+	fallbackPath: function(url: string) {
+		return url.replace(/^file:\/\//i, '');
+	},
+	joinPath: function(args: any[]) {
+		let ls = [];
+		for (let i = 0; i < args.length; i++) {
+			let item = args[i];
+			if (item)
+				ls.push(item);
+		}
+		return ls.join('/');
+	},
+	resolve: /^((\/)|([a-z]{2,}:\/\/[^\/]+)|((file|zip):\/\/\/))/i,
+	isAbsolute: /^(\/|[a-z]{2,}:\/\/[^\/]+|(file|zip):\/\/\/)/i,
+	isLocal: /^(\/|(file|zip):\/\/\/)/i,
+	delimiter: ':',
+};
+
+const isWin32 = _init.platform == 'win32';
+const paths = isWin32 ? win32: posix;
+
+export const fallbackPath = paths.fallbackPath;
+export const delimiter = paths.delimiter;
+
+/** 
+ * format part
+ */
+export function normalizePath(path: string, retain_up?: boolean) {
+	let ls = path.split('/');
+	let rev = [];
+	let up = 0;
+	for (let i = ls.length - 1; i > -1; i--) {
+		let v = ls[i];
+		if (v && v != '.') {
+			if (v == '..') // set up
+				up++;
+			else if (up === 0) // no up item
+				rev.push(v);
+			else // un up
+				up--;
+		}
+	}
+	path = rev.reverse().join('/');
+
+	return (retain_up ? new Array(up + 1).join('../') + path : path);
 }
 
-function unrealized() {
-	throw new Error('Unrealized function');
+/**
+ * return format path
+ */
+export function resolve(...args: string[]) {
+	let path = paths.joinPath(args);
+	let prefix = '';
+	// Find absolute path
+	let mat = path.match(paths.resolve);
+	let slash = '';
+	// resolve: /^((\/|[a-z]:)|([a-z]{2,}:\/\/[^\/]+)|((file|zip):\/\/\/))/i,
+	// resolve: /^((\/)|([a-z]{2,}:\/\/[^\/]+)|((file|zip):\/\/\/))/i,
+	if (mat) {
+		if (mat[2]) { // local absolute path /
+			if (isWin32 && mat[2] != '/') { // windows d:\
+				prefix = PREFIX + mat[2] + '/';
+				path = path.substring(2);
+			} else {
+				prefix = PREFIX; //'file:///';
+			}
+		} else {
+			if (mat[4]) { // local file protocol
+				prefix = mat[4];
+			} else { // network protocol
+				prefix = mat[0];
+				slash = '/';
+			}
+			// if (prefix == path.length)
+			if (prefix == path) // file:///
+				return prefix;
+			path = path.substring(prefix.length);
+		}
+	} else { // Relative path, no network protocol
+		let _cwd = cwd();
+		if (isWin32) {
+			prefix += _cwd.substring(0,10) + '/'; // 'file:///d:/';
+			path = _cwd.substring(11) + '/' + path;
+		} else {
+			prefix = PREFIX; // 'file:///';
+			path = _cwd.substring(8) + '/' + path;
+		}
+	}
+	path = normalizePath(path);
+	return path ? prefix + slash + path : prefix;
 }
 
-export declare class SimpleHash {
+/**
+ * @method isAbsolute # 是否为绝对路径
+ */
+export function isAbsolute(path: string) {
+	return paths.isAbsolute.test(path);
+}
+
+/**
+ * @method isLocal # 是否为本地路径
+ */
+export function isLocal(path: string) {
+	return paths.isLocal.test(path);
+}
+
+export function isLocalZip(path: string) {
+	return /^zip:\/\/\//i.test(path);
+}
+
+export function isNetwork(path: string) {
+	return /^(https?):\/\/[^\/]+/i.test(path);
+}
+
+/**
+ * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+ * because the buffer-to-string conversion in `fs.readFileSync()`
+ * translates it to FEFF, the UTF-16 BOM.
+ */
+export function stripBOM(content: string) {
+	if (content.charCodeAt(0) === 0xFEFF)
+		content = content.slice(1);
+	return content;
+}
+
+// without error
+function requireWithoutErr(pathname: string) {
+	let _pkg = __binding__('_pkg');
+	try { return _pkg._load(pathname) } catch(e) {}
+}
+
+function readConfigFile(pathname: string, pathname2: string) {
+	let c = requireWithoutErr(pathname);
+	let c2 = requireWithoutErr(pathname2);
+	if (c || c2) {
+		return Object.assign({}, c, c2);
+	}
+}
+
+export function getConfig(): Dict {
+	if (!config) {
+		let cfg: Dict | null = null;
+		let mod = __binding__('_pkg').mainModule;
+		if (mod) {
+			let pkg = mod.package;
+			if (pkg) {
+				cfg = readConfigFile(pkg.path + '/.config', pkg.path + '/config');
+			} else {
+				cfg = readConfigFile(mod.dirname + '/.config', mod.dirname + '/config');
+			}
+		}
+		config = cfg || readConfigFile(_fs.cwd() + '/.config', _fs.cwd() + '/config') || {};
+	}
+	return config as Dict;
+}
+
+export function makeRequireFunction(mod: any, main: any): NodeRequire {
+	const Module = mod.constructor;
+
+	function require(path: string) {
+		return mod.require(path);
+	}
+	function resolve(request: string, options?: { paths?: string[]; }) {
+		return Module._resolveFilename(request, mod, false, options);
+	}
+	function paths(request: string) {
+		return Module._resolveLookupPaths(request, mod, true);
+	}
+	require.resolve = resolve;
+	resolve.paths = paths;
+	require.main = main;
+	// Enable support to add extra extension types.
+	require.extensions = Module._extensions;
+	require.cache = Module._cache;
+	return require;
+}
+
+/**
+ * Find end of shebang line and slice it off
+ */
+export function stripShebang(content: string) {
+	// Remove shebang
+	let contLen = content.length;
+	if (contLen >= 2) {
+		if (content.charCodeAt(0) === 35/*#*/ &&
+				content.charCodeAt(1) === 33/*!*/) {
+			if (contLen === 2) {
+				// Exact match
+				content = '';
+			} else {
+				// Find end of shebang line and slice it off
+				let i = 2;
+				for (; i < contLen; ++i) {
+					let code = content.charCodeAt(i);
+					if (code === 10/*\n*/ || code === 13/*\r*/)
+						break;
+				}
+				if (i === contLen)
+					content = '';
+				else {
+					// Note that this actually includes the newline character(s) in the
+					// new output. This duplicates the behavior of the regular expression
+					// that was previously used to replace the shebang line
+					content = content.slice(i);
+				}
+			}
+		}
+	}
+	return content;
+}
+
+export function assert(value: any, message?: string) {
+	if (!value) {
+		throw new Error('assert fail, ' + (message || ''));
+	}
+}
+
+export function debugLog(TAG = 'PKG') {
+	return function(...args: any[]) {
+		if (debug) {
+			if (args.length > 1) {
+				let str = args.shift();
+				for (let arg of args) {
+					str = str.replace(/\%(j|s|d)/, arg);
+				}
+				console.log(TAG, str);
+			}
+		}
+	}
+}
+
+export declare class Hash5381 {
 	hashCode(): number;
 	update(data: string | Uint8Array): void;
 	digest(): string;
 	clear(): void;
 }
 
-exports.SimpleHash = _util.SimpleHash;
+exports.Hash5381 = _init.Hash5381;
 
-const _nodeProcess = (globalThis as any).process
-
-class Process extends Notification {
-
-	private _exiting = false;
-
-	private _handles = {
-		BeforeExit: (noticer: EventNoticer, code = 0)=>{
-			noticer.trigger(code);
-			return code;
-		},
-		Exit: (noticer: EventNoticer, code = 0)=>{
-			this._exiting = true;
-			noticer.trigger(code);
-			return code;
-		},
-		UncaughtException: (noticer: EventNoticer, err: Error)=>{
-			return noticer.length ? (noticer.trigger(err), true): false;
-		},
-		UnhandledRejection: (noticer: EventNoticer, reason: Error, promise: Promise<any>)=>{
-			return noticer.length ? (noticer.trigger({ reason, promise }), true): false;
-		},
+function initArgv() {
+	let parseOptions = (args: string[], options: Optopns)=>{
+		for (let item of args) {
+			let mat = item.match(/^-{1,2}([^=]+)(?:=(.*))?$/);
+			if (mat) {
+				let name = mat[1].replace(/-/gm, '_');
+				let val = mat[2] || 'true';
+				let raw_val = options[name];
+				if ( raw_val ) {
+					if ( Array.isArray(raw_val) ) {
+						raw_val.push(val);
+					} else {
+						options[name] = [raw_val, val];
+					}
+				} else {
+					options[name] = val;
+				}
+			}
+		}
 	};
-
-	getNoticer(name: 'BeforeExit'|'Exit'|'UncaughtException'|'UnhandledRejection') {
-		if (!this.hasNoticer(name)) {
-			var noticer = super.getNoticer(name);
-			var handle = (this._handles as any)[name];
-			if (handle) {
-				if (_util.haveNode) {
-					_nodeProcess.on(name.substr(0, 1).toLowerCase() + name.substr(1), function(...args: any[]) {
-						return handle(noticer, ...args);
-					});
-				}
-				_util[`__on${name}_native`] = function(...args: any[]) {
-					return handle(noticer, ...args);
-				};
-			}
-		}
-		return super.getNoticer(name);
+	let main: string = '';
+	let args: string[] = [];
+	if (_init.argv.length > 1) {
+		main = String(_init.argv[1] || '');
+		args = _init.argv.slice(2);
 	}
+	parseOptions(args, options); // parse options
 
-	exit(code?: number) {
-		if (!this._exiting) {
-			this._exiting = true;
-			if (_util.haveNode) {
-				_nodeProcess._exiting = true;
-				if (code || code === 0)
-					_nodeProcess.exitCode = code;
-				try {
-					_nodeProcess.emit('exit', _nodeProcess.exitCode || 0);
-				} catch(err) {
-					console.error(err);
-				}
-			}
-			_util._exit(code || 0);
+	if ( 'url_arg' in options ) {
+		if (Array.isArray(options.url_arg))
+			options.url_arg = options.url_arg.join('&');
+	} else {
+		options.url_arg = '';
+	}
+	if ('no_cache' in options || debug) {
+		if (options.url_arg) {
+			options.url_arg += '&__no_cache';
+		} else {
+			options.url_arg = '__no_cache';
 		}
 	}
-
+	return main;
 }
 
-export const _process = new Process();
+export const mainPath = initArgv();
+
+// ------------------------------------------------------------------------------------------------
+
+type Platform = 'darwin' | 'android' | 'linux' | 'win32';
+
+let _exiting = false;
+
+function nextTick<A extends any[], R>(cb: (...args: A) => R, ...args: A): void {
+	_init.nextTick(function(){ cb(...args) });
+}
+
+function unrealized() {
+	throw new Error('Unrealized function');
+}
+
+function exit(code?: number) {
+	if (!_exiting) {
+		_exiting = true;
+		_init.exit(code || 0);
+	}
+}
+
+// set runtime event listener, 'UncaughtException'|'UnhandledRejection'|'BeforeExit'|'Exit'
+export function __set_listener__(name: string, handle: any) {
+	if (name == 'Exit') {
+		_init[`__on${name}_native`] = function(...args: any[]) {
+			_exiting = true;
+			handle(...args);
+		};
+	} else {
+		_init[`__on${name}_native`] = handle;
+	}
+}
 
 export default {
-	version: _util.version as ()=>string,
-	addNativeEventListener: _util.addNativeEventListener as (target: Object, event: string, fn: (event: Event<any>)=>void, id?: number)=>boolean,
-	removeNativeEventListener: _util.removeNativeEventListener as (target: Object, event: string, id?: number)=>boolean,
-	gc: _util.garbageCollection as ()=>void,
-	runScript: _util.runScript as (source: string, name?: string, sandbox?: any)=>any,
-	hashCode: _util.hashCode as (obj: any)=>number,
-	hash: _util.hash as (obj: any)=>string,
-	nextTick: nextTick,
-	platform: _util.platform as Platform,
-	haveNode: _util.haveNode as boolean,
-	haveQuark: true,
-	haveWeb: false,
-	argv: _util.argv as string[],
+	debug,
+	version: _init.version as ()=>string,
+	platform: _init.platform as Platform,
+	isQuark: true, isNode: false, isWeb: false,
 	webFlags: null,
-	exit: (code?: number)=>{ _process.exit(code) },
-	unrealized: unrealized,
-	// hash
-	SimpleHash: _util.SimpleHash as typeof SimpleHash,
+	argv: _init.argv as string[],
+	options,
+	nextTick, unrealized, exit,
+	gc: _init.garbageCollection as ()=>void,
+	runScript: _init.runScript as (source: string, name?: string, sandbox?: any)=>any,
+	hashCode: _init.hashCode as (obj: any)=>number,
+	hash: _init.hash as (obj: any)=>string,
 };

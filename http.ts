@@ -34,25 +34,37 @@ import event, {
 	EventNoticer, NativeNotification, Notification, Event,
 } from './event';
 
-const _http = __bindingModule__('_http');
+const _http = __binding__('_http');
+
+Object.assign(exports, _http);
 
 export enum HttpMethod {
-	HTTP_METHOD_GET,
-	HTTP_METHOD_POST,
-	HTTP_METHOD_HEAD,
-	HTTP_METHOD_DELETE,
-	HTTP_METHOD_PUT,
+	GET,
+	POST,
+	HEAD,
+	DELETE,
+	PUT,
 }
 
 export enum HttpReadyState {
-	HTTP_READY_STATE_INITIAL,
-	HTTP_READY_STATE_READY,
-	HTTP_READY_STATE_SENDING,
-	HTTP_READY_STATE_RESPONSE,
-	HTTP_READY_STATE_COMPLETED,
+	Initial,
+	Ready,
+	Sending,
+	Response,
+	Completed,
 }
 
-declare class NativeHttpClientRequest extends Notification<Event<any, HttpClientRequest>> implements ReadStream {
+type HttpEvent<T = void> = Event<HttpClientRequest, T>
+
+declare class NativeHttpClientRequest extends Notification<HttpEvent> implements ReadStream {
+	readonly uploadTotal: number;
+	readonly uploadSize: number;
+	readonly downloadTotal: number;
+	readonly downloadSize: number;
+	readonly readyState: HttpReadyState;
+	readonly statusCode: number;
+	readonly url: string;
+	readonly httpResponseVersion: string;
 	setMethod(method: HttpMethod): void;
 	setUrl(url: string): void;
 	setSavePath(path: string): void;
@@ -71,14 +83,6 @@ declare class NativeHttpClientRequest extends Notification<Event<any, HttpClient
 	clearFormData(): void;
 	getResponseHeader(headerName: string): string;
 	getAllResponseHeaders(): Dict<string>;
-	readonly uploadTotal: number;
-	readonly uploadSize: number;
-	readonly downloadTotal: number;
-	readonly downloadSize: number;
-	readonly readyState: HttpReadyState;
-	readonly statusCode: number;
-	readonly url: string;
-	readonly httpResponseVersion: string;
 	send(data?: string | Uint8Array): void;
 	pause(): void;
 	resume(): void;
@@ -88,21 +92,18 @@ declare class NativeHttpClientRequest extends Notification<Event<any, HttpClient
 /**
  * @class HttpClientRequest
  */
-export class HttpClientRequest extends (_http.NativeHttpClientRequest as typeof NativeHttpClientRequest) {
-	@event readonly onError: EventNoticer<Event<Error, HttpClientRequest>>;
-	@event readonly onWrite: EventNoticer<Event<void, HttpClientRequest>>;
-	@event readonly onHeader: EventNoticer<Event<void, HttpClientRequest>>;
-	@event readonly onData: EventNoticer<Event<Uint8Array, HttpClientRequest>>;
-	@event readonly onEnd: EventNoticer<Event<void, HttpClientRequest>>;
-	@event readonly onReadystateChange: EventNoticer<Event<void, HttpClientRequest>>;
-	@event readonly onTimeout: EventNoticer<Event<void, HttpClientRequest>>;
-	@event readonly onAbort: EventNoticer<Event<void, HttpClientRequest>>;
+export class HttpClientRequest extends (_http.HttpClientRequest as typeof NativeHttpClientRequest) {
+	@event readonly onError: EventNoticer<HttpEvent<Error>>;
+	@event readonly onWrite: EventNoticer<HttpEvent>;
+	@event readonly onHeader: EventNoticer<HttpEvent>;
+	@event readonly onData: EventNoticer<HttpEvent<Uint8Array>>;
+	@event readonly onEnd: EventNoticer<HttpEvent>;
+	@event readonly onReadystateChange: EventNoticer<HttpEvent>;
+	@event readonly onTimeout: EventNoticer<HttpEvent>;
+	@event readonly onAbort: EventNoticer<HttpEvent>;
 }
 
 utils.extendClass(HttpClientRequest, NativeNotification);
-
-Object.assign(exports, _http);
-delete exports.NativeHttpClientRequest;
 
 export interface RequestOptions {
 	url?: string;
@@ -144,7 +145,7 @@ export function requestStream(options: RequestOptions, cb: (stream: StreamData)=
 			}
 		});
 	});
-};
+}
 
 export function requestSync(options: RequestOptions): Uint8Array {
 	return _http.requestSync(options);
@@ -155,7 +156,7 @@ export function download(url: string, save: string) {
 }
 
 export function upload(url: string, localPath: string) {
-	return request({ url, upload: localPath, method: HttpMethod.HTTP_METHOD_POST, disableCache: true });
+	return request({ url, upload: localPath, method: HttpMethod.POST, disableCache: true });
 }
 
 export function get(url: string) {
@@ -167,7 +168,7 @@ export function getStream(url: string, cb: (stream: StreamData)=>void) {
 }
 
 export function post(url: string, data: string | Uint8Array) {
-	return request({ url, postData: data, method: HttpMethod.HTTP_METHOD_POST });
+	return request({ url, postData: data, method: HttpMethod.POST });
 };
 
 export function getSync(url: string) {
@@ -175,7 +176,7 @@ export function getSync(url: string) {
 }
 
 export function postSync(url: string, data: string | Uint8Array) {
-	return requestSync({ url, postData: data, method: HttpMethod.HTTP_METHOD_POST });
+	return requestSync({ url, postData: data, method: HttpMethod.POST });
 }
 
 export function downloadSync(url: string, save: string) {
@@ -183,7 +184,7 @@ export function downloadSync(url: string, save: string) {
 }
 
 export function uploadSync(url: string, localPath: string) {
-	return requestSync({ url, upload: localPath, method: HttpMethod.HTTP_METHOD_POST, disableCache: true });
+	return requestSync({ url, upload: localPath, method: HttpMethod.POST, disableCache: true });
 }
 
 export declare function abort(id: number): void;

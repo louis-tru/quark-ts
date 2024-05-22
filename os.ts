@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2015, blue.chu
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *     * Neither the name of blue.chu nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,43 +25,35 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
+ * 
  * ***** END LICENSE BLOCK ***** */
 
-import { StyleSheet } from './css';
-import * as value from './types';
+const _os = __binding__('_os');
 
-exports.Action = __bindingModule__('_action').Action;
-
-export interface KeyframeOptions extends StyleSheet {
-	curve?: value.CurveIn;
+export enum NetworkInterface {
+	kNone,
+	kETH,
+	kWifi,
+	kMobile, // mobile
+	k2G, // 2G
+	k3G, // 3G
+	k4G, // 4G
+	k5G, // 5G
 }
+export declare function version(): string;
+export declare function brand(): string;
+export declare function model(): string;
+export declare function info(): string;
+export declare function languages(): string[];
+export declare function isWifi(): boolean;
+export declare function isMobile(): boolean;
+export declare function networkInterface(): NetworkInterface;
+export declare function isAcPower(): boolean;
+export declare function isBattery(): boolean;
+export declare function batteryLevel(): number;
+export declare function memory(): number;
+export declare function usedMemory(): number;
+export declare function availableMemory(): number;
+export declare function cpuUsage(): number;
 
-export interface ActionOptions {
-	playing?: boolean;
-	loop?: number;
-	delay?: number;
-	speed?: number;
-	spawn?: ActionIn[];
-	seq?: ActionIn[];
-	keyframe?: KeyframeOptions[];
-}
-
-export type ActionIn = Action | ActionOptions | KeyframeOptions[];
-
-export declare abstract class Action {
-	play(): void;
-	stop(): void;
-	seek(time: number): void;
-	seekPlay(time: number): void;
-	seekStop(time: number): void;
-	clear(): void;
-	readonly duration: number;
-	readonly parent: Action | null;
-	readonly looped: number;
-	readonly delayed: number;
-	playing: boolean;
-	loop: number;
-	delay: number;
-	speed: number;
-}
+Object.assign(exports, _os);

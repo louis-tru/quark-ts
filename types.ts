@@ -28,354 +28,23 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-export enum Types {
-	AUTO,
-	FULL,
-	PIXEL,
-	PERCENT,
-	MINUS,
-	INHERIT,
-	VALUE,
-	THIN,              // 100
-	ULTRALIGHT,        // 200
-	LIGHT,             // 300
-	REGULAR,           // 400
-	MEDIUM,            // 500
-	SEMIBOLD,          // 600
-	BOLD,              // 700
-	HEAVY,             // 800
-	BLACK,             // 900
-	THIN_ITALIC,       // 100
-	ULTRALIGHT_ITALIC, // 200
-	LIGHT_ITALIC,      // 300
-	ITALIC,            // 400
-	MEDIUM_ITALIC,     // 500
-	SEMIBOLD_ITALIC,   // 600
-	BOLD_ITALIC,       // 700
-	HEAVY_ITALIC,      // 800
-	BLACK_ITALIC,      // 900
-	OTHER,
-	NONE,
-	OVERLINE,
-	LINE_THROUGH,
-	UNDERLINE,
-	LEFT,
-	CENTER,
-	RIGHT,
-	LEFT_REVERSE,
-	CENTER_REVERSE,
-	RIGHT_REVERSE,
-	TOP,
-	BOTTOM,
-	MIDDLE,
-	REPEAT,
-	REPEAT_X,
-	REPEAT_Y,
-	MIRRORED_REPEAT,
-	MIRRORED_REPEAT_X,
-	MIRRORED_REPEAT_Y,
-	NORMAL,
-	CLIP,
-	ELLIPSIS,
-	CENTER_ELLIPSIS,
-	NO_WRAP,
-	NO_SPACE,
-	PRE,
-	PRE_LINE,
-	WRAP,
-	// keyboard type
-	ASCII,
-	NUMBER,
-	URL,
-	NUMBER_PAD,
-	PHONE,
-	NAME_PHONE,
-	EMAIL,
-	DECIMAL,
-	TWITTER,
-	SEARCH,
-	ASCII_NUMBER,
-	// keyboard return type
-	GO,
-	JOIN,
-	NEXT,
-	ROUTE,
-	// SEARCH,
-	SEND,
-	DONE,
-	EMERGENCY,
-	CONTINUE,
+const _font = __binding__('_font');
+
+type Reference = (ref: any[])=>any[];
+
+function getReference(ref: any[], plus?: Reference) {
+	return plus ? plus(ref): ref;
 }
 
-export enum ValueType {
-	AUTO = Types.AUTO,
-	FULL = Types.FULL,
-	PIXEL = Types.PIXEL,
-	PERCENT = Types.PERCENT,
-	MINUS = Types.MINUS,
-}
-
-export enum TextValueType {
-	INHERIT = Types.INHERIT,
-	VALUE = Types.VALUE,
-}
-
-export enum BackgroundPositionType {
-	PIXEL = Types.PIXEL,
-	PERCENT = Types.PERCENT,
-	LEFT = Types.LEFT,
-	RIGHT = Types.RIGHT,
-	CENTER = Types.CENTER,
-	TOP = Types.TOP,
-	BOTTOM = Types.BOTTOM,
-}
-
-export enum BackgroundSizeType {
-	AUTO = Types.AUTO,
-	PIXEL = Types.PIXEL,
-	PERCENT = Types.PERCENT,
-}
-
-export enum TextStyleEnum {
-	THIN = Types.THIN,              // 100
-	ULTRALIGHT = Types.ULTRALIGHT,  // 200
-	LIGHT = Types.LIGHT,            // 300
-	REGULAR = Types.REGULAR,        // 400
-	MEDIUM = Types.MEDIUM,          // 500
-	SEMIBOLD = Types.SEMIBOLD,      // 600
-	BOLD = Types.BOLD,              // 700
-	HEAVY = Types.HEAVY,            // 800
-	BLACK = Types.BLACK,            // 900
-	THIN_ITALIC = Types.THIN_ITALIC,       // 100
-	ULTRALIGHT_ITALIC = Types.ULTRALIGHT_ITALIC, // 200
-	LIGHT_ITALIC = Types.LIGHT_ITALIC,     // 300
-	ITALIC = Types.ITALIC,                 // 400
-	MEDIUM_ITALIC = Types.MEDIUM_ITALIC,   // 500
-	SEMIBOLD_ITALIC = Types.SEMIBOLD_ITALIC,   // 600
-	BOLD_ITALIC = Types.BOLD_ITALIC,       // 700
-	HEAVY_ITALIC = Types.HEAVY_ITALIC,     // 800
-	BLACK_ITALIC = Types.BLACK_ITALIC,     // 900
-	OTHER = Types.OTHER,
-}
-
-export enum TextDecorationEnum {
-	NONE = Types.NONE,
-	OVERLINE = Types.OVERLINE,
-	LINE_THROUGH = Types.LINE_THROUGH,
-	UNDERLINE = Types.UNDERLINE,
-}
-
-export enum TextAlign {
-	LEFT = Types.LEFT,
-	CENTER = Types.CENTER,
-	RIGHT = Types.RIGHT,
-	LEFT_REVERSE = Types.LEFT_REVERSE,
-	CENTER_REVERSE = Types.CENTER_REVERSE,
-	RIGHT_REVERSE = Types.RIGHT_REVERSE,
-}
-
-export enum TextOverflowEnum {
-	NORMAL = Types.NORMAL,
-	CLIP = Types.CLIP,
-	ELLIPSIS = Types.ELLIPSIS,
-	CENTER_ELLIPSIS = Types.CENTER_ELLIPSIS,
-}
-
-export enum Align {
-	LEFT = Types.LEFT,
-	RIGHT = Types.RIGHT,
-	CENTER = Types.CENTER,
-	TOP = Types.TOP,
-	BOTTOM = Types.BOTTOM,
-	NONE = Types.NONE,
-}
-
-export enum ContentAlign {
-	LEFT = Types.LEFT,
-	RIGHT = Types.RIGHT,
-	TOP = Types.TOP,
-	BOTTOM = Types.BOTTOM,
-}
-
-export enum Repeat {
-	NONE = Types.NONE,
-	REPEAT = Types.REPEAT,
-	REPEAT_X = Types.REPEAT_X,
-	REPEAT_Y = Types.REPEAT_Y,
-	MIRRORED_REPEAT = Types.MIRRORED_REPEAT,
-	MIRRORED_REPEAT_X = Types.MIRRORED_REPEAT_X,
-	MIRRORED_REPEAT_Y = Types.MIRRORED_REPEAT_Y,
-}
-
-export enum Direction {
-	NONE = Types.NONE,
-	LEFT = Types.LEFT,
-	RIGHT = Types.RIGHT,
-	TOP = Types.TOP,
-	BOTTOM = Types.BOTTOM,
-}
-
-export enum TextWhiteSpaceEnum {
-	NORMAL = Types.NORMAL,
-	NO_WRAP = Types.NO_WRAP,
-	NO_SPACE = Types.NO_SPACE,
-	PRE = Types.PRE,
-	PRE_LINE = Types.PRE_LINE,
-	WRAP = Types.WRAP,
-}
-
-export enum KeyboardType {
-	NORMAL = Types.NORMAL,
-	ASCII = Types.ASCII,
-	NUMBER = Types.NUMBER,
-	URL = Types.URL,
-	NUMBER_PAD = Types.NUMBER_PAD,
-	PHONE = Types.PHONE,
-	NAME_PHONE = Types.NAME_PHONE,
-	EMAIL = Types.EMAIL,
-	DECIMAL = Types.DECIMAL,
-	TWITTER = Types.TWITTER,
-	SEARCH = Types.SEARCH,
-	ASCII_NUMBER = Types.ASCII_NUMBER,
-}
-
-export enum KeyboardReturnType {
-	NORMAL = Types.NORMAL,
-	GO = Types.GO,
-	JOIN = Types.JOIN,
-	NEXT = Types.NEXT,
-	ROUTE = Types.ROUTE,
-	SEARCH = Types.SEARCH,
-	SEND = Types.SEND,
-	DONE = Types.DONE,
-	EMERGENCY = Types. EMERGENCY,
-	CONTINUE = Types.CONTINUE,
-}
-
-const enum_object: Dict<number> = {};
-
-Object.entries(Types).forEach(function([key,val]) {
-	if (typeof val == 'number') {
-		enum_object[key.toLowerCase()] = val;
-	}
-});
-
-export declare class Background {
-	next: Background | null;
-}
-
-export interface BackgroundOptions {
-	image?: {
-		src?: string;
-		repeat?: Repeat;
-		position?: BackgroundPositionCollection;
-		positionX?: BackgroundPosition;
-		positionY?: BackgroundPosition;
-		size?: BackgroundSizeCollection;
-		sizeX?: BackgroundSize;
-		sizeY?: BackgroundSize;
-	};
-	gradient?: {}
-}
-
-export declare class BackgroundImage extends Background {
-	src: string;
-	// readonly hasBase64: boolean;
-	repeat: Repeat;
-	position: BackgroundPositionCollection;
-	positionX: BackgroundPosition;
-	positionY: BackgroundPosition;
-	size: BackgroundSizeCollection;
-	sizeX: BackgroundSize;
-	sizeY: BackgroundSize;
-}
-
-// export declare class BackgroundGradient extends Background {
-// }
-
-export class BackgroundPositionCollection {
-	x: BackgroundPosition;
-	y: BackgroundPosition;
-}
-
-export class BackgroundSizeCollection {
-	x: BackgroundSize;
-	y: BackgroundSize;
-}
-
-function check_uinteger(value: any) {
-	return Number.isInteger(value) ? value >= 0 : false;
-}
-
-function check_unsigned_number(value: any) {
-	return Number.isFinite(value) ? value >= 0 : false;
-}
-
-function check_number(value: any) {
-	return Number.isFinite(value);
-}
-
-function check_enum(enum_obj: any, value: any) {
-	return Number.isInteger(value) && enum_obj[value];
-}
-
-function check_string(value: any) {
-	return typeof value == 'string'; 
-}
-
-function check_integer_ret(value: any) {
-	if (!check_uinteger(value)) {
-		throw new Error('Bad argument.');
-	}
-	return value;
-}
-
-function check_number_ret(value: any) {
-	if (!check_number(value)) {
-		throw new Error('Bad argument.');
-	}
-	return value;
-}
-
-function check_unsigned_number_ret(value: any) {
-	if (!check_unsigned_number(value)) {
-		throw new Error('Bad argument.');
-	}
-	return value;
-}
-
-function check_is_null_ret(value: any) {
-	if (value === null) {
-		throw new Error('Bad argument.');
-	}
-	return value;
-}
-
-function check_enum_ret(enum_obj: any, value: any) {
-	if (Number.isInteger(value) && enum_obj[value]) {
-		return value;
-	} else {
-		throw new Error('Bad argument.');
-	}
-}
-
-function check_string_ret(value: any) {
-	if (typeof value == 'string') {
-		return value;
-	} else {
-		throw new Error('Bad argument.');
-	}
-}
-
-function get_help(reference?: any[], enum_value?: any) {
-	var message = '';
+function get_help(reference?: any[], ref?: Reference, enum_value?: any) {
+	let message = '';
 	if ( reference ) {
-		for ( var val of reference ) {
+		for ( let val of getReference(reference, ref) ) {
 			if ( val ) message += ', ' + JSON.stringify(val);
 		}
 	}
 	if ( enum_value ) {
-		for (var i of Object.values(enum_value)) {
+		for (let i of Object.values(enum_value)) {
 			if (typeof i == 'string') {
 				message += ', ' + i.toLowerCase();
 			}
@@ -384,921 +53,10 @@ function get_help(reference?: any[], enum_value?: any) {
 	return message;
 }
 
-export class Base {
-	toString() {
-		return '[object]';
-	}
-}
-
-export class Border extends Base {
-	private _width: number;
-	private _color: Color;
-	get width() { return this._width; }
-	get color() { return this._color; }
-	get r() { return (this._color as any)._r; }
-	get g() { return (this._color as any)._g as number; }
-	get b() { return (this._color as any)._b as number; }
-	get a() { return (this._color as any)._a as number; }
-	set width(value) {
-		this._width = check_number_ret(value);
-	}
-	set color(value) { 
-		if (value instanceof Color) {
-			this._color = value; 
-		} else if (typeof value == 'string') { // 解析字符串
-			this._color = check_is_null_ret(parseColor(value));
-		} else {
-			throw new Error('Bad argument.');
-		}
-	}
-	constructor(width?: number, color?: Color) {
-		super();
-		if (arguments.length > 0) {
-			if (check_number(width)) this._width = width as number;
-			this._color = color instanceof Color ? color : new Color();
-		} else {
-			this._color = new Color();
-		}
-	}
-	toString() {
-		return `${this._width} ${this._color}`;
-	}
-}
-(Border.prototype as any)._width = 0;
-(Border.prototype as any)._color = null;
-
-export class Shadow extends Base {
-	private _offset_x: number;
-	private _offset_y: number;
-	private _size: number;
-	private _color: Color;
-	get offsetX() { return this._offset_x; }
-	get offsetY() { return this._offset_y; }
-	get size() { return this._size; }
-	get color() { return this._color; }
-	get r() { return (this._color as any)._r; }
-	get g() { return (this._color as any)._g; }
-	get b() { return (this._color as any)._b; }
-	get a() { return (this._color as any)._a; }
-	set offsetX(value) {  this._offset_x = check_number_ret(value); }
-	set offsetY(value) { this._offset_y = check_number_ret(value); }
-	set size(value) { this._size = check_unsigned_number_ret(value); }
-	set color(value) {
-		if (value instanceof Color) {
-			this._color = value; 
-		} else if (typeof value == 'string') { // 解析字符串
-			this._color = check_is_null_ret(parseColor(value));
-		} else {
-			throw new Error('Bad argument.');
-		}
-	}
-	constructor(offset_x?: number, offset_y?: number, size?: number, color?: Color) {
-		super();
-		if (arguments.length > 0) {
-			if (check_number(offset_x)) this._offset_x = offset_x as number;
-			if (check_number(offset_y)) this._offset_y = offset_y as number;
-			if (check_unsigned_number(size)) this._size = size as number;
-			this._color = color instanceof Color ? color : new Color();
-		} else {
-			this._color = new Color();
-		}
-	}
-	toString() {
-		return `${this._offset_x} ${this._offset_y} ${this._size} ${this._color}`;
-	}
-}
-(Shadow.prototype as any)._offset_x = 0;
-(Shadow.prototype as any)._offset_y = 0;
-(Shadow.prototype as any)._size = 0;
-(Shadow.prototype as any)._color = null;
-
-function to_hex_string(num: number) {
-	if (num < 16) {
-		return '0' + num.toString(16);
-	} else {
-		return num.toString(16);
-	}
-}
-
-export class Color extends Base {
-	private _r: number;
-	private _g: number;
-	private _b: number;
-	private _a: number;
-
-	get r() { return this._r; }
-	get g() { return this._g; }
-	get b() { return this._b; }
-	get a() { return this._a; }
-	
-	set r(value) {
-		this._r = check_number_ret(value) % 256;
-	}
-	set g(value) {
-		this._g = check_number_ret(value) % 256;
-	}
-	set b(value) {
-		this._b = check_number_ret(value) % 256;
-	}
-	set a(value) {
-		this._a = check_number_ret(value) % 256;
-	}
-	
-	constructor(r?: number, g?: number, b?: number, a?: number) {
-		super();
-		if (arguments.length > 0) {
-			if (check_uinteger(r)) this._r = r as number % 256;
-			if (check_uinteger(g)) this._g = g as number % 256;
-			if (check_uinteger(b)) this._b = b as number % 256;
-			if (check_uinteger(a)) this._a = a as number % 256;
-		}
-	}
-	
-	reverse() {
-		return new Color(255 - this._r, 255 - this._g, 255 - this._b, this._a);
-	}
-	
-	toRGBString() {
-		return `rgb(${this._r}, ${this._g}, ${this._b})`;
-	}
-	
-	toRGBAString() {
-		return `rgba(${this._r}, ${this._g}, ${this._b}, ${this._a})`;
-	}
-	
-	toString() {
-		return `#${to_hex_string(this._r)}${to_hex_string(this._g)}${to_hex_string(this._b)}`;
-	}
-	
-	toHex32String() {
-		return `#${to_hex_string(this._r)}${to_hex_string(this._g)}${to_hex_string(this._b)}${to_hex_string(this._a)}`;
-	}
-}
-(Color.prototype as any)._r = 0;
-(Color.prototype as any)._g = 0;
-(Color.prototype as any)._b = 0;
-(Color.prototype as any)._a = 255;
-
-export class Vec2 extends Base {
-	private _x: number;
-	private _y: number;
-	get x() { return this._x; }
-	get y() { return this._y; }
-	set x(value) { this._x = check_number_ret(value); }
-	set y(value) { this._y = check_number_ret(value); }
-	constructor(x?: number, y?: number) {
-		super();
-		if (arguments.length > 0) {
-			if (check_number(x)) this._x = x as number;
-			if (check_number(y)) this._y = y as number;
-		}
-	}
-	toString() {
-		return `vec2(${this._x}, ${this._y})`;
-	}
-}
-(Vec2.prototype as any)._x = 0;
-(Vec2.prototype as any)._y = 0;
-
-export class Vec3 extends Base {
-	private _x: number;
-	private _y: number;
-	private _z: number;
-	get x() { return this._x; }
-	get y() { return this._y; }
-	get z() { return this._x; }
-	set x(value) { this._x = check_number_ret(value); }
-	set y(value) { this._y = check_number_ret(value); }
-	set z(value) { this._z = check_number_ret(value); }
-	constructor(x?: number, y?: number, z?: number) {
-		super();
-		if (arguments.length > 0) {
-			if (check_number(x)) this._x = x as number;
-			if (check_number(y)) this._y = y as number;
-			if (check_number(z)) this._z = z as number;
-		}
-	}
-	toString() {
-		return `vec3(${this._x}, ${this._y}, ${this._z})`;
-	}
-}
-(Vec3.prototype as any)._x = 0;
-(Vec3.prototype as any)._y = 0;
-(Vec3.prototype as any)._z = 0;
-
-export class Vec4 extends Base {
-	private _x: number;
-	private _y: number;
-	private _z: number;
-	private _w: number;
-	get x() { return this._x; }
-	get y() { return this._y; }
-	get z() { return this._x; }
-	get w() { return this._w; }
-	set x(value) { this._x = check_number_ret(value); }
-	set y(value) { this._y = check_number_ret(value); }
-	set z(value) { this._z = check_number_ret(value); }
-	set w(value) { this._w = check_number_ret(value); }
-	constructor(x?: number, y?: number, z?: number, w?: number) {
-		super();
-		if (arguments.length > 0) {
-			if (check_number(x)) this._x = x as number;
-			if (check_number(y)) this._y = y as number;
-			if (check_number(z)) this._z = z as number;
-			if (check_number(w)) this._w = w as number;
-		}
-	}
-	toString() {
-		return `vec4(${this._x}, ${this._y}, ${this._z}, ${this._w})`;
-	}
-}
-(Vec4.prototype as any)._x = 0;
-(Vec4.prototype as any)._y = 0;
-(Vec4.prototype as any)._z = 0;
-(Vec4.prototype as any)._w = 0;
-
-export class Curve extends Base {
-	private _p1_x: number;
-	private _p1_y: number;
-	private _p2_x: number;
-	private _p2_y: number;
-	constructor(p1_x?: number, p1_y?: number, p2_x?: number, p2_y?: number) {
-		super();
-		if (arguments.length > 0) {
-			if (check_number(p1_x)) this._p1_x = p1_x as number;
-			if (check_number(p1_y)) this._p1_y = p1_y as number;
-			if (check_number(p2_x)) this._p2_x = p2_x as number;
-			if (check_number(p2_y)) this._p2_y = p2_y as number;
-		}
-	}
-	get point1X() { return this._p1_x; }
-	get point1Y() { return this._p1_y; }
-	get point2X() { return this._p2_x; }
-	get point2Y() { return this._p2_y; }
-	toString() {
-		return `curve(${this._p1_x}, ${this._p1_y}, ${this._p2_x}, ${this._p2_y})`;
-	}
-}
-(Curve.prototype as any)._p1_x = 0;
-(Curve.prototype as any)._p1_y = 0;
-(Curve.prototype as any)._p2_x = 1;
-(Curve.prototype as any)._p2_y = 1;
-
-export class Rect extends Base {
-	private _x: number;
-	private _y: number;
-	private _width: number;
-	private _height: number;
-	get x() { return this._x; }
-	get y() { return this._y; }
-	get width() { return this._width; }
-	get height() { return this._height; }
-	set x(value) { this._x = check_number_ret(value); }
-	set y(value) { this._y = check_number_ret(value); }
-	set width(value) { this._width = check_number_ret(value); }
-	set height(value) { this._height = check_number_ret(value); }
-	constructor(x?: number, y?: number, width?: number, height?: number) {
-		super();
-		if (arguments.length > 0) {
-			if (check_number(x)) this._x = x as number;
-			if (check_number(y)) this._y = y as number;
-			if (check_number(width)) this._width = width as number;
-			if (check_number(height)) this._height = height as number;
-		}
-	}
-	toString() {
-		return `rect(${this._x}, ${this._y}, ${this._width}, ${this._height})`;
-	}
-}
-(Rect.prototype as any)._x = 0;
-(Rect.prototype as any)._y = 0;
-(Rect.prototype as any)._width = 0;
-(Rect.prototype as any)._height = 0;
- 
-export class Mat extends Base {
-	private _value: number[];
-	get value() { return this._value; }
-	get m0() { return this._value[0]; }
-	get m1() { return this._value[1]; }
-	get m2() { return this._value[2]; }
-	get m3() { return this._value[3]; }
-	get m4() { return this._value[4]; }
-	get m5() { return this._value[5]; }
-	set m0(value) { this._value[0] = check_number_ret(value); }
-	set m1(value) { this._value[1] = check_number_ret(value); }
-	set m2(value) { this._value[2] = check_number_ret(value); }
-	set m3(value) { this._value[3] = check_number_ret(value); }
-	set m4(value) { this._value[4] = check_number_ret(value); }
-	set m5(value) { this._value[5] = check_number_ret(value); }
-	constructor(...m: number[]) {
-		super();
-		var value = [1, 0, 0, 0, 1, 0];
-		if (m.length > 0) {
-			if (m.length == 1) {
-				var m0 = m[0];
-				if (check_number(m0)) {
-					value[0] = m0 as number;
-					value[4] = m0 as number;
-				}
-			} else {
-				var j = 0;
-				for (var i of m) {
-					if (check_number(i))
-						value[j++] = i;
-				}
-			}
-		}
-		this._value = value;
-	}
-	toString() {
-		var value = this._value;
-		return `mat(${value[0]}, ${value[1]}, ${value[2]}, ${value[3]}, ${value[4]}, ${value[5]})`;
-	}
-}
-
-export class Mat4 extends Base {
-	private _value: number[];
-	get value() { return this._value; }
-	get m0() { return this._value[0]; }
-	get m1() { return this._value[1]; }
-	get m2() { return this._value[2]; }
-	get m3() { return this._value[3]; }
-	get m4() { return this._value[4]; }
-	get m5() { return this._value[5]; }
-	get m6() { return this._value[6]; }
-	get m7() { return this._value[7]; }
-	get m8() { return this._value[8]; }
-	get m9() { return this._value[9]; }
-	get m10() { return this._value[10]; }
-	get m11() { return this._value[11]; }
-	get m12() { return this._value[12]; }
-	get m13() { return this._value[13]; }
-	get m14() { return this._value[14]; }
-	get m15() { return this._value[15]; }
-	set m0(value) { this._value[0] = check_number_ret(value); }
-	set m1(value) { this._value[1] = check_number_ret(value); }
-	set m2(value) { this._value[2] = check_number_ret(value); }
-	set m3(value) { this._value[3] = check_number_ret(value); }
-	set m4(value) { this._value[4] = check_number_ret(value); }
-	set m5(value) { this._value[5] = check_number_ret(value); }
-	set m6(value) { this._value[6] = check_number_ret(value); }
-	set m7(value) { this._value[7] = check_number_ret(value); }
-	set m8(value) { this._value[8] = check_number_ret(value); }
-	set m9(value) { this._value[9] = check_number_ret(value); }
-	set m10(value) { this._value[10] = check_number_ret(value); }
-	set m11(value) { this._value[11] = check_number_ret(value); }
-	set m12(value) { this._value[12] = check_number_ret(value); }
-	set m13(value) { this._value[13] = check_number_ret(value); }
-	set m14(value) { this._value[14] = check_number_ret(value); }
-	set m15(value) { this._value[15] = check_number_ret(value); }
-	constructor(...m: number[]) {
-		super();
-		var value = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-		if (m.length > 0) {
-			if (m.length == 1) {
-				var m0 = m[0];
-				if (check_number(m0)) {
-					value[0] = m0;
-					value[5] = m0;
-					value[10] = m0;
-					value[15] = m0;
-				}
-			} else {
-				var j = 0;
-				for (var i of m) {
-					if (check_number(i))
-						value[j++] = i;
-				}
-			}
-		}
-		this._value = value;
-	}
-	toString() {
-		var value = this._value;
-		return `mat4(\
-${value[0]}, ${value[1]}, ${value[2]}, ${value[3]}, \
-${value[4]}, ${value[5]}, ${value[6]}, ${value[7]}, \
-${value[8]}, ${value[9]}, ${value[10]}, ${value[11]}, \
-${value[12]}, ${value[13]}, ${value[14]}, ${value[15]})`;
-	}
-}
-
-export class Value extends Base {
-	private _type: ValueType;
-	private _value: number;
-	get type() { return this._type; }
-	get value() { return this._value; }
-	set type(value) { this._type = check_enum_ret(ValueType, value); }
-	set value(val) { this._value = check_number_ret(val); }
-	constructor(type?: ValueType, value?: number) {
-		super();
-		if (arguments.length > 0) {
-			if (check_enum(ValueType, type)) this._type = type as ValueType;
-			if (check_number(value)) this._value = value as number;
-		}
-	}
-	toString() {
-		switch (this._type) {
-			case enum_object.auto: return 'auto';
-			case enum_object.full: return 'full';
-			case enum_object.pixel: return this._value.toString();
-			case enum_object.percent: return this._value * 100 + '%';
-			default: return this._value + '!';
-		}
-	}
-}
-(Value.prototype as any)._type = ValueType.AUTO;
-(Value.prototype as any)._value = 0;
-
-export class BackgroundPosition extends Base {
-	private _type: BackgroundPositionType;
-	private _value: number;
-	get type() { return this._type; }
-	get value() { return this._value; }
-	set type(value) { this._type = check_enum_ret(BackgroundPositionType, value); }
-	set value(val) { this._value = check_number_ret(val); }
-	constructor(type?: BackgroundPositionType, value?: number) {
-		super();
-		if (arguments.length > 0) {
-			if (check_enum(BackgroundPositionType, type)) this._type = type as BackgroundPositionType;
-			if (check_number(value)) this._value = value as number;
-		}
-	}
-	toString() {
-		switch (this._type) {
-			case enum_object.pixel: return this._value.toString();
-			case enum_object.percent: return this._value * 100 + '%';
-			case enum_object.left: return 'left';
-			case enum_object.right: return 'right';
-			case enum_object.top: return 'top';
-			case enum_object.bottom: return 'bottom';
-			default: return 'center';
-		}
-	}
-}
-(BackgroundPosition.prototype as any)._type = BackgroundPositionType.PIXEL;
-(BackgroundPosition.prototype as any)._value = 0;
-
-export class BackgroundSize extends Base {
-	private _type: BackgroundSizeType;
-	private _value: number;
-	get type() { return this._type; }
-	get value() { return this._value; }
-	set type(value) { this._type = check_enum_ret(BackgroundSizeType, value); }
-	set value(val) { this._value = check_number_ret(val); }
-	constructor(type?: BackgroundSizeType, value?: number) {
-		super();
-		if (arguments.length > 0) {
-			if (check_enum(BackgroundSizeType, type)) this._type = type as BackgroundSizeType;
-			if (check_number(value)) this._value = value as number;
-		}
-	}
-	toString() {
-		switch (this._type) {
-			case enum_object.auto: return 'auto';
-			case enum_object.pixel: return this._value.toString();
-			default: return this._value * 100 + '%';
-		}
-	}
-}
-(BackgroundSize.prototype as any)._type = BackgroundSizeType.AUTO;
-(BackgroundSize.prototype as any)._value = 0;
-
-class TextValue extends Base {
-	protected _type: TextValueType;
-	get type() { return this._type; }
-	set type(value) {
-		this._type = check_enum_ret(TextValueType, value);
-	}
-	constructor(type?: TextValueType) {
-		super();
-		if ( check_enum(TextValueType, type) ) this._type = type as TextValueType;
-	}
-}
-(TextValue.prototype as any)._type = TextValueType.INHERIT;
-
-export class TextColor extends TextValue {
-	private _value: Color;
-	get value() { return this._value; }
-	get r() { return (this._value as any)._r; }
-	get g() { return (this._value as any)._g; }
-	get b() { return (this._value as any)._b; }
-	get a() { return (this._value as any)._a; }
-	set value(val) {
-		if (val instanceof Color) {
-			this._value = val; 
-		} else if (typeof val == 'string') { // 解析字符串
-			this._value = check_is_null_ret(parseColor(val));
-		} else {
-			throw new Error('Bad argument.');
-		}
-	}
-	constructor(type?: TextValueType, value?: Color) {
-		super(type);
-		this._value = arguments.length > 1 && value instanceof Color ? value : new Color();
-	}
-	toString() {
-		return this._type == TextValueType.INHERIT ? 'inherit' : this._value.toString();
-	}
-}
-(TextColor.prototype as any)._value = null;
-
-export class TextSize extends TextValue {
-	private _value: number;
-	get value() { return this._value; }
-	set value(val) { this._value = check_unsigned_number_ret(val); }
-	constructor(type?: TextValueType, value?: number) {
-		super(type);
-		if (arguments.length > 1) {
-			if (check_unsigned_number(value)) this._value = value as number;
-		}
-	}
-	toString() {
-		return this._type == TextValueType.INHERIT ? 'inherit' : this._value.toString();
-	}
-}
-(TextSize.prototype as any)._value = 12;
-
-export class TextFamily extends TextValue {
-	private _value: string;
-	get value() { return this._value; }
-	set value(val) { this._value = check_string_ret(val); }
-	constructor(type?: TextValueType, value?: string) {
-		super(type);
-		if (arguments.length > 1) {
-			if (check_string(value)) this._value = value as string;
-		}
-	}
-	toString() {
-		return this._type == TextValueType.INHERIT ? 'inherit' : this._value;
-	}
-}
-(TextFamily.prototype as any)._value = '';
-
-export class TextStyle extends TextValue {
-	private _value: TextStyleEnum;
-	get value() { return this._value; }
-	set value(val) { this._value = check_enum_ret(TextStyleEnum, val); }
-	constructor(type?: TextValueType, value?: TextStyleEnum) {
-		super(type);
-		if (arguments.length > 1) {
-			if (check_enum(TextStyleEnum, value)) this._value = value as TextStyleEnum;
-		}
-	}
-	toString() {
-		return this._type == TextValueType.INHERIT ? 'inherit' : TextStyleEnum[this._value].toLowerCase();
-	}
-}
-(TextStyle.prototype as any)._value = TextStyleEnum.REGULAR;
-
-export class TextShadow extends TextValue {
-	private _value: Shadow;
-	get value() { return this._value; }
-	get offsetX() { return (this._value as any)._offset_x; }
-	get offsetY() { return (this._value as any)._offset_y; }
-	get size() { return (this._value as any)._size; }
-	get color() { return (this._value as any)._color; }
-	get r() { return (this as any)._value._color._r; }
-	get g() { return (this as any)._value._color._g; }
-	get b() { return (this as any)._value._color._b; }
-	get a() { return (this as any)._value._color._a; }
-	set value(val) {
-		if (val instanceof Shadow) {
-			this._value = val;
-		} else if (typeof val == 'string') {
-			this._value = check_is_null_ret(parseShadow(val));
-		} else {
-			throw new Error('Bad argument.');
-		}
-	}
-	constructor(type?: TextValueType, value?: Shadow) {
-		super(type);
-		this._value = arguments.length > 1 && value instanceof Shadow ? value: new Shadow();
-	}
-	toString() {
-		return this._type == TextValueType.INHERIT ? 'inherit' : this._value.toString();
-	}
-}
-(TextShadow.prototype as any)._value = null;
-
-export class TextLineHeight extends TextValue {
-	private _height: number;
-	get isAuto() { return this._height <= 0; }
-	get height() { return this._height; }
-	set height(value) {
-		this._height = check_unsigned_number_ret(value);
-	}
-	constructor(type?: TextValueType, height?: number) {
-		super(type);
-		if (arguments.length > 1) {
-			if (check_unsigned_number(height)) this._height = height as number;
-		}
-	}
-	toString() {
-		if (this._type == TextValueType.INHERIT) {
-			return 'inherit';
-		} else if (this._height <= 0) {
-			return 'auto';
-		} else {
-			return this._height.toString();
-		}
-	}
-}
-(TextLineHeight as any).prototype._height = 0;
-
-export class TextDecoration extends TextValue {
-	private _value: TextDecorationEnum;
-	get value() { return this._value; }
-	set value(val) { this._value = check_enum_ret(TextDecoration, val); }
-	constructor(type?: TextValueType, value?: TextDecorationEnum) {
-		super(type);
-		if (arguments.length > 1) {
-			if (check_enum(TextDecorationEnum, value)) this._value = value as TextDecorationEnum;
-		}
-	}
-	toString() {
-		return this._type == TextValueType.INHERIT ? 'inherit' : TextDecorationEnum[this._value].toLowerCase();
-	}
-}
-(TextDecoration as any).prototype._value = TextDecorationEnum.NONE;
-
-export class TextOverflow extends TextValue {
-	private _value: TextOverflowEnum;
-	get value() { return this._value; }
-	set value(val) { this._value = check_enum_ret(TextDecoration, val); }
-	constructor(type?: TextValueType, value?: TextOverflowEnum) {
-		super(type);
-		if (arguments.length > 1) {
-			if (check_enum(TextOverflowEnum, value)) this._value = value as TextOverflowEnum;
-		}
-	}
-	toString() {
-		return this._type == TextValueType.INHERIT ? 'inherit' : TextOverflowEnum[this._value].toLowerCase();
-	}
-}
-(TextOverflow as any).prototype._value = TextOverflowEnum.NORMAL;
-
-export class TextWhiteSpace extends TextValue {
-	private _value: TextWhiteSpaceEnum;
-	get value() { return this._value; }
-	set value(val) { this._value = check_enum_ret(TextDecoration, val); }
-	constructor(type?: TextValueType, value?: TextWhiteSpaceEnum) {
-		super(type);
-		if (arguments.length > 1) {
-			if (check_enum(TextWhiteSpaceEnum, value)) this._value = value as TextWhiteSpaceEnum;
-		}
-	}
-	toString() {
-		return this._type == TextValueType.INHERIT ? 'inherit' : TextWhiteSpaceEnum[this._value].toLowerCase();
-	}
-}
-(TextWhiteSpace as any).prototype._value = TextWhiteSpaceEnum.NORMAL;
-
-// ----------------------------
-
-export function newTextAlign(value: any) {
-	return value as TextAlign;
-}
-export function newAlign(value: any) {
-	return value as Align;
-}
-// export function new_content_align(value: any) {
-// 	return value as ContentAlign;
-// }
-export function newRepeat(value: any) {
-	return value as Repeat;
-}
-export function newDirection(value: any) {
-	return value as Direction;
-}
-export function newKeyboardType(value: any) {
-	return value as KeyboardType;
-}
-export function newKeyboardReturnType(value: any) {
-	return value as KeyboardReturnType;
-}
-// export function new_border(width: number, r: number, g: number, b: number, a: number) {
-// 	return {
-// 		__proto__: Border.prototype,
-// 		_width: width,
-// 		_color: new_color(r, g, b, a),
-// 	} as unknown as Border;
-// }
-export function newShadow(offset_x: number, offset_y: number, size: number, r: number, g: number, b: number, a: number) {
-	return {
-		__proto__: Shadow.prototype,
-		_offset_x: offset_x,
-		_offset_y: offset_y,
-		_size: size,
-		_color: newColor(r, g, b, a),
-	} as unknown as Shadow;
-}
-export function newColor(r: number, g: number, b: number, a: number) {
-	return {
-		__proto__: Color.prototype,
-		_r: r,
-		_g: g,
-		_b: b,
-		_a: a,
-	} as unknown as Color;
-}
-export function newVec2(x: number, y: number) {
-	return {
-		__proto__: Vec2.prototype,
-		_x: x,
-		_y: y,
-	} as unknown as Vec2;
-}
-export function newVec3(x: number, y: number, z: number) {
-	return {
-		__proto__: Vec3.prototype,
-		_x: x,
-		_y: y,
-		_z: z,
-	} as unknown as Vec3;
-}
-export function newVec4(x: number, y: number, z: number, w: number) {
-	return {
-		__proto__: Vec4.prototype,
-		_x: x,
-		_y: y,
-		_z: z,
-		_w: w,
-	} as unknown as Vec4;
-}
-export function newCurve(p1_x: number, p1_y: number, p2_x: number, p2_y: number) {
-	return {
-		__proto__: Curve.prototype,
-		_p1_x: p1_x,
-		_p1_y: p1_y,
-		_p2_x: p2_x,
-		_p2_y: p2_y,
-	} as unknown as Curve;
-}
-export function newRect(x: number, y: number, width: number, height: number) {
-	return {
-		__proto__: Rect.prototype,
-		_x: x,
-		_y: y,
-		_width: width,
-		_height: height,
-	} as unknown as Rect;
-}
-export function newMat(...value: number[]) {
-	return {
-		__proto__: Mat.prototype,
-		_value: value,
-	} as unknown as Mat;
-}
-export function newMat4(...value: number[]) {
-	return {
-		__proto__: Mat4.prototype,
-		_value: value,
-	} as unknown as Mat4;
-}
-export function newValue(type: ValueType, value: number) {
-	return {
-		__proto__: Value.prototype,
-		_type: type,
-		_value: value,
-	} as unknown as Value;
-}
-// export function new_background_position(type: BackgroundPositionType, value: number) { 
-// 	return {
-// 		__proto__: BackgroundPosition.prototype,
-// 		_type: type,
-// 		_value: value,
-// 	} as unknown as BackgroundPosition;
-// }
-// export function new_background_size(type: BackgroundSizeType, value: number) {
-// 	return {
-// 		__proto__: BackgroundSize.prototype,
-// 		_type: type,
-// 		_value: value,
-// 	} as unknown as BackgroundSize;
-// }
-// export function new_background_position_collection(type: BackgroundPositionType, value: number, type_y: BackgroundPositionType, value_y: number) { 
-// 	return {
-// 		__proto__: BackgroundPositionCollection.prototype,
-// 		x: new_background_position(type, value),
-// 		y: new_background_position(type_y, value_y),
-// 	} as BackgroundPositionCollection;
-// }
-// export function new_background_size_collection(type: BackgroundSizeType, value: number, type_y: BackgroundSizeType, value_y: number) { 
-// 	return {
-// 		__proto__: BackgroundSizeCollection.prototype,
-// 		x: new_background_size(type, value),
-// 		y: new_background_size(type_y, value_y),
-// 	} as BackgroundSizeCollection;
-// }
-export function newTextColor(type: TextValueType, r: number, g: number, b: number, a: number) {
-	return {
-		__proto__: TextColor.prototype,
-		_type: type,
-		_value: newColor(r, g, b, a),
-	} as unknown as TextColor;
-}
-export function newTextSize(type: TextValueType, value: number) {
-	return {
-		__proto__: TextSize.prototype,
-		_type: type,
-		_value: value,
-	} as unknown as TextSize;
-}
-export function newTextFamily(type: TextValueType, value: string) {
-	return {
-		__proto__: TextFamily.prototype,
-		_type: type,
-		_value: value,
-	} as unknown as TextFamily;
-}
-export function newTextStyle(type: TextValueType, value: TextStyleEnum) {
-	return {
-		__proto__: TextStyle.prototype,
-		_type: type,
-		_value: value,
-	} as unknown as TextStyle;
-}
-export function newTextShadow(type: TextValueType, offset_x: number, offset_y: number, size: number, r: number, g: number, b: number, a: number) {
-	return {
-		__proto__: TextShadow.prototype,
-		_type: type,
-		_value: newShadow(offset_x, offset_y, size, r, g, b, a),
-	} as unknown as TextShadow;
-}
-// export function newTextLineHeight(type: TextValueType, height: number) {
-// 	return {
-// 		__proto__: TextLineHeight.prototype,
-// 		_type: type,
-// 		_height: height,
-// 	} as unknown as TextLineHeight;
-// }
-export const newTextLineHeight = newTextSize;
-
-export function newTextDecoration(type: TextValueType, value: TextDecorationEnum) {
-	return {
-		__proto__: TextDecoration.prototype,
-		_type: type,
-		_value: value,
-	} as unknown as TextDecoration;
-}
-export function newTextOverflow(type: TextValueType, value: TextOverflowEnum) {
-	return {
-		__proto__: TextOverflow.prototype,
-		_type: type,
-		_value: value,
-	} as unknown as TextOverflow;
-}
-export function new_text_white_space(type: TextValueType, value: TextWhiteSpaceEnum) {
-	return {
-		__proto__: TextWhiteSpace.prototype,
-		_type: type,
-		_value: value,
-	} as unknown as TextWhiteSpace;
-}
-
-// parse
-
-export type TextAlignIn = string | TextAlign | number;
-export type AlignIn = string | Align | number;
-export type ContentAlignIn = string | ContentAlign | number;
-export type RepeatIn = string | Repeat | number;
-export type DirectionIn = string | Direction | number;
-export type KeyboardTypeIn = string | KeyboardType | number;
-export type KeyboardReturnTypeIn = string | KeyboardReturnType | number;
-export type BorderIn = string | Border;
-export type ShadowIn = string | Shadow;
-export type ColorIn = string | Color | number;
-export type Vec2In = string | Vec2 | number | [number, number?];
-export type Vec3In = string | Vec3 | number | [number, number?, number?];
-export type Vec4In = string | Vec4 | number | [number, number?, number?, number?];
-export type CurveIn = 'linear' | 'ease' | 'ease_in' | 'ease_out' | 'ease_in_out' | string | Curve;
-export type RectIn = string | Rect | number;
-export type MatIn = string | Mat | number;
-export type Mat4In = string | Mat4 | number;
-export type ValueIn = 'auto' | 'full' | string | Value | number;
-export type BackgroundPositionIn = 'left' | 'right' | 'center' | 'top' | 'bottom' | string | BackgroundPosition | number;
-export type BackgroundSizeIn = 'auto' | string | BackgroundSize | number;
-export type BackgroundIn = string | Background | BackgroundOptions;
-export type ValuesIn = string | Value[] | Value | number;
-export type AlignsIn = string | Align[] | Align | number;
-export type FloatsIn = string | number[] | number;
-export type BackgroundPositionCollectionIn = string | BackgroundPositionCollection | BackgroundPosition;
-export type BackgroundSizeCollectionIn = string | BackgroundSizeCollection | BackgroundSize;
-export type TextColorIn = string | TextColor | Color;
-export type TextSizeIn = string | TextSize | number;
-export type TextFamilyIn = string | TextFamily;
-export type TextStyleIn = string | TextStyle | TextStyleEnum | number;
-export type TextShadowIn = string | TextShadow | Shadow;
-export type TextLineHeightIn = string | TextLineHeight | number;
-export type TextDecorationIn = string | TextDecoration | TextDecorationEnum | number;
-export type TextOverflowIn = string | TextOverflow | TextOverflowEnum | number;
-export type TextWhiteSpaceIn = string | TextWhiteSpace | TextWhiteSpaceEnum | number;
-
-function error(value: any, desc?: string, reference?: any[], enum_value?: any){
-	var err: string;
-	var msg = String(desc || '%s').replace(/\%s/g, '`' + value + '`');
-	var help = get_help(reference, enum_value);
+function error(value: any, desc?: string, reference?: any[], ref?: Reference, enum_value?: any) {
+	let err: string;
+	let msg = String(desc || '%s').replace(/\%s/g, '`' + value + '`');
+	let help = get_help(reference, ref, enum_value);
 	if (help) {
 		err = `Bad argument. \`${msg}\`. Examples: ${help}`;
 	} else {
@@ -1307,838 +65,1343 @@ function error(value: any, desc?: string, reference?: any[], enum_value?: any){
 	return new Error(err);
 }
 
-export function parseTextAlign(str: TextAlignIn, desc?: string) { 
-	if (typeof str == 'string') {
-		var value = enum_object[str];
-		if (check_enum(TextAlign, value)) {
-			return value as TextAlign;
-		}
-	} else if (check_enum(TextAlign, str)) {
-		return str as TextAlign;
-	}
-	throw error(str, desc, undefined, TextAlign);
+export type N = number;
+
+interface Constructor<T> {
+	new(...args: any[]): T;
 }
 
-export function parseAlign(str: AlignIn, desc?: string) { 
-	if (typeof str == 'string') {
-		var value = enum_object[str];
-		if (check_enum(Align, value)) {
-			return value as Align;
-		}
-	} else if (check_enum(Align, str)) {
-		return str as Align;
-	}
-	throw error(str, desc, undefined, Align);
+type RemoveField<Type, S> = {
+	[Property in keyof Type as Exclude<Property, S>]: Type[Property]
+};
+
+type RemoveToStringField<Type> = RemoveField<Type, 'toString'>;
+
+export function initDefaults<T>(cls: Constructor<T>, ext: RemoveToStringField<Partial<T>>) {
+	Object.assign(cls.prototype, ext);
 }
 
-export function parseContentAlign(str: ContentAlignIn, desc?: string) {
-	if (typeof str == 'string') {
-		var value = enum_object[str];
-		if (check_enum(ContentAlign, value)) {
-			return value as ContentAlign;
-		}
-	} else if (check_enum(ContentAlign, str)) {
-		return str as ContentAlign;
-	}
-	throw error(str, desc, undefined, ContentAlign);
+function newBase<T>(cls: Constructor<T>, ext: RemoveToStringField<Partial<T>>) {
+	(ext as any).__proto__ = cls.prototype
+	return ext as T;
 }
 
-export function parseRepeat(str: RepeatIn, desc?: string) {
-	if (typeof str == 'string') {
-		var value = enum_object[str];
-		if (check_enum(Repeat, value)) {
-			return value as Repeat;
-		}
-	} else if (check_enum(Repeat, str)) {
-		return str as Repeat;
+function hexStr(num: N) {
+	if (num < 16) {
+		return '0' + num.toString(16);
+	} else {
+		return num.toString(16);
 	}
-	throw error(str, desc, undefined, Repeat);
 }
 
-export function parseDirection(str: DirectionIn, desc?: string) {
-	if (typeof str == 'string') {
-		var value = enum_object[str];
-		if (check_enum(Direction, value)) {
-			return value as Direction;
-		}
-	} else if (check_enum(Direction, str)) {
-		return str as Direction;
-	}
-	throw error(str, desc, undefined, Direction);
+function toCapitalize<T extends string>(str: T): Capitalize<T> {
+	return str[0].toUpperCase() + str.substring(1) as Capitalize<T>;
 }
 
-export function parseKeyboardType(str: KeyboardTypeIn, desc?: string) {
-	if (typeof str == 'string') {
-		var value = enum_object[str];
-		if (check_enum(KeyboardType, value)) {
-			return value as KeyboardType;
-		}
-	} else if (check_enum(KeyboardType, str)) {
-		return str as KeyboardType;
+// -------------------------------------------------------------------------------------
+
+export enum Repeat {
+	Repeat,
+	RepeatX,
+	RepeatY,
+	RepeatNo,
+};
+
+export enum FillPositionKind {
+	Rem,       /* 明确值  rem */
+	Ratio,     /* 百分比  % */
+	Start,     /* 开始 start */
+	End,       /* 结束 end */
+	Center,    /* 居中 center */
+};
+
+export enum FillSizeKind {
+	Auto,      /* 自动值  auto */
+	Rem,       /* 明确值  rem */
+	Ratio,     /* 百分比  % */
+};
+export type BoxOriginKind = FillSizeKind;
+export const BoxOriginKind = FillSizeKind;
+
+export enum Direction {
+	Row,
+	RowReverse,
+	Column,
+	ColumnReverse,
+};
+
+// 项目在主轴上的对齐方式
+export enum ItemsAlign {
+	Start, // 左对齐
+	Center, // 居中
+	End, // 右对齐
+	SpaceBetween, // 两端对齐，项目之间的间隔都相等
+	SpaceAround, // 每个项目两侧的间隔相等。所以，项目之间的间隔比项目与边框的间隔大一倍
+	SpaceEvenly, // 每个项目两侧的间隔相等,这包括边框的间距
+};
+
+// 项目在交叉轴内如何对齐
+export enum CrossAlign {
+	Start, // 与交叉轴内的起点对齐
+	Center, // 与交叉轴内的中点对齐
+	End, // 与交叉轴内的终点对齐
+};
+
+// 主轴溢出包裹，开启后当主轴溢出时分裂成多根交叉轴
+export enum Wrap {
+	NoWrap, // 只有一根交叉轴线
+	Wrap, // 溢出后会有多根交叉轴线
+	WrapReverse, // 多根交叉轴线反向排列
+};
+
+// 多根交叉轴线的对齐方式。如果项目只有一根交叉轴，该属性不起作用
+export enum WrapAlign {
+	Start, // 与交叉轴的起点对齐
+	Center, // 与交叉轴的中点对齐
+	End, // 与交叉轴的终点对齐
+	SpaceBetween, // 与交叉轴两端对齐,轴线之间的间隔平均分布
+	SpaceAround, // 每根轴线两侧的间隔都相等,所以轴线之间的间隔比轴线与边框的间隔大一倍
+	SpaceEvenly, // 每根轴线两侧的间隔都相等,这包括边框的间距
+	Stretch, // 轴线占满整个交叉轴，平均分配剩余的交叉轴空间
+};
+
+// view align
+export enum Align {
+	Auto,
+	Start,
+	Center,
+	End,
+	LeftTop = Start,
+	CenterTop,
+	RightTop,
+	LeftCenter,
+	CenterCenter,
+	RightCenter,
+	LeftBottom,
+	CenterBottom,
+	RightBottom,
+};
+
+export enum BoxSizeKind {
+	Auto,    /* 包裹内容 wrap content */
+	Match,   /* 匹配父视图 match parent */
+	Rem,     /* 明确值  rem */
+	Ratio,   /* 百分比 value % */
+	Minus,   /* 减法(parent-value) value ! */
+};
+
+export enum TextValueKind {
+	Inherit, Default, Value,
+};
+
+export enum TextAlign {
+	Inherit, // inherit
+	Left,           /* 左对齐 */
+	Center,         /* 居中 */
+	Right,          /* 右对齐 */
+	Default = Left,
+};
+
+export enum TextDecoration {
+	Inherit, // inherit
+	None,           /* 没有 */
+	Overline,       /* 上划线 */
+	LineThrough,   /* 中划线 */
+	Underline,      /* 下划线 */
+	Default = None,
+};
+
+export enum TextOverflow {
+	Inherit, // inherit
+	Normal,          /* 不做任何处理 */
+	Clip,            /* 剪切 */
+	Ellipsis,        /* 剪切并显示省略号 */
+	EllipsisCenter, /* 剪切并居中显示省略号 */
+	Default = Normal,
+};
+
+export enum TextWhiteSpace {
+	Inherit,       // inherit
+	Normal,       /* 合并空白序列,使用自动wrap */
+	NoWrap,       /* 合并空白序列,不使用自动wrap */
+	Pre,          /* 保留所有空白,不使用自动wrap */
+	PreWrap,      /* 保留所有空白,使用自动wrap */
+	PreLine,      /* 合并空白符序列,但保留换行符,使用自动wrap */
+	Default = Normal,
+};
+
+export enum TextWordBreak {
+	Inherit,  // inherit
+	Normal,   /* 保持单词在同一行 */
+	BreakWord,/* 保持单词在同一行,除非单词长度超过一行才截断 */
+	BreakAll, /* 以字为单位行空间不足换行 */
+	KeepAll,  /* 所有连续的字符都当成一个单词,除非出现空白符、换行符、标点符 */
+	Default = Normal,
+};
+
+export enum TextWeight {
+	Inherit      = 0,
+	Thin         = 100,
+	Ultralight   = 200,
+	Light        = 300,
+	Regular      = 400,
+	Medium       = 500,
+	Semibold     = 600,
+	Bold         = 700,
+	Heavy        = 800,
+	Black        = 900,
+	ExtraBlack   = 1000,
+	Default      = Regular, // default
+};
+
+export enum TextWidth {
+	Inherit          = 0, // inherit
+	UltraCondensed   = 1,
+	ExtraCondensed   = 2,
+	Condensed        = 3,
+	SemiCondensed    = 4,
+	Normal           = 5,
+	SemiExpanded     = 6,
+	Expanded         = 7,
+	ExtraExpanded    = 8,
+	UltraExpanded    = 9,
+	Default          = Normal,
+};
+
+export enum TextSlant {
+	Inherit, // inherit
+	Normal, // 正常
+	Italic, // 斜体
+	Oblique,  // 倾斜
+	Default = Normal,
+};
+
+export type TextStyle = number;
+
+export enum KeyboardType {
+	Normal,
+	Ascii,
+	Number,
+	Url,
+	NumberPad,
+	Phone,
+	NamePhone,
+	Email,
+	Decimal,
+	Search,
+	AsciiNumber,
+};
+
+export enum KeyboardReturnType {
+	Normal,
+	Oo,
+	Join,
+	Next,
+	Route,
+	Search,
+	Send,
+	Done,
+	Emergency,
+	Continue,
+};
+
+export enum CursorStyle {
+	Normal,
+	None,
+	NoneUntilMouseMoves,
+	Arrow,
+	Ibeam,
+	PointingHand,
+	ClosedHand,
+	OpenHand,
+	ResizeLeft,
+	ResizeRight,
+	ResizeLeftRight,
+	ResizeUp,
+	ResizeDown,
+	ResizeUpDown,
+	Crosshair,
+	DisappearingItem,
+	OperationNotAllowed,
+	DragLink,
+	DragCopy,
+	ContextualMenu,
+	IbeamForVertical,
+};
+
+export enum FindDirection {
+	None,
+	Left,
+	Top,
+	Right,
+	Bottom,
+};
+
+// -------------------------------------------------------------------------------------
+
+export type RepeatIn = Uncapitalize<keyof typeof Repeat> | Repeat;
+export type DirectionIn = Uncapitalize<keyof typeof Direction> | Direction;
+export type ItemsAlignIn = Uncapitalize<keyof typeof ItemsAlign> | ItemsAlign;
+export type CrossAlignIn = Uncapitalize<keyof typeof CrossAlign> | CrossAlign;
+export type WrapIn = Uncapitalize<keyof typeof Wrap> | Wrap;
+export type WrapAlignIn = Uncapitalize<keyof typeof WrapAlign> | WrapAlign;
+export type AlignIn = Uncapitalize<keyof typeof Align> | Align;
+export type TextAlignIn = Uncapitalize<keyof typeof TextAlign> | TextAlign;
+export type TextDecorationIn = Uncapitalize<keyof typeof TextDecoration> | TextDecoration;
+export type TextOverflowIn = Uncapitalize<keyof typeof TextOverflow> | TextOverflow;
+export type TextWhiteSpaceIn = Uncapitalize<keyof typeof TextWhiteSpace> | TextWhiteSpace;
+export type TextWordBreakIn = Uncapitalize<keyof typeof TextWordBreak> | TextWordBreak;
+export type TextWeightIn = Uncapitalize<keyof typeof TextWeight> | TextWeight;
+export type TextWidthIn = Uncapitalize<keyof typeof TextWidth> | TextWidth;
+export type TextSlantIn = Uncapitalize<keyof typeof TextSlant> | TextSlant;
+export type KeyboardTypeIn = Uncapitalize<keyof typeof KeyboardType> | KeyboardType;
+export type KeyboardReturnTypeIn = Uncapitalize<keyof typeof KeyboardReturnType> | KeyboardReturnType;
+export type CursorStyleIn = Uncapitalize<keyof typeof CursorStyle> | CursorStyle;
+export type FindDirectionIn = Uncapitalize<keyof typeof FindDirection> | FindDirection;
+
+export class Base<T> {
+	toString() { return '[types base]' }
+	toStringStyled(indent?: number) {
+		return (indent ? new Array(indent+1).join(' '): '') + this.toString();
 	}
-	throw error(str, desc, undefined, KeyboardType);
+	constructor(opts?: RemoveToStringField<Partial<T>>) {
+		Object.assign(this, opts)
+	}
 }
 
-export function parseKeyboardReturnType(str: KeyboardReturnTypeIn, desc?: string) {
-	if (typeof str == 'string') {
-		var value = enum_object[str];
-		if (check_enum(KeyboardReturnType, value)) {
-			return value as KeyboardReturnType;
-		}
-	} else if (check_enum(KeyboardReturnType, str)) {
-		return str as KeyboardReturnType;
+export class Vec2 extends Base<Vec2> {
+	x: N;
+	y: N;
+	toString(): `vec2(${N},${N})` { return `vec2(${this.x},${this.y})` }
+}
+initDefaults(Vec2, { x: 0, y: 0 });
+export type Vec2In = `${number} ${number}` | `vec2(${N},${N})` | N | [N,N] | Vec2;
+
+export class Vec3 extends Base<Vec3> {
+	x: N;
+	y: N;
+	z: N;
+	toString(): `vec3(${N},${N},${N})` { return `vec3(${this.x},${this.y},${this.z})` }
+}
+initDefaults(Vec3, { x: 0, y: 0, z: 0 });
+export type Vec3In = `${number} ${number} ${number}` | `vec3(${N},${N},${N})` | N | [N,N,N] | Vec3;
+
+export class Vec4 extends Base<Vec4> {
+	x: N;
+	y: N;
+	z: N;
+	w: N;
+	toString(): `vec4(${N},${N},${N},${N})` {
+		return `vec4(${this.x},${this.y},${this.z},${this.w})`;
 	}
-	throw error(str, desc, undefined, KeyboardReturnType);
+}
+initDefaults(Vec4, { x: 0, y: 0, z: 0, w: 0 });
+export type Vec4In = `${number} ${number} ${number} ${number}` |
+	`vec4(${N},${N},${N},${N})` | N | [N,N,N,N] | Vec4;
+
+export class Curve extends Base<Curve> {
+	p1: Vec2;
+	p2: Vec2;
+	get p1x() { return this.p1.x; }
+	get p1y() { return this.p1.y; }
+	get p2x() { return this.p2.x; }
+	get p2y() { return this.p2.y; }
+	toString(): `curve(${N},${N},${N},${N})` {
+		return `curve(${this.p1.x},${this.p1.y},${this.p2.x},${this.p2.y})`;
+	}
+}
+initDefaults(Curve, { p1: new Vec2({x:0,y:0}), p2: new Vec2({x:1,y:1}) });
+export type CurveIn = 'linear' | 'ease' | 'easeIn' | 'easeOut' | 'easeInOut' | 
+	`curve(${N},${N},${N},${N})` | [number,number,number,number] | Curve;
+
+export class Rect extends Base<Rect> {
+	origin: Vec2;
+	size: Vec2;
+	get x() { return this.origin.x; }
+	get y() { return this.origin.y; }
+	get width() { return this.size.x; }
+	get height() { return this.size.y; }
+	toString(): `rect(${N},${N},${N},${N})` {
+		return `rect(${this.x},${this.y},${this.width},${this.height})`;
+	}
+}
+initDefaults(Rect, { origin: new Vec2, size: new Vec2 });
+export type RectIn = `rect(${N},${N},${N},${N})` | `rect(${N},${N})` |
+	[number,number,number,number] | Rect;
+
+export class Mat extends Base<Mat> {
+	m0: N;
+	m1: N;
+	m2: N;
+	m3: N;
+	m4: N;
+	m5: N;
+	get value() {
+		return [this.m0,this.m1,this.m2,this.m3,this.m4,this.m5];
+	}
+	toString(): `mat(${N},${N},${N},${N},${N},${N})` {
+		let _ = this;
+		return `mat(${_.m0},${_.m1},${_.m2},${_.m3},${_.m4},${_.m5})`;
+	}
+}
+initDefaults(Mat, { m0: 1, m1: 0, m2: 0, m3: 0, m4: 1, m5: 0 });
+export type MatIn = N | Mat | ReturnType<typeof Mat.prototype.toString>;
+
+export class Mat4 extends Base<Mat4> {
+	m0: N;
+	m1: N;
+	m2: N;
+	m3: N;
+	m4: N;
+	m5: N;
+	m6: N;
+	m7: N;
+	m8: N;
+	m9: N;
+	m10: N;
+	m11: N;
+	m12: N;
+	m13: N;
+	m14: N;
+	m15: N;
+	get value() { return [
+		this.m0,this.m1,this.m2,this.m3,this.m4,this.m5,this.m6,this.m7,
+		this.m8,this.m9,this.m10,this.m11,this.m12,this.m13,this.m14,this.m15];
+	}
+	toString():
+		`mat4(${N},${N},${N},${N},${N},${N},${N},${N},${N},${N},${N},${N},${N},${N},${N},${N})`
+	{
+		let _ = this;
+		return `mat4(\
+${_.m0},${_.m1},${_.m2},${_.m3},${_.m4},${_.m5},${_.m6},${_.m7},\
+${_.m8},${_.m9},${_.m10},${_.m11},${_.m12},${_.m13},${_.m14},${_.m15})`;
+	}
+}
+initDefaults(Mat4, {
+	m0: 1, m1: 0, m2: 0, m3: 0,m4: 0, m5: 1, m6: 0, m7: 0,
+	m8: 0, m9: 0, m10: 1, m11: 0,m12: 0, m13: 0, m14: 0, m15: 1
+});
+export type Mat4In = N | Mat4 | ReturnType<typeof Mat4.prototype.toString>;
+
+export class Color extends Base<Color> {
+	r: N;
+	g: N;
+	b: N;
+	a: N;
+	constructor(r: N, g: N, b: N, a: N) {
+		super();
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.a = a;
+	}
+	reverse() {
+		return new Color(255 - this.r, 255 - this.g, 255 - this.b, this.a);
+	}
+	toRGBString(): `rgb(${N},${N},${N})` {
+		return `rgb(${this.r},${this.g},${this.b})`;
+	}
+	toRGBAString(): `rgba(${N},${N},${N},${N})` {
+		return `rgba(${this.r},${this.g},${this.b},${this.a})`;
+	}
+	toString(): `#${string}` {
+		return `#${hexStr(this.r)}${hexStr(this.g)}${hexStr(this.b)}`;
+	}
+	toHex32String(): `#${string}` {
+		return `#${hexStr(this.r)}${hexStr(this.g)}${hexStr(this.b)}${hexStr(this.a)}`;
+	}
+}
+initDefaults(Color, { r: 0, g: 0, b: 0, a: 255 });
+type ColorStrIn = `#${string}` | `rgb(${N},${N},${N})` | `rgba(${N},${N},${N},${N})`;
+export type ColorIn = ColorStrIn | N | Color;
+
+export class Shadow extends Base<Shadow> {
+	x: N;
+	y: N;
+	size: N;
+	color: Color;
+	get r() { return this.color.r; }
+	get g() { return this.color.g; }
+	get b() { return this.color.b; }
+	get a() { return this.color.a; }
+	toString(): `${N} ${N} ${N} #${string}` {
+		return `${this.x} ${this.y} ${this.size} ${this.color.toString()}`
+	}
+}
+initDefaults(Shadow, { x: 0, y: 0, size: 0, color: new Color(0,0,0,255) });
+export type ShadowIn = `${N} ${N} ${N} ${ColorStrIn}` | Shadow;
+
+export class BoxBorder extends Base<BoxBorder> {
+	width: N;
+	color: Color;
+	get r() { return this.color.r; }
+	get g() { return this.color.g; }
+	get b() { return this.color.b; }
+	get a() { return this.color.a; }
+	toString(): `${N} #${string}` {
+		return `${this.width} ${this.color.toString()}`
+	}
+}
+initDefaults(BoxBorder, { width: 0, color: new Color(0,0,0,255) });
+export type BoxBorderIn = `${N} ${ColorStrIn}` | BoxBorder;
+
+export class FillPosition extends Base<FillPosition> {
+	value: N;
+	kind: FillPositionKind;
+};
+initDefaults(FillPosition, { value: 0, kind: FillPositionKind.Rem });
+type FillPositionKindStr = 
+	Uncapitalize<keyof RemoveField<typeof FillPositionKind, 'Rem'|'Ratio'|number>>;
+export type FillPositionIn = N | FillPosition | `${number}%` | FillPositionKindStr;
+
+export class FillSize extends Base<FillSize> {
+	value: N;
+	kind: FillSizeKind;
+};
+initDefaults(FillSize, { value: 0, kind: FillSizeKind.Auto });
+type FillSizeKindStr = Uncapitalize<keyof RemoveField<typeof FillSizeKind, 'Rem'|'Ratio'|number>>;
+export type FillSizeIn = N | FillSize | `${number}%` | FillSizeKindStr;
+
+export class BoxSize extends Base<BoxSize> {
+	value: N;
+	kind: BoxSizeKind;
+};
+initDefaults(BoxSize, { value: 0, kind: BoxSizeKind.Rem });
+type BoxSizeKindStr = 
+	Uncapitalize<keyof RemoveField<typeof BoxSizeKind, 'Rem'|'Ratio'|'Minus'|number>>
+export type BoxSizeIn = N | BoxSize | `${number}%` | `${number}!` | BoxSizeKindStr;
+
+export class BoxOrigin extends Base<BoxSize> {
+	value: N;
+	kind: BoxOriginKind;
+};
+type BoxOriginKindStr = FillSizeKindStr;
+initDefaults(BoxOrigin, { value: 0, kind: FillSizeKind.Rem });
+export type BoxOriginIn = N | BoxOrigin | `${number}%` | BoxOriginKindStr;
+
+const TextBase_toString = [
+	()=>'inherit',
+	()=>'default',
+	(v: any)=>v+'',
+	()=>'unknown',
+];
+class TextBase<Derived,Value> extends Base<Derived> {
+	value: Value;
+	kind: TextValueKind;
+	toString() {
+		return (TextBase_toString[this.kind] || TextBase_toString[3])(this.value);
+	}
+}
+export class TextColor extends TextBase<TextColor,Color> {
+	get r() { return this.value.r; }
+	get g() { return this.value.g; }
+	get b() { return this.value.b; }
+	get a() { return this.value.a; }
+}
+initDefaults(TextColor, { value: new Color(0,0,0,255), kind: TextValueKind.Inherit });
+type TextValueKindInStr = Uncapitalize<keyof RemoveField<typeof TextValueKind, 'Value'|number>>;
+export type TextColorIn = TextValueKindInStr | ColorIn | TextColor;
+
+export class TextSize extends TextBase<TextSize,N> {}
+initDefaults(TextSize, { value: 0, kind: TextValueKind.Inherit });
+export type TextSizeIn = TextValueKindInStr | N | TextSize;
+export type TextLineHeight = TextSize;
+export const TextLineHeight = TextSize;
+export type TextLineHeightIn = TextSizeIn;
+
+export class TextShadow extends TextBase<TextShadow,Shadow> {}
+initDefaults(TextShadow, { value: new Shadow, kind: TextValueKind.Inherit });
+export type TextShadowIn = TextValueKindInStr | ShadowIn | TextShadow;
+
+export type FFID = Uint8Array;
+export class TextFamily extends TextBase<TextFamily,FFID> {
+	toString() {
+		if (this.kind == TextValueKind.Value) {
+			// let _ = this.value;
+			// let high = _[0] << 24 | _[1] << 16 | _[2] << 8 | _[3];
+			// let low = _[4] << 24 | _[5] << 16 | _[6] << 8 | _[7];
+			// return `ffid(${high},${low})`;
+			return this.familys();
+		} else {
+			return (TextBase_toString[this.kind] || TextBase_toString[3])(this.value);
+		}
+	}
+	familys(): string {
+		let isNullptr = this.value.every(e=>!e);
+		return isNullptr ? '': _font.getFamilysName(this.value);
+	}
+}
+const EmptyFFID = new Uint8Array([0,0,0,0,0,0,0,0]);
+initDefaults(TextFamily, { value: EmptyFFID, kind: TextValueKind.Inherit });
+export type TextFamilyIn = TextValueKindInStr | string | TextFamily;
+
+
+
+export declare class BoxFilter {
+	readonly type: N;
+	next: BoxFilter | null;
+}
+export type BoxFilterIn = string | string[] | BoxFilter;
+
+export declare class FillImage extends BoxFilter {
+	src: string;
+	width: FillSize;
+	height: FillSize;
+	x: FillPosition;
+	y: FillPosition;
+	repeat: Repeat;
+	constructor(src: string, init?: {
+		width?: FillSize, height?: FillSize,
+		x?: FillPosition, y?: FillPosition, repeat?: Repeat,
+	});
 }
 
-export function parseBorder(str: BorderIn, desc?: string) { 
-	if (typeof str == 'string') {
-		// 10 #ff00ff
-		var m = str.match(/^ *((?:\d+)?\.?\d+)/);
-		if (m) {
-			var rev = new Border();
-			(rev as any)._width = parseFloat(m[1]);
-			var color = parseColor(str.substr(m[0].length + 1));
-			if (color) {
-				(rev as any)._color = color;
-			}
-			return rev;
-		}
-	} else if (str instanceof Border) {
-		return str;
-	}
-	throw error(str, desc, ['10 #ff00aa', '10 rgba(255,255,0,255)']);
+export declare class FillGradientRadial extends BoxFilter {
+	readonly positions: Array<N>;
+	readonly colors: Array<Color>;
+	constructor(pos: Array<N>, coloes: Array<Color>);
 }
 
-export function parseShadow(str: ShadowIn, desc?: string) { 
-	if (typeof str == 'string') {
-		// 10 10 2 #ff00aa
-		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +((?:\d+)?\.?\d+)/);
-		if (m) {
-			var rev = new Shadow();
-			(rev as any)._offset_x = parseFloat(m[1]);
-			(rev as any)._offset_y = parseFloat(m[2]);
-			(rev as any)._size = parseFloat(m[3]);
-			var color = parseColor(str.substr(m[0].length + 1));
-			if (color) {
-				(rev as any)._color = color;
-			}
-			return rev;
-		}
-	} else if (str instanceof Shadow) {
-		return str;
-	}
-	throw error(str, desc, ['10 10 2 #ff00aa', '10 10 2 rgba(255,255,0,255)']);
+export declare class FillGradientLinear extends FillGradientRadial {
+	angle: N;
+	constructor(pos: Array<N>, coloes: Array<Color>, angle: N);
 }
 
-export function parseColor(str: ColorIn, desc?: string) {
-	if (typeof str == 'string') {
-		if (/^ *none *$/.test(str)) {
-			return newColor(0, 0, 0, 0);
-		}
-		var m = str.match(/^#([0-9a-f]{3}([0-9a-f])?([0-9a-f]{2})?([0-9a-f]{2})?)$/i);
-		if (m) {
-			if (m[4]) { // 8
-				return newColor(parseInt(m[1].substr(0, 2), 16),
-											parseInt(m[1].substr(2, 2), 16),
-											parseInt(m[1].substr(4, 2), 16),
-											parseInt(m[1].substr(6, 2), 16));
-			} else if (m[3]) { // 6
-				return newColor(parseInt(m[1].substr(0, 2), 16),
-											parseInt(m[1].substr(2, 2), 16),
-											parseInt(m[1].substr(4, 2), 16), 255);
-			} else if (m[2]) { // 4
-				return newColor(parseInt(m[1].substr(0, 1), 16) * 17,
-											parseInt(m[1].substr(1, 1), 16) * 17,
-											parseInt(m[1].substr(2, 1), 16) * 17,
-											parseInt(m[1].substr(3, 1), 16) * 17);
-			} else { // 3
-				return newColor(parseInt(m[1].substr(0, 1), 16) * 17,
-											parseInt(m[1].substr(1, 1), 16) * 17,
-											parseInt(m[1].substr(2, 1), 16) * 17, 255);
-			}
-		}
-		var m = str.match(/^ *rgb(a)?\( *(\d{1,3}) *, *(\d{1,3}) *, *(\d{1,3})( *, *(\d{1,3}))? *\) *$/);
-		if (m) {
-			if (m[1] == 'a') { // rgba
-				if (m[5]) { // a
-					return newColor(parseInt(m[2]) % 256, 
-												parseInt(m[3]) % 256,
-												parseInt(m[4]) % 256,
-												parseInt(m[6]) % 256);
-				}
-			} else { // rgb
-				if (!m[5]) {
-					return newColor(parseInt(m[2]) % 256, 
-												parseInt(m[3]) % 256,
-												parseInt(m[4]) % 256, 255);
-				}
-			}
-		}
-	} else if (str instanceof Color) {
-		return str;
-	} else if (typeof str == 'number') {
-		newColor(str >> 24 & 255, // r
-					str >> 16 & 255, // g
-					str >> 8 & 255, // b
-					str >> 0 & 255); // a
-	}
-	throw error(str, desc, ['rgba(255,255,255,255)', 'rgb(255,255,255)', '#ff0', '#ff00', '#ff00ff', '#ff00ffff']);
+export declare class BoxShadow extends BoxFilter {
+	value: Shadow;
+	constructor(value: Shadow);
+}
+export type BoxShadowIn = ShadowIn | ShadowIn[] | BoxShadow;
+
+// -------------------------------------------------------------------------------------
+
+export function newColor(r: N, g: N, b: N, a: N) {
+	return newBase(Color, {r,g,b,a});
 }
 
-export function parseVec2(str: Vec2In, desc?: string) {
-	if (typeof str == 'string') {
-		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
-						str.match(/^ *vec2\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
+export function newVec2(x: N, y: N) {
+	return newBase(Vec2, {x,y});
+}
+
+export function newVec3(x: N, y: N, z: N) {
+	return newBase(Vec3, { x, y, z });
+}
+
+export function newVec4(x: N, y: N, z: N, w: N) {
+	return newBase(Vec4, { x, y, z, w});
+}
+
+export function newRect(x: N, y: N, width: N, height: N) {
+	return newBase(Rect, {origin: newVec2(x,y),size: newVec2(width,height)});
+}
+
+export function newMat(...value: N[]) {
+	let mat = newBase(Mat, {});
+	for (let i: 0 = 0; i < 6; i++)
+		mat[`m${i}`] = value[i];
+	return mat;
+}
+
+export function newMat4(...value: N[]) {
+	let mat = newBase(Mat4, {});
+	for (let i: 0 = 0; i < 16; i++)
+		mat[`m${i}`] = value[i];
+	return mat;
+}
+
+export function newCurve(p1x: N, p1y: N, p2x: N, p2y: N) {
+	return newBase(Curve, { p1: newVec2(p1x,p1y), p2: newVec2(p2x,p2y) });
+}
+
+export function newShadow(
+	x: N, y: N, size: N,
+	r: N, g: N, b: N, a: N
+) {
+	return newBase(Shadow, {x,y,size,color: newColor(r, g, b, a)});
+}
+
+export function newBoxBorder(
+	width: N, r: N, g: N, b: N, a: N
+) {
+	return newBase(BoxBorder, {width,color: newColor(r, g, b, a)});
+}
+
+export function newFillPosition(kind: FillPositionKind, value: N) {
+	return newBase(FillPosition, {kind,value});
+}
+
+export function newFillSize(kind: FillSizeKind, value: N) {
+	return newBase(FillSize, {kind,value});
+}
+
+export function newBoxOrigin(kind: BoxOriginKind, value: N) {
+	return newBase(BoxOrigin, {kind,value});
+}
+
+export function newBoxSize(kind: BoxSizeKind, value: N) {
+	return newBase(BoxSize, { kind, value });
+}
+
+export function bewBoxOrigin(kind: BoxOriginKind, value: N) {
+	return newBase(BoxOrigin, { kind, value });
+}
+
+export function newTextColor(kind: TextValueKind, r: N, g: N, b: N, a: N) {
+	return newBase(TextColor, { kind, value: newColor(r, g, b, a) });
+}
+
+export function newTextSize(kind: TextValueKind, value: N) {
+	return newBase(TextSize, { kind, value });
+}
+
+export function newTextShadow(
+	kind: TextValueKind, offset_x: N, offset_y: N,
+	size: N, r: N, g: N, b: N, a: N
+) {
+	return newBase(TextShadow,{kind,value: newShadow(offset_x,offset_y,size,r,g,b,a)});
+}
+
+export function newTextFamily(kind: TextValueKind, ffid: Uint8Array) {
+	return newBase(TextFamily,{kind,value:ffid});
+}
+
+// parse
+// -------------------------------------------------------------------------------------
+
+export function parseRepeat(val: RepeatIn, desc?: string): Repeat {
+	return typeof val == 'string' ?
+		Repeat[toCapitalize(val)] || 0: val in Repeat ? val: 0;
+	// throw error(str, desc, undefined, Repeat);
+}
+
+export function parseDirection(val: DirectionIn, desc?: string): Direction {
+	return typeof val == 'string' ?
+		Direction[toCapitalize(val)] || 0: val in Direction ? val: 0;
+}
+
+export function parseItemsAlign(val: ItemsAlignIn, desc?: string): ItemsAlign {
+	return typeof val == 'string' ?
+		ItemsAlign[toCapitalize(val)] || 0:
+		val in ItemsAlign ? val: 0;
+}
+
+export function parseCrossAlign(val: CrossAlignIn, desc?: string): CrossAlign {
+	return typeof val == 'string' ?
+		CrossAlign[toCapitalize(val)] || 0 : val in CrossAlign ? val: 0;
+}
+
+export function parseWrap(val: WrapIn, desc?: string): Wrap {
+	return typeof val == 'string' ?
+		Wrap[toCapitalize(val)] || 0 : val in Wrap ? val: 0;
+}
+
+export function parseWrapAlign(val: WrapAlignIn, desc?: string): WrapAlign {
+	return typeof val == 'string' ?
+		WrapAlign[toCapitalize(val)] || 0 : val in WrapAlign ? val: 0;
+}
+
+export function parseAlign(val: AlignIn, desc?: string): Align {
+	return typeof val == 'string' ?
+		Align[toCapitalize(val)] || 0 : val in Align ? val: 0;
+}
+
+export function parseTextAlign(val: TextAlignIn, desc?: string): TextAlign {
+	return typeof val == 'string' ?
+		TextAlign[toCapitalize(val)] || 0 : val in TextAlign ? val: 0;
+}
+
+export function parseTextDecoration(val: TextDecorationIn, desc?: string): TextDecoration {
+	return typeof val == 'string' ?
+		TextDecoration[toCapitalize(val)] || 0 : val in TextDecoration ? val: 0;
+}
+
+export function parseTextOverflow(val: TextOverflowIn, desc?: string): TextOverflow {
+	return typeof val == 'string' ?
+		TextOverflow[toCapitalize(val)] || 0 : val in TextOverflow ? val: 0;
+}
+
+export function parseTextWhiteSpace(val: TextWhiteSpaceIn, desc?: string): TextWhiteSpace {
+	return typeof val == 'string' ?
+		TextWhiteSpace[toCapitalize(val)] || 0 : val in TextWhiteSpace ? val: 0;
+}
+
+export function parseTextWordBreak(val: TextWordBreakIn, desc?: string): TextWordBreak {
+	return typeof val == 'string' ?
+		TextWordBreak[toCapitalize(val)] || 0 : val in TextWordBreak ? val: 0;
+}
+
+export function parseTextWeight(val: TextWeightIn, desc?: string): TextWeight {
+	return typeof val == 'string' ?
+		TextWeight[toCapitalize(val)] || 0 : val in TextWeight ? val: 0;
+}
+
+export function parseTextWidth(val: TextWidthIn, desc?: string): TextWidth {
+	return typeof val == 'string' ?
+		TextWidth[toCapitalize(val)] || 0 : val in TextWidth ? val: 0;
+}
+
+export function parseTextSlant(val: TextSlantIn, desc?: string): TextSlant {
+	return typeof val == 'string' ?
+		TextSlant[toCapitalize(val)] || 0 : val in TextSlant ? val: 0;
+}
+
+export function parseKeyboardType(val: KeyboardTypeIn, desc?: string): KeyboardType {
+	return typeof val == 'string' ?
+		KeyboardType[toCapitalize(val)] || 0 : val in KeyboardType ? val: 0;
+}
+
+export function parseKeyboardReturnType(val: KeyboardReturnTypeIn, desc?: string): KeyboardReturnType {
+	return typeof val == 'string' ?
+		KeyboardReturnType[toCapitalize(val)] || 0 : val in KeyboardReturnType ? val: 0;
+}
+
+export function parseCursorStyle(val: CursorStyleIn, desc?: string): CursorStyle {
+	return typeof val == 'string' ?
+		CursorStyle[toCapitalize(val)] || 0 : val in CursorStyle ? val: 0;
+}
+
+export function parseFindDirection(val: FindDirectionIn, desc?: string): FindDirection {
+	return typeof val == 'string' ?
+		FindDirection[toCapitalize(val)] || 0 : val in FindDirection ? val: 0;
+}
+
+const vec2Reg = [
+	/^\s*(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s*$/,
+	/^\s*vec2\(\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*\)\s*$/,
+];
+export function parseVec2(val: Vec2In, desc?: string): Vec2 {
+	if (typeof val == 'string') {
+		let m = val.match(vec2Reg[0]) || val.match(vec2Reg[1]);
 		if (m) {
 			return newVec2(parseFloat(m[1]), parseFloat(m[2]));
 		}
-	} else if (str instanceof Vec2) {
-		return str;
-	} else if (typeof str == 'number') {
-		return newVec2(str, str);
-	} else if (Array.isArray(str)) {
-		var x = Number(str[0]) || 0;
-		var y = Number(str[1]) || x;
-		return newVec2(x, y);
+	} else if (typeof val == 'number') {
+		return newVec2(val, val);
+	} else if (Array.isArray(val)) {
+		return newVec2(val[0], val[1]);
+	} else if (val instanceof Vec2) {
+		return val;
 	}
-	throw error(str, desc, ['vec2(1,1)', '1 1']);
+	throw error(val, desc, ['1 1','vec2(1,1)']);
 }
 
-export function parseVec3(str: Vec3In, desc?: string) {
-	if (typeof str == 'string') {
-		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
-						str.match(/^ *vec3\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
-		if (m) {
+const vec3Reg = [
+	/^\s*(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s*$/,
+	/^\s*vec3\(\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*\)\s*$/,
+];
+export function parseVec3(val: Vec3In, desc?: string): Vec3 {
+	if (typeof val == 'string') {
+		let m = val.match(vec3Reg[0]) || val.match(vec3Reg[1]);
+		if (m)
 			return newVec3(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]));
-		}
-	} else if (str instanceof Vec3) {
-		return str;
-	} else if (typeof str == 'number') {
-		return newVec3(str, str, str);
-	} else if (Array.isArray(str)) {
-		var x = Number(str[0]) || 0;
-		var y = Number(str[1]) || x;
-		var z = Number(str[2]) || y;
-		return newVec3(x, y, z);
-	}
-	throw error(str, desc, ['vec3(0,0,1)', '0 0 1']);
+	} else if (typeof val == 'number') {
+		return newVec3(val, val, val);
+	} else if (Array.isArray(val)) {
+		return newVec3(val[0], val[1], val[2]);
+	} else if (val instanceof Vec3) {
+		return val;
+	} 
+	throw error(val, desc, ['0 0 1', 'vec3(0,0,1)']);
 }
 
-export function parseVec4(str: Vec4In, desc?: string) {
-	if (typeof str == 'string') {
-		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
-		str.match(/^ *vec4\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
-		if (m) {
+const vec4Reg = [
+	/^\s*(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s*$/,
+	/^ *vec4\(\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*\)\s*$/,
+];
+export function parseVec4(val: Vec4In, desc?: string): Vec4 {
+	if (typeof val == 'string') {
+		let m = val.match(vec4Reg[0]) || val.match(vec4Reg[1]);
+		if (m)
 			return newVec4(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
-		}
-	} else if (str instanceof Vec4) {
-		return str;
-	} else if (typeof str == 'number') {
-		return newVec4(str, str, str, str);
-	} else if (Array.isArray(str)) {
-		var x = Number(str[0]) || 0;
-		var y = Number(str[1]) || x;
-		var z = Number(str[2]) || y;
-		var w = Number(str[3]) || z;
-		return newVec4(x, y, z, w);
+	} else if (typeof val == 'number') {
+		return newVec4(val, val, val, val);
+	} else if (val instanceof Vec4) {
+		return val;
+	} else if (Array.isArray(val)) {
+		return newVec4(val[0],val[1],val[2],val[3]);
 	}
-	throw error(str, desc, ['vec4(0,0,1,1)', '0 0 1 1']);
+	throw error(val, desc, ['0 0 1 1', 'vec4(0,0,1,1)']);
 }
 
-export function parseCurve(str: CurveIn, desc?: string) {
-	if (typeof str == 'string') {
-		var s = ({
-			linear: [0, 0, 1, 1],
-			ease: [0.25, 0.1, 0.25, 1],
-			ease_in: [0.42, 0, 1, 1],
-			ease_out: [0, 0, 0.58, 1],
-			ease_in_out: [0.42, 0, 0.58, 1],
-		} as Dict<number[]>)[str];
+const CurveConsts = {
+	linear: [0, 0, 1, 1],
+	ease: [0.25, 0.1, 0.25, 1],
+	easeIn: [0.42, 0, 1, 1],
+	easeOut: [0, 0, 0.58, 1],
+	easeInOut: [0.42, 0, 0.58, 1],
+};
+const CurveReg = [
+	/^\s*(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s*$/,
+	/^\s*curve\(\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*\)\s*$/
+];
+export function parseCurve(val: CurveIn, desc?: string): Curve {
+	if (typeof val == 'string') {
+		let s = CurveConsts[val as 'linear'];
 		if (s) {
 			return newCurve(s[0], s[1], s[2], s[3]);
 		}
-		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
-		str.match(/^ *curve\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
+		let m = val.match(CurveReg[0]) || val.match(CurveReg[1]);
 		if (m) {
 			return newCurve(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
 		}
-	} else if (str instanceof Curve) {
-		return str;
+	} else if (Array.isArray(val)) {
+		return newCurve(val[0], val[1], val[2], val[3]);
+	} else if (val instanceof Curve) {
+		return val;
 	}
-	throw error(str, desc, ['curve(0,0,1,1)', '0 0 1 1', 'linear', 'ease', 'ease_in', 'ease_out', 'ease_in_out']);
+	throw error(val, desc, ['curve(0,0,1,1)', '0 0 1 1', 'linear', 'ease', 'easeIn', 'easeOut', 'easeInOut']);
 }
 
-export function parseRect(str: RectIn, desc?: string) {
-	if (typeof str == 'string') {
-		var m = str.match(/^ *(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) +(-?(?:\d+)?\.?\d+) *$/) ||
-						str.match(/^ *rect\( *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *, *(-?(?:\d+)?\.?\d+) *\) *$/);
+const RectReg = [
+	/^\s*(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s*$/,
+	/^\s*rect\(\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*,\s*(-?(?:\d+)?\.?\d+)\s*\)\s*$/
+];
+export function parseRect(val: RectIn, desc?: string): Rect {
+	if (typeof val == 'string') {
+		let m = val.match(RectReg[0]) || val.match(RectReg[1]);
 		if (m) {
 			return newRect(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]));
 		}
-	} else if (str instanceof Rect) {
-		return str;
-	} else if (typeof str == 'number') {
-		return newRect(str, str, str, str);
+	} else if (Array.isArray(val)) {
+		return newRect(val[0], val[1], val[2], val[3]);
+	} else if (val instanceof Rect) {
+		return val;
 	}
-	throw error(str, desc, ['rect(0,0,-100,200)', '0 0 -100 200']);
+	throw error(val, desc, ['rect(0,0,-100,200)', '0 0 -100 200']);
 }
 
-const parse_mat_reg = new RegExp(`^ *mat\\( *${new Array(6).join('(-?(?:\\d+)?\\.?\\d+) *, *')}(-?(?:\\d+)?\\.?\\d+) *\\) *$`);
-const parse_mat4_reg = new RegExp(`^ *mat4\\( *${new Array(16).join('(-?(?:\\d+)?\\.?\\d+) *, *')}(-?(?:\\d+)?\\.?\\d+) *\\) *$`);
-
-export function parseMat(str: MatIn, desc?: string) {
-	if (typeof str == 'string') {
-		var m = parse_mat_reg.exec(str);
+const matReg = new RegExp(`^\s*mat\\(\s*${new Array(6).join(
+	'(-?(?:\\d+)?\\.?\\d+)\s*,\s*')}(-?(?:\\d+)?\\.?\\d+)\s*\\)\s*$`
+);
+export function parseMat(val: MatIn, desc?: string): Mat {
+	if (typeof val == 'string') {
+		let m = val.match(matReg);
 		if (m) {
-			var value = [
-				parseFloat(m[1]),
-				parseFloat(m[2]),
-				parseFloat(m[6]),
-				parseFloat(m[4]),
-				parseFloat(m[5]),
-				parseFloat(m[6]),
-			];
-			return newMat(...value);
+			return newMat(...[
+				parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]),
+				parseFloat(m[4]), parseFloat(m[5]), parseFloat(m[6]),
+			]);
 		}
-	} else if (str instanceof Mat) {
-		return str;
-	} else if (typeof str == 'number') {
-		return new Mat(str);
-	}
-	throw error(str, desc, ['mat(1,0,0,1,0,1)']);
+	} else if (typeof val == 'number') {
+		return newMat(val,0,0,0,val,0);
+	} else if (val instanceof Mat) {
+		return val;
+	} 
+	throw error(val, desc, ['mat(1,0,0,1,0,1)']);
 }
 
-export function parseMat4(str: Mat4In, desc?: string) {
-	if (typeof str == 'string') {
-		var m = parse_mat4_reg.exec(str);
+const mat4Reg = new RegExp(`^\s*mat4\\(\s*${new Array(16).join(
+	'(-?(?:\\d+)?\\.?\\d+)\s*,\s*')}(-?(?:\\d+)?\\.?\\d+)\s*\\)\s*$`
+);
+export function parseMat4(val: Mat4In, desc?: string): Mat4 {
+	if (typeof val == 'string') {
+		let m = mat4Reg.exec(val);
 		if (m) {
-			var value = [
-				parseFloat(m[1]),
-				parseFloat(m[2]),
-				parseFloat(m[6]),
-				parseFloat(m[4]),
-				parseFloat(m[5]),
-				parseFloat(m[6]),
-				parseFloat(m[7]),
-				parseFloat(m[8]),
-				parseFloat(m[9]),
-				parseFloat(m[10]),
-				parseFloat(m[11]),
-				parseFloat(m[12]),
-				parseFloat(m[13]),
-				parseFloat(m[14]),
-				parseFloat(m[15]),
-				parseFloat(m[16]),
-			];
-			return newMat4(...value);
+			return newMat4(...[
+				parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]),
+				parseFloat(m[5]), parseFloat(m[6]), parseFloat(m[7]), parseFloat(m[8]),
+				parseFloat(m[9]), parseFloat(m[10]), parseFloat(m[11]), parseFloat(m[12]),
+				parseFloat(m[13]), parseFloat(m[14]), parseFloat(m[15]), parseFloat(m[16]),
+			]);
 		}
-	} else if (str instanceof Mat4) {
-		return str;
-	} else if (typeof str == 'number') {
-		return new Mat4(str);
+	} else if (typeof val == 'number') {
+		return newMat4(val,0,0,0,0,val,0,0,0,0,val,0,0,0,0,val);
+	} else if (val instanceof Mat4) {
+		return val;
 	}
-	throw error(str, desc, ['mat4(1,0,0,1,0,1,0,1,0,0,1,1,0,0,0,1)']);
+	throw error(val, desc, ['mat4(1,0,0,1,0,1,0,1,0,0,1,1,0,0,0,1)']);
 }
 
-export function parseValue(str: ValueIn, desc?: string) {
-	if (typeof str == 'string') {
-		// auto | full | 10.1 | 20% | 60!
-		var m = str.match(/^((auto)|(full)|(-?(?:\d+)?\.?\d+)(%|!)?)$/);
+// type ColorStrIn = `#${string}` | `rgb(${N},${N},${N})` | `rgba(${N},${N},${N},${N})`;
+// export type ColorIn = ColorStrIn | N | Color;
+const ColorReg = [
+	/^#([0-9a-f]{3}([0-9a-f])?([0-9a-f]{2})?([0-9a-f]{2})?)$/i,
+	/^\s*rgb(a)?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})(\s*,\s*(\d{1,3}))?\s*\)\s*$/,
+];
+function parseColorNumber(val: number) {
+	return newColor(val >> 24 & 255, // r
+	val >> 16 & 255, // g
+	val >> 8 & 255, // b
+	val >> 0 & 255); // a	
+}
+export function parseColor(val: ColorIn, desc?: string, ref?: Reference): Color {
+	if (typeof val == 'string') {
+		let m = val.match(ColorReg[0]);
 		if (m) {
-			if (m[2]) { // auto
-				return newValue(enum_object.auto, 0);
-			} else if (m[3]) { // full
-				return newValue(enum_object.full, 0);
-			} else { //
-				var type = enum_object.pixel;
-				var value = parseFloat(m[4]);
-				if (m[5]) {
-					if ( m[5] == '%' ) {
-						type = enum_object.percent;
-						value /= 100; // %
-					} else { // 10!
-						type = enum_object.minus;
-					}
+			if (m[4]) { // 8
+				return newColor(parseInt(m[1].substring(0, 2), 16),
+											parseInt(m[1].substring(2, 4), 16),
+											parseInt(m[1].substring(4, 6), 16),
+											parseInt(m[1].substring(6, 8), 16));
+			} else if (m[3]) { // 6
+				return newColor(parseInt(m[1].substring(0, 2), 16),
+											parseInt(m[1].substring(2, 4), 16),
+											parseInt(m[1].substring(4, 6), 16), 255);
+			} else if (m[2]) { // 4
+				return newColor(parseInt(m[1].substring(0, 1), 16) * 17,
+											parseInt(m[1].substring(1, 2), 16) * 17,
+											parseInt(m[1].substring(2, 3), 16) * 17,
+											parseInt(m[1].substring(3, 4), 16) * 17);
+			} else { // 3
+				return newColor(parseInt(m[1].substring(0, 1), 16) * 17,
+											parseInt(m[1].substring(1, 2), 16) * 17,
+											parseInt(m[1].substring(2, 3), 16) * 17, 255);
+			}
+		}
+		m = val.match(ColorReg[1]);
+		if (m) {
+			if (m[1] == 'a') { // rgba
+				if (m[5]) { // a
+					return newColor(
+						parseInt(m[2]) % 256, parseInt(m[3]) % 256, parseInt(m[4]) % 256, parseInt(m[6]) % 256
+					);
 				}
-				return newValue(type, value);
+			} else { // rgb
+				if (!m[5]) {
+					return newColor(
+						parseInt(m[2]) % 256, parseInt(m[3]) % 256, parseInt(m[4]) % 256, 255
+					);
+				}
 			}
 		}
-	} else if (str instanceof Value) {
-		return str;
-	} else if (typeof str == 'number') {
-		return newValue(enum_object.pixel, str);
+	} else if (typeof val == 'number') {
+		return parseColorNumber(val);
+	} else if (val instanceof Color) {
+		return val;
 	}
-	throw error(str, desc, ['auto', 'full', 10, '20%', '60!']);
+	throw error(val, desc, [
+		'rgba(255,255,255,255)', 'rgb(255,255,255)', '#ff0', '#ff00', '#ff00ff', '#ff00ffff'
+	], ref);
 }
 
-enum background_position_type_2 {
-	LEFT = Types.LEFT,
-	RIGHT = Types.RIGHT,
-	CENTER = Types.CENTER,
-	TOP = Types.TOP,
-	BOTTOM = Types.BOTTOM,
-}
-
-// export function parseBackgroundPosition(str: BackgroundPositionIn, desc?: string) {
-// 	if (typeof str == 'string') {
-// 		// left | right | center | top | bottom | 10.1 | 20% 
-// 		var type = enum_object[str];
-// 		var value = 0;
-// 		if (check_enum(background_position_type_2, type)) {
-// 			return new_background_position(type, value);
-// 		}
-// 		var m = str.match(/^(-?(?:\d+)?\.?\d+)(%)?$/);
-// 		if (m) {
-// 			type = enum_object.pixel;
-// 			value = parseFloat(m[1]);
-// 			if (m[2]) { // %
-// 				type = enum_object.percent;
-// 				value /= 100; // %
-// 			}
-// 			return new_background_position(type, value);
-// 		}
-// 	} else if (str instanceof BackgroundPosition) {
-// 		return str;
-// 	} else if (typeof str == 'number') {
-// 		return new_background_position(enum_object.pixel, str);
-// 	}
-// 	throw error(str, desc, ['left', 'right', 'center', 'top', 'bottom', 10, '20%']);
-// }
-
-// export function parseBackgroundSize(str: BackgroundSizeIn, desc?: string) { 
-// 	if (typeof str == 'string') {
-// 		// auto | 10.1 | 20% 
-// 		var m = str.match(/^((auto)|(-?(?:\d+)?\.?\d+)(%)?)$/);
-// 		if (m) {
-// 			if (m[2]) { // auto
-// 				return new_background_size(enum_object.auto, 0);
-// 			} else {
-// 				var type = enum_object.pixel;
-// 				var value = parseFloat(m[3]);
-// 				if (m[4]) { // %
-// 					type = enum_object.percent;
-// 					value /= 100; // %
-// 				}
-// 				return new_background_size(type, value);
-// 			}
-// 		}
-// 	} else if (str instanceof BackgroundSize) {
-// 		return str;
-// 	} else if (typeof str == 'number') {
-// 		return new_background_size(enum_object.pixel, str);
-// 	}
-// 	throw error(str, desc, ['auto', 10, '20%']);
-// }
-
-enum BGToken {
-	EOS, // 
-	LPAREN, // (
-	RPAREN, // )
-	COMMA, // ,
-	WHITESPACE, // \s\r\t\n
-	OTHER, // 
-}
-
-interface BGScanner {
-	code: string;
-	value: string;
-	index: number;
-}
-
-var background_help = `url(res/image.png) repeat(none,[repeat]) position(left,[20%]) size(auto,[10.1])`;
-
-function scanner_background_token(scanner: BGScanner): BGToken {
-	var token = BGToken.OTHER;
-	var value = '';
-	var code = scanner.code;
-	var index = scanner.index;
-	do {
-		if (index >= code.length) {
-			token = BGToken.EOS;
-		} else {
-			switch (code.charCodeAt(index)) {
-				case 9: // \t
-				case 10: // \n
-				case 13: // \r
-				case 32: // \s
-					if (value)
-						token = BGToken.WHITESPACE;
-					break;
-				case 40: // (
-					token = BGToken.LPAREN; break;
-				case 41: // )
-					token = BGToken.RPAREN; break;
-				case 44: // ,
-					token = BGToken.COMMA; break;
-				default:
-					value += code.charAt(index); break;
-			}
+const ShadowReg = /^\s*(-?(?:\d+)?\.?\d+)\s+(-?(?:\d+)?\.?\d+)\s+((?:\d+)?\.?\d+)/;
+export function parseShadow(val: ShadowIn, desc?: string, ref?: Reference): Shadow {
+	if (typeof val == 'string') {
+		// 10 10 2 #ff00aa
+		let m = val.match(ShadowReg);
+		if (m) {
+			return new Shadow({
+				x: parseFloat(m[1]),
+				y: parseFloat(m[2]),
+				size: parseFloat(m[3]),
+				color: parseColor(val.substring(m[0].length + 1) as ColorStrIn, desc, r=>{
+					return ref ? ref(['10 10 2 #ff00aa', '10 10 2 rgba(255,255,0,255)']): r;
+				}),
+			});
 		}
-		index++;
-	} while (token == BGToken.OTHER);
-
-	if (value) {
-		index--;
-		token = BGToken.OTHER;
+	} else if (val instanceof Shadow) {
+		return val;
 	}
-
-	scanner.index = index;
-	scanner.value = value;
-	return token;
+	throw error(val, desc, ['10 10 2 #ff00aa', '10 10 2 rgba(255,255,0,255)'], ref);
 }
 
-function parse_background_paren(scanner: BGScanner, desc?: string): string[] {
-	if (scanner_background_token(scanner) == BGToken.LPAREN) {
-		var exp: any[] = [];
-		var token: BGToken;
-		while ((token = scanner_background_token(scanner)) != BGToken.EOS) {
-			switch (token) {
-				case BGToken.LPAREN:
-					scanner.index--;
-					exp.push( parse_background_paren(scanner, desc) );
-					break;
-				case BGToken.RPAREN: // )
-					if (exp.length === 0)
-						throw error(scanner.code, desc, [background_help]);
-					return exp;
-				case BGToken.OTHER:
-					exp.push( scanner.value );
-					if (scanner_background_token(scanner) != BGToken.COMMA) { // ,
-						throw error(scanner.code, desc, [background_help]);
+const BoxBorderReg = /^\s*(-?(?:\d+)?\.?\d+)/;
+export function parseBoxBorder(val: BoxBorderIn, desc?: string): BoxBorder {
+	if (typeof val == 'string') {
+		// 10 #ff00aa
+		let m = val.match(BoxBorderReg);
+		if (m) {
+			return new BoxBorder({
+				width: parseFloat(m[1]),
+				color: parseColor(val.substring(m[0].length + 1) as ColorStrIn, desc,
+					r=>['10 #ff00aa', '10 rgba(255,255,0,255)']),
+			});
+		}
+	} else if (val instanceof BoxShadow) {
+		return val;
+	}
+	throw error(val, desc, ['10 #ff00aa', '10 rgba(255,255,0,255)']);
+}
+
+export function parseFillPosition(val: FillPositionIn, desc?: string): FillPosition {
+	if (typeof val == 'string') {
+		let kind = FillPositionKind[toCapitalize(val as FillPositionKindStr)];
+		if (kind !== undefined) {
+			return newFillPosition(kind, 0);
+		}
+		let m = val.match(/^\s*(-?(?:\d+)?\.?\d+)(%)?\s*$/);
+		if (m) {
+			let kind = m[3] ? FillPositionKind.Ratio: FillPositionKind.Rem;
+			return newFillPosition(kind, parseFloat(m[1]));
+		}
+	} else if (val instanceof FillPosition) {
+		return val;
+	}
+	throw error(val, desc, ["start", "end", "center", 10, '20%']);
+}
+
+export function parseFillSize(val: FillSizeIn, desc?: string): FillSize {
+	if (typeof val == 'string') {
+		let kind = FillSizeKind[toCapitalize(val as FillSizeKindStr)];
+		if (kind !== undefined) {
+			return newFillSize(kind, 0);
+		}
+		let m = val.match(/^\s*(-?(?:\d+)?\.?\d+)(%)?\s*$/);
+		if (m) {
+			let kind = m[3] ? FillSizeKind.Ratio: FillSizeKind.Rem;
+			return newFillSize(kind, parseFloat(m[1]));
+		}
+	} else if (val instanceof FillSize) {
+		return val;
+	}
+	throw error(val, desc, ["auto", 10, '20%']);
+}
+
+export function parseBoxOrigin(val: BoxOriginIn, desc?: string): BoxOrigin {
+	if (typeof val == 'string') {
+		let kind = BoxOriginKind[toCapitalize(val as BoxOriginKindStr)];
+		if (kind !== undefined) {
+			return newBoxOrigin(kind, 0);
+		}
+		let m = val.match(/^\s*(-?(?:\d+)?\.?\d+)(%)?\s*$/);
+		if (m) {
+			let kind = m[3] ? FillSizeKind.Ratio: FillSizeKind.Rem;
+			return newBoxOrigin(kind, parseFloat(m[1]));
+		}
+	} else if (val instanceof BoxOrigin) {
+		return val;
+	}
+	throw error(val, desc, ["auto", 10, '20%']);
+}
+
+export function parseBoxSize(val: BoxSizeIn, desc?: string): BoxSize {
+	if (typeof val == 'string') {
+		let kind = BoxSizeKind[toCapitalize(val as BoxSizeKindStr)];
+		if (kind !== undefined) {
+			return newBoxSize(kind, 0);
+		}
+		let m = val.match(/^\s*(-?(?:\d+)?\.?\d+)(%|!)?\s*$/);
+		if (m) {
+			let kind = m[3] ? m[3] == '%' ? BoxSizeKind.Ratio: BoxSizeKind.Minus: BoxSizeKind.Rem;
+			return newBoxSize(kind, parseFloat(m[1]));
+		}
+	} else if (val instanceof BoxSize) {
+		return val;
+	}
+	throw error(val, desc, ["auto", "match", 10, '20%', '60!']);
+}
+
+export function parseTextColor(val: TextColorIn, desc?: string): TextColor {
+	if (typeof val == 'string') {
+		let kind = TextValueKind[toCapitalize(val as TextValueKindInStr)];
+		if (kind !== undefined) {
+			return newTextColor(kind, 0,0,0,255);
+		}
+		return new TextColor({
+			kind: TextValueKind.Value,
+			value: parseColor(val as ColorStrIn, desc, (ref)=>['inherit', 'default', ...ref])
+		});
+	} else if (typeof val == 'number') {
+		return new TextColor({
+			kind: TextValueKind.Value,
+			value: parseColorNumber(val),
+		});
+	} else if (val instanceof Color) {
+		return new TextColor({
+			kind: TextValueKind.Value,
+			value: val,
+		});
+	} else if (val instanceof TextColor) {
+		return val;
+	}
+	throw error(val, desc, ['inherit', 'default',
+		'rgba(255,255,255,255)', 'rgb(255,255,255)', '#ff0', '#ff00', '#ff00ff', '#ff00ffff'
+	]);
+}
+
+const TextSizeReg = /^(?:\d+)?\.?\d+$/;
+export function parseTextSize(val: TextSizeIn, desc?: string) {
+	if (typeof val == 'string') {
+		let kind = TextValueKind[toCapitalize(val as TextValueKindInStr)];
+		if (kind !== undefined) {
+			return newTextSize(kind, 0);
+		}
+		if (TextSizeReg.test(val)) {
+			return newTextSize(TextValueKind.Value, parseFloat(val));
+		}
+	} else if (typeof val == 'number') {
+		return newTextSize(TextValueKind.Value, val);
+	} else if (val instanceof TextSize) {
+		return val;
+	}
+	throw error(val, desc, ['inherit', 'default', 16, '12']);
+}
+
+export function parseTextLineHeight(val: TextLineHeightIn, desc?: string) {
+	return parseTextSize(val, desc);
+}
+
+export function parseTextShadow(val: TextShadowIn, desc?: string): TextShadow {
+	if (typeof val == 'string') {
+		let kind = TextValueKind[toCapitalize(val as TextValueKindInStr)];
+		if (kind !== undefined) {
+			return newTextShadow(kind,0,0,0,0,0,0,255);
+		}
+		return new TextShadow({
+			kind: TextValueKind.Value,
+			value: parseShadow(val as ShadowIn, desc, (ref)=>['inherit', 'default', ...ref]),
+		});
+	} else if (val instanceof Shadow) {
+		return new TextShadow({
+			kind: TextValueKind.Value,
+			value: val,
+		});
+	} else if (val instanceof TextShadow) {
+		return val;
+	}
+	throw error(val, desc, ['inherit', 'default', '10 10 2 #ff00aa', '10 10 2 rgba(255,255,0,255)']);
+}
+
+export function parseTextFamily(val: TextFamilyIn, desc?: string) {
+	if (typeof val == 'string') {
+		let kind = TextValueKind[toCapitalize(val as TextValueKindInStr)];
+		if (kind !== undefined) {
+			return newTextFamily(kind,EmptyFFID);
+		}
+		return newTextFamily(kind, _font.getFontFamilys(val));
+	} else if (val instanceof TextFamily) {
+		return val;
+	}
+	throw error(val, desc, ['inherit', 'default', 'Ubuntu Mono']);
+}
+
+const parseBoxFilterReference = [
+	'src(res/image.png, auto 100%, x=start, y=20%, repeat)',
+	'radial(#ff00ff 0%, #ff0 50%, #00f 100%)',
+	'linear(90, #ff00ff 0%, #ff0 50%, #00f 100%)',
+	// shadow(1, 1, 2, #ff00ff)
+];
+const parseCmdReg = [
+	/^\s*([a-z]+)\s*\(\s*/i, // src(
+	/^([^,\)]+)(,\s*|\))/,
+	/^"(([^"\\]|\\")+)"\s*(,\s*|\))/,
+	/^'(([^'\\]|\\')+)'\s*(,\s*|\))/,
+	/\s+/,
+];
+const parseCmdNext = {
+	'_': (str: string)=>str.match(parseCmdReg[1]),
+	'"': (str: string)=>str.match(parseCmdReg[2]),
+	"'": (str: string)=>str.match(parseCmdReg[3]),
+};
+
+function parseCmd(val: string, desc?: string) {
+	let m = val.match(parseCmdReg[0]);
+	if (m) {
+		let cmd = m[1];
+		let args = [] as string[][];
+		let kv: Dict<any[]> = {};
+		let index = m[0].length;
+		let valLen = val.length;
+		while(index < valLen && val[index-1] != ')') {
+			let char = val[index];
+			let m = (parseCmdNext[char as '"'] || parseCmdNext._)(val.substring(index));
+			if (m) {
+				let arg = m[1];
+				let idx = arg.indexOf('=');
+				if (idx > 0) {
+					let k = arg.substring(0, idx);
+					let v = arg.substring(idx + 1);
+					if (kv[k]) {
+						kv[k].push(v);
+					} else {
+						kv[k] = [v];
 					}
+				} else {
+					args.push(arg.split(parseCmdReg[4]));
+				}
+				index += m[0].length;
+			}
+		}
+		if (args.length)
+			return {val: cmd, kv, args};
+	}
+	throw error(val, desc, parseBoxFilterReference);
+}
+
+function getColorsPos(args: string[][], desc?: string) {
+	let pos = [] as number[];
+	let colors = [] as Color[];
+	args.slice(1).map(([c,p])=>{
+		colors.push(parseColor(c as ColorStrIn, desc, ()=>parseBoxFilterReference));
+		pos.push(p ? (Number(p.substring(0, p.length - 1)) || 0) * 0.01: 0);
+	});
+	return {pos,colors};
+}
+
+function parseBoxFilterItem(val: string, desc?: string): BoxFilter {
+	const FillImage_ = exports.FillImage as typeof FillImage;
+	const FillGradientLinear_ = exports.FillGradientLinear as typeof FillGradientLinear;
+	const FillGradientRadial_ = exports.FillGradientRadial as typeof FillGradientRadial;
+	if (typeof val == 'string') {
+		let cmd = parseCmd(val);
+		if (cmd) {
+			let {val,args,kv} = cmd;
+			switch(val) {
+				case 'src': {
+					let width, height, repeat;
+					if (args[1]) {
+						var [w,h] = args[1];
+						width = parseFillSize(w as FillSizeIn, desc);
+						if (h)
+							height = parseFillSize(h as FillSizeIn, desc);
+						if (args[2])
+							repeat = parseRepeat(args[2][0] as RepeatIn, desc);
+					}
+					new FillImage_(String(args[0][0]), {
+						width, height, repeat,
+						x: kv.x && parseFillPosition(kv.x[0], desc),
+						y: kv.y && parseFillPosition(kv.y[0], desc),
+					});
 					break;
+				}
+				case 'linear': {
+					let angle = Number(args.shift()) || 0;
+					let {pos,colors} = getColorsPos(args, desc)
+					return new FillGradientLinear_(pos,colors, angle);
+				}
+				case 'radial': {
+					let {pos,colors} = getColorsPos(args, desc)
+					return new FillGradientRadial_(pos,colors);
+				}
 			}
 		}
 	}
-	throw error(scanner.code, desc, [background_help]);
+	throw error(val, desc, parseBoxFilterReference);
 }
 
-// export function parseBackground(str: BackgroundIn, desc?: string): Background {
-// 	// url(res/image.png) repeat(none,[repeat]) position(left,[20%]) size(auto,[10.1])
-// 	if (str instanceof Background) {
-// 		return str;
-// 	}
-// 	var r: Background | null = null;
-// 	if (typeof str == 'string') {
-// 		var bgi: BackgroundImage | null = null;
-// 		var prev: Background | null = null;
-// 		var token: BGToken;
-// 		var scanner: BGScanner = { code: str, value: '', index: 0 };
-
-// 		while ( (token = scanner_background_token(scanner)) != BGToken.EOS ) {
-// 			switch (token) {
-// 				case BGToken.COMMA: {// ,
-// 					bgi = null;
-// 					break;
-// 				}
-// 				case BGToken.OTHER: {
-// 					if (scanner.value == 'url' || scanner.value == 'image') {
-// 						if (bgi)
-// 							throw error(str, desc, [background_help]);
-// 						bgi = new BackgroundImage();
-// 						bgi.src = parse_background_paren(scanner)[0] as string;
-// 						if (!r) r = bgi;
-// 						if (prev) prev.next = bgi;
-// 						prev = bgi;
-// 					}
-// 					// else if (scanner.value == 'gradient') { }
-// 					else {
-// 						if (!bgi) throw error(str, desc, [background_help]);
-
-// 						switch (scanner.value) {
-// 							case 'repeat': {
-// 								if (scanner_background_token(scanner) == BGToken.LPAREN) { // repeat(none)
-// 									scanner.index--;
-// 									bgi.repeat = parse_background_paren(scanner).map(e=>parseRepeat(e, desc))[0];
-// 								} else { // repeat
-// 									bgi.repeat = Repeat.REPEAT;
-// 								}
-// 								break;
-// 							}
-// 							case 'position': { // position(10,top)
-// 								var poss = parse_background_paren(scanner).map(e=>parseBackgroundPosition(e, desc));
-// 								bgi.position = { x: poss[0], y: poss[1] || poss[0] };
-// 								break;
-// 							}
-// 							case 'size': { // size(10,20%)
-// 								var sizes = parse_background_paren(scanner).map(e=>parseBackgroundSize(e, desc));
-// 								bgi.size = { x: sizes[0], y: sizes[1] || sizes[0] };
-// 								break;
-// 							}
-// 							case 'positionX': { // positionX(10)
-// 								bgi.positionX = parse_background_paren(scanner).map(e=>parseBackgroundPosition(e, desc))[0];
-// 								break;
-// 							}
-// 							case 'positionY': { // positionY(10)
-// 								bgi.positionY = parse_background_paren(scanner).map(e=>parseBackgroundPosition(e, desc))[0];
-// 								break;
-// 							}
-// 							case 'sizeX': { // sizeX(10)
-// 								bgi.sizeX = parse_background_paren(scanner).map(e=>parseBackgroundSize(e, desc))[0];
-// 								break;
-// 							}
-// 							case 'sizeY': { // sizeY(10)
-// 								bgi.sizeY = parse_background_paren(scanner).map(e=>parseBackgroundSize(e, desc))[0];
-// 								break;
-// 							}
-// 							default:
-// 								throw error(str, desc, [background_help]);
-// 						}
-// 					}
-// 					break;
-// 				}
-// 				default:
-// 					throw error(str, desc, [background_help]);
-// 			}
-// 		}
-// 	} else {
-// 		if (str.image) {
-// 			return Object.assign(new BackgroundImage(), str.image);
-// 		}
-// 	}
-// 	if (r)
-// 		return r;
-// 	throw error(str, desc, [background_help]);
-// }
-
-// export function parseValues(str: ValuesIn, desc?: string) {
-// 	if (typeof str == 'string') {
-// 		var rev: Value[] = [];
-// 		for (var i of str.split(/\s+/)) {
-// 			rev.push(parseValue(i, desc));
-// 		}
-// 		return rev;
-// 	} else if (str instanceof Value) {
-// 		return [str];
-// 	} else if (Array.isArray(str)) {
-// 		return str.map(e=>parseValue(e, desc));
-// 	} else {
-// 		return [parseValue(str)];
-// 	}
-// 	throw error(str, desc, ['auto', 'full', 10, '20%', '60!']);
-// }
-
-// export function parseAligns(str: AlignsIn, desc?: string) {
-// 	if (typeof str == 'string') {
-// 		var rev: Align[] = [];
-// 		for (var i of str.split(/\s+/)) {
-// 			rev.push(parseAlign(i));
-// 		}
-// 		return rev;
-// 	} else if (Array.isArray(str)) {
-// 		return str.map(e=>parseAlign(e));
-// 	} else if (check_enum(Align, str)) {
-// 		return [str as Align];
-// 	}
-// 	throw error(str, desc, ['left', 'top center']);
-// }
-
-// export function parseFloats(str: FloatsIn, desc?: string) {
-// 	if (typeof str == 'string') {
-// 		var ls = str.split(/\s+/);
-// 		var rev: number[] = [];
-// 		for (var i of str.split(/\s+/)) {
-// 			var mat = i.match(/^(-?(?:\d+)?\.?\d+)$/);
-// 			if (!mat) {
-// 				throw error(str, desc, [10, '10 20 30 40']);
-// 			}
-// 			rev.push(parseFloat(mat[1]));
-// 		}
-// 		return rev;
-// 	} else if (Array.isArray(str)) {
-// 		return str.map(e=>Number(e) || 0);
-// 	} else if (isFinite(str)) {
-// 		return [str];
-// 	}
-// 	throw error(str, desc, [10, '10 20 30 40']);
-// }
-
-// export function parseBackgroundPositionCollection(str: BackgroundPositionCollectionIn, desc?: string) { 
-// 	if (typeof str == 'string') {
-// 		var items: BackgroundPosition[] = [];
-// 		for (var j of str.split(/\s+/))
-// 			items.push(parseBackgroundPosition(j, desc));
-// 		var x = items[0] || new BackgroundPosition();
-// 		var y = items[1] || x;
-// 		return { __proto__: BackgroundPositionCollection.prototype, x, y } as BackgroundPositionCollection;
-// 	} else if (str instanceof BackgroundPositionCollection) {
-// 		return str;
-// 	} else if (str instanceof BackgroundPosition) {
-// 		return { __proto__: BackgroundPositionCollection.prototype, x: str, y: str } as BackgroundPositionCollection;
-// 	}
-// 	throw error(str, desc, [10, '20%', 'left', 'right', 'center', 'top', 'bottom']);
-// }
-
-// export function parseBackgroundSizeCollection(str: BackgroundSizeCollectionIn, desc?: string) {
-// 	if (typeof str == 'string') {
-// 		var items: BackgroundSize[] = [];
-// 		for (var j of str.split(/\s+/))
-// 			items.push(parseBackgroundSize(j, desc));
-// 		var x = items[0] || new BackgroundSize();
-// 		var y = items[1] || x;
-// 		return { __proto__: BackgroundSizeCollection.prototype, x, y } as BackgroundSizeCollection;
-// 	} else if (str instanceof BackgroundSizeCollection) {
-// 		return str;
-// 	} else if (str instanceof BackgroundSize) {
-// 		return { __proto__: BackgroundSizeCollection.prototype, x: str, y: str } as BackgroundSizeCollection;
-// 	}
-// 	throw error(str, desc, ['auto', 10, '50%']);
-// }
-
-export function parseTextColor(str: TextColorIn, desc?: string) {
-	if (typeof str == 'string') {
-		if (str == 'inherit') {
-			return new TextColor();
-		} else {
-			var value = parseColor(str);
-			if (value) {
-				return new TextColor(TextValueType.VALUE, value);
-			}
-		}
-	} else if (str instanceof TextColor) {
-		return str;
-	} else if (str instanceof Color) {
-		return new TextColor(TextValueType.VALUE, str);
+function linkFilter<T extends BoxFilter>(val: any, filters: T[], desc?: string, ref?: Reference) {
+	if (filters.length) {
+		for (let i = 1; i < filters.length; i++)
+			filters[i-1].next = filters[i];
+		return filters[0];
 	}
-	throw error(str, desc, ['inherit', 'rgba(255,255,255,255)', 'rgb(255,255,255)', '#ff0', '#ff00', '#ff00ff', '#ff00ffff']);
+	throw error(val, desc, [], ref);
 }
 
-export function parseTextSize(str: TextSizeIn, desc?: string) {
-	if (typeof str == 'string') {
-		if (str == 'inherit') {
-			return new TextSize();
-		} else {
-			if (/^(?:\d+)?\.?\d+$/.test(str)) {
-				return newTextSize(TextValueType.VALUE, parseFloat(str));
-			}
-		}
-	} else if (str instanceof TextSize) {
-		return str;
-	} else if (typeof str == 'number') {
-		return newTextSize(TextValueType.VALUE, str);
+export function parseBoxFilter(val: BoxFilterIn, desc?: string): BoxFilter {
+	const BoxFilter_ = exports.BoxFilter as typeof BoxFilter;
+	if (val instanceof BoxFilter_) {
+		return val;
+	} else if (Array.isArray(val)) {
+		return linkFilter(val, val.map(e=>parseBoxFilterItem(e)), desc, ()=>parseBoxFilterReference);
+	} else {
+		return parseBoxFilterItem(val, desc);
 	}
-	throw error(str, desc, ['inherit', 12]);
 }
 
-export function parseTextFamily(str: TextFamilyIn, desc?: string) {
-	if (typeof str == 'string') {
-		if (str == 'inherit') {
-			return new TextFamily();
-		} else {
-			return newTextFamily(TextValueType.VALUE, str);
-		}
-	} else if (str instanceof TextFamily) {
-		return str;
+const parseBoxShadowRef = [
+	'10 10 2 #ff00aa', ['10 10 2 #ff00aa'], '10 10 2 rgba(255,255,0,255)'
+];
+export function parseBoxShadow(val: BoxShadowIn, desc?: string): BoxShadow {
+	const BoxShadow_ = exports.BoxShadow as typeof BoxShadow;
+	if (val instanceof BoxShadow_) {
+		return val;
+	} else if (Array.isArray(val)) {
+		return linkFilter(val,
+			val.map(e=>new BoxShadow_(parseShadow(e, desc, ()=>parseBoxShadowRef))),
+			desc, ()=>parseBoxShadowRef
+		);
+	} else {
+		return new BoxShadow_(parseShadow(val, desc, ()=>parseBoxShadowRef));
 	}
-	throw error(str, desc, ['inherit', 'Ubuntu Mono']);
-}
-
-export function parseTextStyle(str: TextStyleIn, desc?: string) {
-	if (typeof str == 'string') {
-		if (str == 'inherit') {
-			return new TextStyle();
-		} else {
-			var value = enum_object[str];
-			if (check_enum(TextStyleEnum, value)) {
-				return newTextStyle(TextValueType.VALUE, value);
-			}
-		}
-	} else if (str instanceof TextStyle) {
-		return str;
-	} else if (check_enum(TextStyleEnum, str)) {
-		return newTextStyle(TextValueType.VALUE, str as TextStyleEnum);
-	}
-	throw error(str, desc, ['inherit'], TextStyleEnum);
-}
-
-export function parseTextShadow(str: TextShadowIn, desc?: string) {
-	if (typeof str == 'string') {
-		if (str == 'inherit') {
-			return new TextShadow();
-		} else {
-			var value = parseShadow(str);
-			if (value) {
-				return new TextShadow(TextValueType.VALUE, value);
-			}
-		}
-	} else if (str instanceof TextShadow) {
-		return str;
-	} else if (str instanceof Shadow) {
-		return new TextShadow(TextValueType.VALUE, str);
-	}
-	throw error(str, desc, ['inherit', '10 10 2 #ff00aa', '10 10 2 rgba(255,255,0,255)']);
-}
-
-export function parseTextLineHeight(str: TextLineHeightIn, desc?: string) {
-	if (typeof str == 'string') {
-		if (str == 'inherit') {
-			return new TextLineHeight();
-		} else if (str == 'auto') {
-			return newTextLineHeight(TextValueType.VALUE, 0);
-		} else {
-			if (/^(?:\d+)?\.?\d+$/.test(str)) {
-				return newTextLineHeight(TextValueType.VALUE, parseFloat(str));
-			}
-		}
-	} else if (str instanceof TextLineHeight) {
-		return str;
-	} else if (typeof str == 'number') {
-		return newTextLineHeight(TextValueType.VALUE, str);
-	}
-	throw error(str, desc, ['inherit', 24]);
-}
-
-export function parseTextDecoration(str: TextDecorationIn, desc?: string) {
-	if (typeof str == 'string') {
-		if (str == 'inherit') {
-			return new TextDecoration();
-		} else {
-			var value = enum_object[str];
-			if (check_enum(TextDecorationEnum, value)) {
-				return newTextDecoration(TextValueType.VALUE, value);
-			}
-		}
-	} else if (str instanceof TextDecoration) {
-		return str;
-	} else if (check_enum(TextDecorationEnum, str)) {
-		return newTextDecoration(TextValueType.VALUE, str as TextDecorationEnum);
-	}
-	throw error(str, desc, ['inherit'], TextDecorationEnum);
-}
-
-export function parseTextOverflow(str: TextOverflowIn, desc?: string) {
-	if (typeof str == 'string') {
-		if (str == 'inherit') {
-			return new TextOverflow();
-		} else {
-			var value = enum_object[str];
-			if (check_enum(TextOverflowEnum, value)) {
-				return newTextOverflow(TextValueType.VALUE, value);
-			}
-		}
-	} else if (str instanceof TextOverflow) {
-		return str;
-	} else if (check_enum(TextOverflowEnum, str)) {
-		return newTextOverflow(TextValueType.VALUE, str as TextOverflowEnum);
-	}
-	throw error(str, desc, ['inherit'], TextOverflowEnum);
-}
-
-export function parseTextWhiteSpace(str: TextWhiteSpaceIn, desc?: string) {
-	if (typeof str == 'string') {
-		if (str == 'inherit') {
-			return new TextWhiteSpace();
-		} else {
-			var value = enum_object[str];
-			if (check_enum(TextWhiteSpaceEnum, value)) {
-				return new_text_white_space(TextValueType.VALUE, value);
-			}
-		}
-	} else if (str instanceof TextWhiteSpace) {
-		return str;
-	} else if (check_enum(TextWhiteSpaceEnum, str)) {
-		return new_text_white_space(TextValueType.VALUE, str as TextWhiteSpaceEnum);
-	}
-	throw error(str, desc, ['inherit'], TextWhiteSpaceEnum);
 }

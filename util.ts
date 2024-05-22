@@ -28,20 +28,55 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-import _pkgutil from './_pkgutil';
-import _util, {_process} from './_util';
+import './_ext';
+import _util, {__set_listener__,getConfig} from './_util';
 import * as _common from './_common';
-import {EventNoticer, Event} from './event';
+import {Event, EventNoticer, Notification, } from './_event';
+
+class RuntimeEvents extends Notification {
+	private _handles: {[key: string]: (noticer: EventNoticer, ...args: any[])=>any} = {
+		UncaughtException: (noticer: EventNoticer, err: Error)=>
+			noticer.length ? (noticer.trigger(err), true): false,
+		UnhandledRejection: (noticer: EventNoticer, reason: Error, promise: Promise<any>)=>
+			noticer.length ? (noticer.trigger({ reason, promise }), true): false,
+		BeforeExit: (noticer: EventNoticer, code = 0)=>(noticer.trigger(code),code),
+		Exit: (noticer: EventNoticer, code = 0)=>(noticer.trigger(code),code),
+	};
+	getNoticer(name: 'UncaughtException'|'UnhandledRejection'|'BeforeExit'|'Exit') {
+		if (!this.hasNoticer(name)) {
+			let noticer = super.getNoticer(name);
+			let handle = (this._handles)[name];
+			if (handle) {
+				__set_listener__(name, (...args: any[])=>{
+					handle(noticer, ...args);
+				});
+			}
+		}
+		return super.getNoticer(name);
+	}
+}
+
+export const _runtimeEvents = new RuntimeEvents();
 
 export default {
-	..._util, ..._common,
-	get id() { return _common.getId() },
-	get options() { return _pkgutil.options },
-	get config() { return _pkgutil.config },
-	get debug() { return _pkgutil.debug },
-	// events
-	get onBeforeExit(): EventNoticer<Event<number>> { return _process.getNoticer('BeforeExit') },
-	get onExit(): EventNoticer<Event<number>> { return _process.getNoticer('BeforeExit') },
-	get onUncaughtException(): EventNoticer<Event<Error>> { return _process.getNoticer('UncaughtException') },
-	get onUnhandledRejection(): EventNoticer<Event<{reason: Error, promise: Promise<any>}>> { return _process.getNoticer('UnhandledRejection') },
+	..._util,
+	..._common,
+	get id() {
+		return _common.getId();
+	},
+	get config() {
+		return getConfig();
+	},
+	get onBeforeExit(): EventNoticer<Event<object, number>> {
+		return _runtimeEvents.getNoticer('BeforeExit');
+	},
+	get onExit(): EventNoticer<Event<object, number>> {
+		return _runtimeEvents.getNoticer('BeforeExit');
+	},
+	get onUncaughtException(): EventNoticer<Event<object, Error>> {
+		return _runtimeEvents.getNoticer('UncaughtException');
+	},
+	get onUnhandledRejection(): EventNoticer<Event<object, {reason: Error, promise: Promise<any>}>> {
+		return _runtimeEvents.getNoticer('UnhandledRejection');
+	},
 }

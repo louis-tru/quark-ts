@@ -28,10 +28,9 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-import _path from './_path';
-import _pkgutil from './_pkgutil';
+import * as _util from './_util';
 
-const haveWeb = typeof globalThis.window == 'object';
+const isWeb = _util.default.isWeb;
 
 function split_path(self: any) {
 	if (self._is_split) return;
@@ -58,7 +57,7 @@ function split_path(self: any) {
 			val = value;
 		}
 	}
-	self._value = _pkgutil.resolve(val);
+	self._value = _util.resolve(val);
 }
 
 function parse_base_ext_name(self: any) {
@@ -152,11 +151,11 @@ function querystringStringify(prefix: string, params: Dict) {
 export class URL {
 	
 	/**
-		* @arg [path] {String}
+		* @param [path] {String}
 		* @constructor
 		*/
 	constructor(path: string = '') {
-		if (!path && haveWeb) {
+		if (!path && isWeb) {
 			path = location.href;
 		}
 		(<any>this)._value = path;
@@ -370,25 +369,31 @@ function get_path(path?: string): URL {
 }
 
 export default {
-
-	..._path,
-
 	URL: URL,
 
-	/** 
-	 * @func isAbsolute(path) is absolute path
-	 */
-	isAbsolute: _pkgutil.isAbsolute, // func
-	
-	/**
-	 * @func resolve(path) resolve path 
-	 */
-	resolve: _pkgutil.resolve, // func
+	executable: _util.executable,
+	documents: _util.documents,
+	temp: _util.temp,
+	resources: _util.resources,
+	cwd: _util.cwd,
+	chdir: _util.chdir,
+	normalizePath: _util.normalizePath,
+	delimiter: _util.delimiter,
 
 	/**
-	 * @func fallbackPath()
+	 * @method fallbackPath()
 	 */
-	fallbackPath: _pkgutil.fallbackPath,
+	fallbackPath: _util.fallbackPath,
+
+	/**
+	 * @method resolve(path) resolve path 
+	 */
+	resolve: _util.resolve, // func
+
+	/** 
+	 * @method isAbsolute(path) is absolute path
+	 */
+	isAbsolute: _util.isAbsolute, // func
 
 	/**
 	 * full filename
@@ -424,28 +429,28 @@ export default {
 	path(path?: string) {
 		return get_path(path).path;
 	},
-	
+
 	search(path?: string) {
 		return get_path(path).search;
 	},
-	
+
 	hash(path?: string) {
 		return get_path(path).hash;
 	},
-	
+
 	host(path?: string) {
 		return get_path(path).host;
 	},
-	
+
 	hostname(path?: string) {
 		return get_path(path).hostname;
 	},
-	
+
 	// href origin
 	origin(path?: string) {
 		return get_path(path).origin;
 	},
-	
+
 	// port: "81"
 	port(path?: string) {
 		return get_path(path).port;
@@ -455,57 +460,57 @@ export default {
 	protocol(path?: string) {
 		return get_path(path).protocol;
 	},
-	
+
 	// href params
 	params(path?: string) {
 		return get_path(path).params;
 	},
-	
+
 	// hash params 
 	hashParams(path?: string) {
 		return get_path(path).hashParams;
 	},
-	
+
 	// get path param
 	getParam(name: string, path?: string) {
 		return get_path(path).getParam(name);
 	},
-	
+
 	// set path param
 	setParam(name: string, value: string, path?: string) {
 		return get_path(path).setParam(name, value).href;
 	},
-	
+
 	// del path param
 	deleteParam(name: string, path?: string) {
 		return get_path(path).deleteParam(name).href;
 	},
-	
+
 	// del all hash param
 	clearParam(path?: string) {
 		return get_path(path).clearParam().href;
 	},
-	
+
 	// get hash param
 	getHash(name: string, path?: string) {
 		return get_path(path).getHash(name);
 	},
-	
+
 	// set hash param
 	setHash(name: string, value: string, path?: string) {
 		return get_path(path).setHash(name, value).href;
 	},
-	
+
 	// del hash param
 	deleteHash(name: string, path?: string) {
 		return get_path(path).deleteHash(name).href;
 	},
-	
+
 	// del all hash param
 	clearHash(path?: string) {
 		return get_path(path).clearHash().href;
 	},
-	
+
 	// relative path
 	relative(path: string, target: string) {
 		if (arguments.length > 1) 
@@ -513,5 +518,5 @@ export default {
 		else 
 			return get_path(path).relative(path);
 	},
-	
+
 }
