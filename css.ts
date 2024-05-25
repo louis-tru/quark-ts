@@ -32,9 +32,11 @@ import * as types from './types';
 
 const _css = __binding__('_css');
 
+export type CSSNameExp = `.${string}`;
+
 export interface StyleSheet {
 	time?: number; // keyframe time or css transition time
-	curve?: types.CurveIn; // keyframe curve
+	curve?: types.CurveIn; // keyframe curve or css transition curve
 	// Meta attribute
 	opacity?: number;
 	visible?: boolean;

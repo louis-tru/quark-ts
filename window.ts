@@ -48,8 +48,7 @@ export interface Options {
 
 class RootViewController extends ViewController {
 	constructor(window: Window) {
-		super(window, { props: {}, children: [], owner: null as any });
-		(window.root as any).owner = this;
+		super({}, { window, children: [], owner: null as any });
 	}
 	get metaView() { return this.window.root }
 	setState() { throw Error.new('Access forbidden.') }
@@ -83,7 +82,7 @@ export class Window extends (_ui.Window as typeof NativeWindow) {
 	@event readonly onForeground: EventNoticer<WEvent>;
 	readonly rootCtr: ViewController = new RootViewController(this);
 	render(vdom: VirtualDOM) {
-		ViewController.render(vdom, this.root);
+		vdom.newInstance(this.rootCtr).appendTo(this.root);
 		return this;
 	}
 }

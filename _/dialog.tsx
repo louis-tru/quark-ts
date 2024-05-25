@@ -28,53 +28,43 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-import utils from './util';
-import quark, {
-	Indep, Hybrid, Clip, Input, Span, LimitIndep, Button, View, _CVD,
-} from './index';
-import { Navigation } from './nav';
-import { event, EventNoticer, Event, ClickEvent } from './event';
-import { prop } from './ctr';
+import util from './util';
+import {_CVD,mainScreenScale,createCss} from '.';
+// import { Navigation } from './nav';
 import * as value from './types';
 
-const {atomPixel: px, render} = quark;
+const px = 1 / mainScreenScale();
 
-quark.css({
-	
+createCss({
 	'.x_dialog': {
 	},
-
 	'.x_dialog.main': {
-		minWidth: 380,
-		maxWidth: '40!',
-		maxHeight: '40!',
-		alignX: 'center',
-		alignY: 'center',
+		width: 380, // min width
+		widthLimit: '40!',// max
+		heightLimit: '40!',//max
+		align: 'centerCenter',
 		backgroundColor: '#fff',
 		borderRadius: 12,
 	},
-	
 	'.x_dialog.sheet': {
-		width: 'full',
+		width: 'match',
 		margin: 10,
-		alignY: 'bottom',
+		align: 'centerBottom',
 	},
-	
 	'.x_dialog .title': {
-		width: 'full',
+		width: 'match',
 		margin: 10,
 		marginTop: 18,
 		marginBottom: 0,
 		textAlign: 'center',
-		textStyle: 'bold',
+		textWeight: 'bold',
 		textSize: 18,
 		// textSize: 16,
 		textOverflow: 'ellipsis',
-		textWhiteSpace: 'no_wrap',
+		textWhiteSpace: 'noWrap',
 	},
-	
 	'.x_dialog .content': {
-		width: 'full',
+		width: 'match',
 		margin: 10,
 		marginTop: 2,
 		marginBottom: 20,
@@ -82,57 +72,47 @@ quark.css({
 		textSize: 14,
 		textColor: '#333',
 	},
-	
 	'.x_dialog .buttons': {
-		width: 'full',
+		width: 'match',
 		borderRadiusLeftBottom: 12,
 		borderRadiusRightBottom: 12,
 	},
-
 	'.x_dialog.sheet .buttons': {
 		borderRadius: 12,
 		backgroundColor: '#fff',
 		marginTop: 10,
 	},
-	
 	'.x_dialog .button': {
 		height: 43,
 		// borderTop: `${px} #9da1a0`,
-		borderTopColor: `#9da1a0`,
+		borderColorTop: `#9da1a0`,
 		textSize: 18,
 		textLineHeight: 43,
 		textColor:"#0079ff",
 	},
-
 	'.x_dialog.sheet .button': {
 		height: 45,
 		textLineHeight: 45,
 	},
-
 	'.x_dialog .button.gray': {
 		textColor:"#000",
 	},
-
 	'.x_dialog .button:normal': {
 		backgroundColor: '#fff', time: 180
 	},
-	
 	'.x_dialog .button:hover': {
 		backgroundColor: '#E1E4E455', time: 50
 	},
-	
 	'.x_dialog .button:down': {
 		backgroundColor: '#E1E4E4', time: 50
 	},
-	
 	'.x_dialog .prompt': {
 		marginTop: 10,
-		width: "full",
+		width: "match",
 		height: 30,
 		backgroundColor: "#eee",
 		borderRadius: 8,
 	},
-	
 })
 
 export const CONSTS = {
@@ -372,7 +352,7 @@ export class Sheet extends Dialog {
 
 }
 
-export function alert(msg: string | {msg?:string, title?:string}, cb = utils.noop) {
+export function alert(msg: string | {msg?:string, title?:string}, cb = util.noop) {
 	var message: any;
 	if (typeof msg == 'string')
 		message = {msg};
@@ -384,7 +364,7 @@ export function alert(msg: string | {msg?:string, title?:string}, cb = utils.noo
 	return dag;
 }
 
-export function confirm(msg: string, cb: (ok: boolean)=>void = utils.noop) {
+export function confirm(msg: string, cb: (ok: boolean)=>void = util.noop) {
 	var dag = render(
 		<Dialog buttons={[CONSTS.CANCEL, CONSTS.OK]} onAction={(e:any)=>cb(e.data)}>{msg}</Dialog>
 	) as Dialog;
@@ -393,7 +373,7 @@ export function confirm(msg: string, cb: (ok: boolean)=>void = utils.noop) {
 }
 
 export function prompt(msg: string | { msg?: string, text?: string, placeholder?: string, security?: boolean },
-	cb: (ok: boolean, str: string)=>void = utils.noop) 
+	cb: (ok: boolean, str: string)=>void = util.noop) 
 {
 	var message: any;
 	if (typeof msg == 'string')
@@ -421,7 +401,7 @@ export function prompt(msg: string | { msg?: string, text?: string, placeholder?
 	return dag;
 }
 
-export function show(title: string, msg: string, buttons: string[] = [CONSTS.OK], cb: (index: number)=>void = utils.noop) {
+export function show(title: string, msg: string, buttons: string[] = [CONSTS.OK], cb: (index: number)=>void = util.noop) {
 	var dag = render(
 		<Dialog title={title} buttons={buttons} onAction={(e: Event<number>)=>cb(e.data)}>{msg}</Dialog>
 	) as Dialog;
@@ -437,7 +417,7 @@ export function sheet(content: any) {
 	return dag;
 }
 
-export function sheetConfirm(buttons: string[] = [CONSTS.OK], cb: (index: number)=>void = utils.noop) {
+export function sheetConfirm(buttons: string[] = [CONSTS.OK], cb: (index: number)=>void = util.noop) {
 	var dag = render(
 		<Sheet buttons={buttons} onAction={(e: Event<number>)=>cb(e.data)} />
 	) as Sheet;

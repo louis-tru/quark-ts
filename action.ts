@@ -32,7 +32,7 @@ import util from './util';
 import { View } from './view';
 import { ActionEvent } from './event';
 import { Window } from './window';
-import { StyleSheet } from './css';
+import { StyleSheet,CSSNameExp } from './css';
 import * as types from './types';
 
 Object.assign(exports, __binding__('_action'));
@@ -43,8 +43,8 @@ export type ActionIn = Action | {
 	speed?: number;
 	spawn?: ActionIn[];
 	seq?: ActionIn[];
-	keyframe?: StyleSheet[];
-} | StyleSheet[];
+	keyframe?: (StyleSheet | CSSNameExp)[];
+} | (StyleSheet | CSSNameExp)[];
 
 export declare class Keyframe extends StyleSheet {
 	readonly index: number;
@@ -80,14 +80,19 @@ export declare class KeyframeAction extends Action {
 	readonly frame: number; // get play frame
 	readonly length: number; // get frames count
 	readonly [index: number]: Keyframe; // get keyframe for index
-	add(time: number, curve?: types.CurveIn): Keyframe; // add new keyframe
-	addFrame(style: StyleSheet): Keyframe;
+	addFrom(time: number, curve?: types.CurveIn): Keyframe; // add new keyframe
+	addWithCss(cssExp: CSSNameExp, time?: number, curve?: types.CurveIn): Keyframe;
+	add(styleOrCssExp: StyleSheet | CSSNameExp, time?: number, curve?: types.CurveIn): Keyframe;
 }
-(exports.KeyframeAction as typeof KeyframeAction).prototype.addFrame =
-function(style: StyleSheet): Keyframe {
-	let frame = this.add(style.time || 0, style.curve);
-	Object.assign(frame, style);
-	return frame;
+(exports.KeyframeAction as typeof KeyframeAction).prototype.add =
+function(styleOrCssExp: StyleSheet | CSSNameExp, ...args: any[]): Keyframe {
+	if (typeof styleOrCssExp == 'string') {
+		return this.addWithCss(styleOrCssExp, ...args);
+	} else {
+		let frame = this.addFrom(args[0] || styleOrCssExp.time || 0, args[1] || styleOrCssExp.curve);
+		Object.assign(frame, styleOrCssExp);
+		return frame;
+	}
 };
 
 /**
@@ -97,7 +102,7 @@ function(style: StyleSheet): Keyframe {
 	* @param parent Optional {Action}
 	* @return {Action}
 	*/
-export function create(win: Window, arg: ActionIn, parent?: Action) {
+export function createAction(win: Window, arg: ActionIn, parent?: Action) {
 	let action: Action;
 	if ( arg instanceof Action ) {
 		action = arg;
@@ -106,28 +111,28 @@ export function create(win: Window, arg: ActionIn, parent?: Action) {
 		if ( Array.isArray(arg) ) { // KeyframeAction
 			action = new KeyframeAction(win);
 			for (let sheet of arg)
-				(action as KeyframeAction).addFrame(sheet);
+				(action as KeyframeAction).add(sheet);
 		} else if (arg) {
 			if (arg.seq) { // SequenceAction
 				let seq = arg.seq;
 				util.assert(Array.isArray(seq));
 				action = Object.assign(new SequenceAction(win), arg);
 				for (let i of seq) {
-					create(win, i, action as SequenceAction);
+					createAction(win, i, action as SequenceAction);
 				}
 			} else if (arg.spawn) { // SpawnAction
 				let spawn = arg.spawn;
 				util.assert(Array.isArray(spawn));
 				action = Object.assign(new SpawnAction(win), arg);
 				for (let i of spawn) {
-					create(win, i, action as SequenceAction);
+					createAction(win, i, action as SequenceAction);
 				}
 			} else { // KeyframeAction
 				action = Object.assign(new KeyframeAction(win), arg);
 				let key = arg.keyframe;
 				if ( Array.isArray(key) ) {
 					for (let sheet of key)
-						(action as KeyframeAction).addFrame(sheet);
+						(action as KeyframeAction).add(sheet);
 				}
 			}
 		} else {
@@ -148,10 +153,14 @@ export function create(win: Window, arg: ActionIn, parent?: Action) {
 	* @param [cb]   {Function}
 	* @return {KeyframeAction}
 	*/
-export function transition(view: View, style: StyleSheet, cb?: (e: ActionEvent)=>void): KeyframeAction {
+export function transition(
+	view: View,
+	styleOrCssExp: StyleSheet | CSSNameExp,
+	cb?: (e: ActionEvent)=>void
+): KeyframeAction {
 	let action = new KeyframeAction(view.window);
-	action.add(0).fetch(view); // add frame 0 and fetch frame style
-	action.addFrame(style); // add frame 1
+	action.addFrom(0).fetch(view); // add frame 0 and fetch frame style
+	action.add(styleOrCssExp); // add frame 1
 	view.action = action;
 
 	if ( cb ) {
@@ -169,3 +178,5 @@ export function transition(view: View, style: StyleSheet, cb?: (e: ActionEvent)=
 
 	return action;
 }
+
+export default createAction;

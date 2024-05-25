@@ -51,12 +51,4 @@ export default {
 	 * @param sheets {Object}
 	 */
 	css: css,
-
-	/**
-	 * @method render(vdom[,parent])
-	 * @param vdom {VirtualDOM}
-	 * @param parent {View}
-	 * @return {DOM}
-	 */
-	render: ctr.render,
 };

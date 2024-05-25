@@ -28,15 +28,10 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-import quark, { 
-	Hybrid, Button, ViewController, _CVD
-} from './index';
-import {event, EventNoticer, Event } from './event';
+import {createCss, ViewController, _CVD, mainScreenScale} from '.';
+const px = 1 / mainScreenScale();
 
-const {atomPixel: px} = quark;
-
-quark.css({
-	
+createCss({
 	'.x_stepper': {
 		width: 45 * 2 + 3,
 		textFamily: 'icon',
@@ -44,7 +39,6 @@ quark.css({
 		textSize: 20,
 		textColor: '#727272',
 	},
-	
 	'.x_stepper .minus, .x_stepper .plus': {
 		width: 45,
 		height: 28,
@@ -52,68 +46,71 @@ quark.css({
 		borderColor: '#727272',
 		backgroundColor: '#fff',
 	},
-	
 	'.x_stepper .minus': {
 		borderRadiusLeftTop: 6,
 		borderRadiusLeftBottom: 6,
 	},
-	
 	'.x_stepper .plus': {
 		borderWidthLeft: 0,
 		borderRadiusRightTop: 6,
 		borderRadiusRightBottom: 6,
 	},
-	
 	'.x_stepper .minus:down, .x_stepper .plus:down': {
 		backgroundColor: '#eee',
 	},
-})
+});
 
-/**
- * @class Stepper
- */
-export class Stepper extends ViewController {
-	private m_value = 0;
+export class Stepper extends ViewController<{
+	class?: string,
+	min?: number,
+	max?: number,
+	step?: number,
+	initValue?: number,
+	onChange?:(value:number)=>void,
+}> {
+	private _value = 0;
 
-	min = 0;
-	max = Infinity;
-	step = 1;
-	
-	@event readonly onChange: EventNoticer<Event<void>>;
-	
 	get value() {
-		return this.m_value;
+		return this._value;
 	}
 
-	protected _MinusClickHandle() {
-		this.value = this.m_value - this.step;
-	}
-	
-	protected _PlusClickHandle() {
-		this.value = this.m_value + this.step;
-	}
-
-	protected triggerChange() {
-		this.trigger('Change');
-	}
-
-	render() {
-		return (
-			<Hybrid class="x_stepper" style={this.style}>
-				<Button class="minus" onClick={()=>this._MinusClickHandle()} defaultHighlighted={0}>{"\ued5e"}</Button>
-				<Button class="plus" onClick={()=>this._PlusClickHandle()} defaultHighlighted={0}>{"\ued5d"}</Button>
-			</Hybrid>  
-		);
-	}
-	
 	set value(value) {
 		if ( typeof value == 'number') {
-			value = Math.min(this.max, Math.max(this.min, value));
-			if ( value != this.m_value ) {
-				this.m_value = value;
+			value = Math.min(this.props.max || Infinity, Math.max(this.props.min || 0, value));
+			if ( value != this._value ) {
+				this._value = value;
 				if (this.isMounted)
 					this.triggerChange();
 			}
 		}
+	}
+
+	protected triggerLoad() {
+		this._value = this.props.initValue || 0;
+	}
+
+	protected triggerUpdate() {
+		this.value = this._value;
+	}
+
+	protected triggerChange() {
+		this.props.onChange?.call(null, this._value);
+	}
+
+	private _MinusClickHandle() {
+		this.value = this._value - (this.props.step || 1);
+	}
+	
+	private _PlusClickHandle() {
+		this.value = this._value + (this.props.step || 1);
+	}
+
+	render() {
+		return (
+			<box class={['x_stepper',this.props.class||'']}>
+				<button class="minus" onClick={()=>this._MinusClickHandle()}>{"\ued5e"}</button>
+				<button class="plus" onClick={()=>this._PlusClickHandle()}>{"\ued5d"}</button>
+			</box> 
+		);
 	}
 }

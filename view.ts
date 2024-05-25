@@ -34,10 +34,9 @@ import event, {
 	UIEvent, HighlightedEvent, KeyEvent, HighlightedStatus,
 	ClickEvent, TouchEvent, MouseEvent, ActionEvent } from './event';
 import * as types from './types';
-import * as ctr from './ctr';
-import { StyleSheet, CStyleSheetsClass } from './css';
+import { StyleSheet, CStyleSheetsClass, CSSNameExp } from './css';
 import { Window } from './window';
-import { Action, KeyframeAction } from './action';
+import { Action, KeyframeAction,createAction } from './action';
 import * as action from './action';
 
 export enum ViewType {
@@ -61,7 +60,6 @@ export enum ViewType {
 
 export interface DOM {
 	readonly ref: string;
-	readonly owner: ctr.ViewController;
 	readonly metaView: View; // mount point for view controller
 	appendTo(parent: View): View;
 	afterTo(prev: View): View;
@@ -109,12 +107,11 @@ export declare class View extends Notification<UIEvent> implements DOM {
 	readonly layoutOffset: types.Vec2; // @safe Rt
 	readonly center: types.Vec2; // @safe Rt
 	readonly metaView: View;
-	readonly owner: ctr.ViewController;
 	readonly visibleRegion: boolean;
 	readonly ref: string;
 	style: StyleSheet;
 	action: Action | null;
-	class: string;
+	class: string[]; // settingonly method, cssclass.set()
 	opacity: number;
 	cursor: types.CursorStyle;
 	visible: boolean;
@@ -133,7 +130,7 @@ export declare class View extends Notification<UIEvent> implements DOM {
 	hashCode(): number;
 	appendTo(parent: View): this;
 	afterTo(prev: View): this;
-	transition(style: StyleSheet, cb?: (e: ActionEvent)=>void): KeyframeAction;
+	transition(style: StyleSheet|CSSNameExp, cb?: (e: ActionEvent)=>void): KeyframeAction;
 	constructor(win: Window);
 	static readonly isViewController: boolean;
 }
@@ -259,7 +256,6 @@ export declare class Text extends Box implements TextOptions {
 }
 
 export declare class Button extends Text {
-	highlighted: boolean;
 	nextButton(dir: types.FindDirection): Button | null;
 }
 
@@ -432,7 +428,7 @@ declare global {
 			key?: string;
 			style?: StyleSheet;
 			action?: action.ActionIn | null;
-			class?: string;
+			class?: string | string[];
 			opacity?: number;
 			cursor?: types.CursorStyleIn;
 			visible?: boolean;
@@ -539,7 +535,6 @@ declare global {
 		}
 
 		interface ButtonJSX extends TextJSX {
-			highlighted?: boolean;
 		}
 
 		interface LabelJSX extends ViewJSX, TextOptionsJSX {
@@ -636,12 +631,14 @@ class _View extends NativeNotification {
 	@event readonly onActionKeyframe: EventNoticer<ActionEvent>;
 	@event readonly onActionLoop: EventNoticer<ActionEvent>;
 
-	private _ref: string;
+	readonly ref: string;
 	get metaView() { return this }
-	get ref() { return this._ref }
-	set ref(value) { (ctr as any).__setRef(this, value) }
-	get style(): StyleSheet { return this as StyleSheet }
-	set style(value: StyleSheet) { Object.assign(this, value) }
+	get style() { return this as StyleSheet }
+	set style(value) { Object.assign(this, value) }
+	get class() { return [] }
+	set class(value: string[]) {
+		(this as unknown as View).cssclass.set(value);
+	}
 
 	get action() { // get action object
 		return View_action.get!.call(this) as Action | null;
@@ -649,7 +646,7 @@ class _View extends NativeNotification {
 
 	set action(value) { // set action
 		if (value)
-			View_action.set!.call(this, action.create((this as unknown as View).window, value));
+			View_action.set!.call(this, createAction((this as unknown as View).window, value));
 		else
 			View_action.set!.call(this, null);
 	}
@@ -668,7 +665,7 @@ class _View extends NativeNotification {
 		return this;
 	}
 
-	transition(style: StyleSheet, cb?: (e: ActionEvent)=>void) { // transition animate
+	transition(style: StyleSheet | CSSNameExp, cb?: (e: ActionEvent)=>void) { // transition animate
 		return action.transition(this as unknown as View, style, cb);
 	}
 
@@ -709,6 +706,10 @@ class _View extends NativeNotification {
 	}
 }
 
+let test_v = new _View
+
+test_v.class
+
 class _Image {
 	@event readonly onLoad: EventNoticer<UIEvent>;
 	@event readonly onError: EventNoticer<UIEvent>;
@@ -726,44 +727,11 @@ class _Scroll {
 	@event readonly onScroll: EventNoticer<UIEvent>;
 }
 
-class _Button {
-	highlighted: boolean;
-	getNoticer(name: string) {
-		var noticer = (this as any)['_on' + name] as EventNoticer<UIEvent>;
-		if ( !noticer ) {
-			let view = this as unknown as View;
-			if ( name == 'Click' ) {
-				View.prototype.getNoticer.call(view, 'Highlighted'); // bind highlighted
-			}
-			return View.prototype.getNoticer.call(view, name);
-		}
-		return noticer;
-	}
-	setHighlightedStatus(status: HighlightedStatus) {
-		if ( this.highlighted ) {
-			let view = this as unknown as View;
-			if ( status == HighlightedStatus.Hover ) {
-				view.transition({ opacity: 0.7, time: 80 });
-			} else if ( status == HighlightedStatus.Active ) {
-				view.transition({ opacity: 0.35, time: 50 });
-			} else {
-				view.transition({ opacity: 1, time: 180 });
-			}
-		}
-	}
-	triggerHighlighted(evt: HighlightedEvent) {
-		this.setHighlightedStatus(evt.status);
-		return (this as unknown as View).triggerWithEvent('Highlighted', evt);
-	}
-}
-
 _ui.View.isViewController = false;
-_ui.View.prototype._ref = '';
+_ui.View.prototype.ref = '';
 _ui.View.prototype.owner = null;
-_ui.Button.prototype.highlighted = true;
 util.extendClass(_ui.View, _View);
 util.extendClass(_ui.Scroll, _Scroll);
 util.extendClass(_ui.Image, _Image);
 util.extendClass(_ui.Input, _Input);
 util.extendClass(_ui.Textarea, _Textarea);
-util.extendClass(_ui.Button, _Button);

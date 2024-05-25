@@ -53,7 +53,6 @@ function warn(id: string, msg = '') {
 
 const InvalidDOM: DOM = {
 	ref: '',
-	get owner(): ViewController { throw Error.new('Not implemented') },
 	get metaView(): View { throw Error.new('Not implemented') },
 	remove() { throw Error.new('Not implemented') },
 	appendTo(){ throw Error.new('Not implemented') },
@@ -61,7 +60,7 @@ const InvalidDOM: DOM = {
 };
 
 interface DOMConstructor {
-	new(window: Window, ...args: any[]): DOM;
+	new(...args: any[]): DOM;
 	readonly isViewController: boolean;
 }
 
@@ -120,8 +119,8 @@ export class VirtualDOM {
 		assertDev(this.dom === InvalidDOM);
 		let window = owner.window;
 		if (this.newDom.isViewController) {
-			let newCtr = new this.newDom(window, {
-				owner: owner, props: this.props, children: this.children,
+			let newCtr = new this.newDom(this.props, {
+				owner, window, children: this.children
 			}) as ViewController;
 			(this as {dom:DOM}).dom = newCtr;
 			let r = (newCtr as any).triggerLoad(); // trigger event Load
@@ -133,13 +132,12 @@ export class VirtualDOM {
 			} else {
 				(newCtr as {isLoaded:boolean}).isLoaded = true;
 			}
-			setRef(newCtr, this.props.ref || '');
+			setRef(newCtr, owner, this.props.ref || '');
 			rerender(newCtr); // rerender
 		} else {
 			let view = new this.newDom(window) as View;
 			let prev: View | null = null;
 			(this as {dom:DOM}).dom = view;
-			(view as {owner:ViewController}).owner = owner;
 			for (let vdom of this.children) {
 				if (vdom) {
 					if (prev) {
@@ -149,6 +147,7 @@ export class VirtualDOM {
 					}
 				}
 			}
+			setRef(view, owner, this.props.ref || '');
 			Object.assign(view, this.props);
 		}
 		return this.dom;
@@ -178,7 +177,6 @@ class VirtualDOMText extends VirtualDOM {
 	newInstance<P = {}, S = {}>(owner: ViewController<P,S>): DOM {
 		let view = new Label(owner.window);
 		(this as {dom:DOM}).dom = view;
-		(view as {owner:ViewController}).owner = owner;
 		view.value = this.value;
 		return view;
 	}
@@ -259,7 +257,7 @@ class VirtualDOMCollection extends VirtualDOM {
 
 	newInstance<P = {}, S = {}>(owner: ViewController<P, S>): DOM {
 		assertDev(this.dom === InvalidDOM);
-		(this as {dom:DOM}).dom = new DOMCollection(owner.window, owner, this);
+		(this as {dom:DOM}).dom = new DOMCollection(owner, this);
 		let keys = this.keys;
 		this.collection.forEach(function(cell,i) {
 			let key = getKey(cell, i);
@@ -274,21 +272,14 @@ class VirtualDOMCollection extends VirtualDOM {
 
 class DOMCollection implements DOM {
 	private _vdom: VirtualDOMCollection;
-	private _ref: string;
+	readonly ref: string;
 	readonly owner: ViewController;
-	get ref() { return this._ref }
 	get metaView() {
 		return this._vdom.collection.indexReverse(0).dom.metaView;
 	}
-	constructor(window: Window, owner: ViewController, vdom: VirtualDOMCollection) {
+	constructor(owner: ViewController, vdom: VirtualDOMCollection) {
 		this._vdom = vdom;
 		this.owner = owner;
-	}
-	remove() {
-		for (let vdom of this._vdom.collection)
-			removedom(vdom, this.owner);
-		this._vdom.collection = [];
-		this._vdom.keys.clear();
 	}
 	appendTo(parent: View) {
 		for (let cell of this._vdom.collection)
@@ -300,9 +291,15 @@ class DOMCollection implements DOM {
 			prev = cell.dom.afterTo(prev);
 		return prev;
 	}
+	remove() {
+		for (let vdom of this._vdom.collection)
+			removedom(vdom, this.owner);
+		this._vdom.collection = [];
+		this._vdom.keys.clear();
+	}
 	static readonly isViewController = false;
 }
-Object.assign(DOMCollection.prototype, {_ref: ''});
+Object.assign(DOMCollection.prototype, {ref: ''});
 
 function removesubctr<T>(vdom: VirtualDOM, owner: ViewController<T>) {
 	for (let e of vdom.children) {
@@ -327,16 +324,16 @@ function removedom<T>(vdom: VirtualDOM, owner: ViewController<T>) {
 	vdom.dom.remove();
 }
 
-function setRef(dom: View | ViewController, ref: string) {
-	let _ref = (dom as any)._ref;
-	if (_ref !== ref) {
-		let refs = dom.owner!.refs as Dict<ViewController | View>;
-		if (refs[_ref] === dom) {
-			delete refs[_ref];
+function setRef(dom: View | ViewController, owner: ViewController, value: string) {
+	let ref = dom.ref;
+	if (ref !== value) {
+		let refs = owner.refs as Dict<ViewController | View>;
+		if (refs[ref] === dom) {
+			delete refs[ref];
 		}
-		if (ref)
-			refs[ref] = dom;
-		(dom as any)._ref = ref;
+		if (value)
+			refs[value] = dom;
+		(dom as any).ref = value;
 	}
 }
 
@@ -374,12 +371,12 @@ function diff(owner: ViewController, vdomOld: VirtualDOM, vdomNew: VirtualDOM): 
 		let ctr = dom as ViewController;
 		(ctr as {props:any}).props = vdomNew.props;
 		(ctr as {children:any}).children = vdomNew.children;
-		setRef(ctr, vdomNew.props.ref || '');
+		setRef(ctr, owner, vdomNew.props.ref || '');
 		rerender(ctr); // rerender
 	} else {
 		// diff and set props
+		setRef(dom as View, owner, vdomNew.props.ref || '');
 		vdomNew.diffProps(owner.window, vdomOld);
-		setRef(dom as View, vdomNew.props.ref || '');
 
 		let childrenOld = vdomOld.children, childrenNew = vdomNew.children;
 		let len = Math.max(childrenOld.length, childrenNew.length);
@@ -412,16 +409,14 @@ function diff(owner: ViewController, vdomOld: VirtualDOM, vdomNew: VirtualDOM): 
 }
 
 export type Args<P> = {
+	window: Window,
 	owner: ViewController,
-	props: Readonly<P>,
 	children: (VirtualDOM | null)[],
 };
 
 export class ViewController<P = {}, S = {}> implements DOM {
 	private _hashStates = new Map<string, number>;
-	private _ref: string;
 	private _vdom?: VirtualDOM; // render result
-	private _removeFlag?: boolean;
 	private _rerenderCbs?: (()=>void)[]; // rerender callbacks
 	readonly window: Window;
 	readonly owner: ViewController;
@@ -432,14 +427,25 @@ export class ViewController<P = {}, S = {}> implements DOM {
 	readonly isMounted: boolean;
 	readonly isDestroy: boolean;
 	readonly refs: Readonly<Dict<ViewController | View>> = {};
+	readonly ref: string;
 
 	get metaView() { return this._vdom!.dom.metaView }
-	get ref() { return this._ref }
-	set ref(value) { setRef(this, value) }
 	get dom() { return this._vdom!.dom }
+
+	refsAs<T extends ViewController | View = View>(ref: string) {
+		return this.refs[ref] as T;
+	}
+
+	domAs<T extends ViewController | View = View>() {
+		return this._vdom!.dom as T;
+	}
 
 	static rerender(self: ViewController) {
 		RenderQueueSet.delete(self); // delete mark
+
+		if (self.isDestroy)
+			return;
+
 		let vdomOld = self._vdom;
 		let vdomNew = _CVDD(self.render());
 		let update = false;
@@ -479,7 +485,7 @@ export class ViewController<P = {}, S = {}> implements DOM {
 		}
 	}
 
-	constructor(window: Window, {props,children,owner}: Args<P>) {
+	constructor(props: Readonly<P>, {window,children,owner}: Args<P>) {
 		this.window = window;
 		this.props = props;
 		this.children = children;
@@ -507,6 +513,8 @@ export class ViewController<P = {}, S = {}> implements DOM {
 	}
 
 	update(cb?: ()=>void) {
+		if (this.isDestroy)
+			return;
 		if (cb) {
 			if (this._rerenderCbs) {
 				this._rerenderCbs.push(cb);
@@ -522,11 +530,11 @@ export class ViewController<P = {}, S = {}> implements DOM {
 	}
 
 	appendTo(parent: View): View {
-		return this.dom.appendTo(parent);
+		return this._vdom!.dom.appendTo(parent);
 	}
 
 	afterTo(prev: View): View {
-		return this.dom.afterTo(prev);
+		return this._vdom!.dom.afterTo(prev);
 	}
 
 	protected triggerLoad(): any {}
@@ -537,25 +545,12 @@ export class ViewController<P = {}, S = {}> implements DOM {
 
 	remove() {
 		let vdom = this._vdom;
-		if (vdom && !this._removeFlag) {
-			this._removeFlag = true;
+		if (vdom && !this.isDestroy) {
+			(this as any).isDestroy = true;
 			this.triggerRemove(); // trigger event
 			this._vdom = undefined;
 			removedom(vdom, this);
-			(this as any).isDestroy = true;
 		}
-	}
-
-	/**
-	 * @method render (obj, [parent])
-	 * @param vdom {VirtualDOM}
-	 * @param parent Optional {View}
-	 * @return {DOM} return dom instance
-	 */
-	static render<T extends DOM = DOM>(vdom: VirtualDOM, parent: View): T {
-		let dom = vdom.newInstance(parent.owner!);
-		dom.appendTo(parent);
-		return dom as T;
 	}
 
 	static hashCode() {
@@ -565,14 +560,13 @@ export class ViewController<P = {}, S = {}> implements DOM {
 	static readonly isViewController: boolean = true;
 }
 Object.assign(ViewController.prototype, {
-	_ref: '', _vdom: undefined, _removeFlag: false,
+	ref: '', _vdom: undefined,
 	isLoaded: false, isMounted: false, isDestroy: false,
 });
 
 export default ViewController;
 
 const rerender = ViewController.rerender;
-exports.__setRef = setRef;
 
 const DOMConstructors: {
 	[ key in JSX.IntrinsicElementsName ]: DOMConstructor;
