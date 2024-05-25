@@ -80,16 +80,16 @@ export declare class KeyframeAction extends Action {
 	readonly frame: number; // get play frame
 	readonly length: number; // get frames count
 	readonly [index: number]: Keyframe; // get keyframe for index
-	addFrom(time: number, curve?: types.CurveIn): Keyframe; // add new keyframe
-	addWithCss(cssExp: CSSNameExp, time?: number, curve?: types.CurveIn): Keyframe;
+	addFrame(time: number, curve?: types.CurveIn): Keyframe; // add new keyframe
+	addFrameWithCss(cssExp: CSSNameExp, time?: number, curve?: types.CurveIn): Keyframe;
 	add(styleOrCssExp: StyleSheet | CSSNameExp, time?: number, curve?: types.CurveIn): Keyframe;
 }
 (exports.KeyframeAction as typeof KeyframeAction).prototype.add =
 function(styleOrCssExp: StyleSheet | CSSNameExp, ...args: any[]): Keyframe {
 	if (typeof styleOrCssExp == 'string') {
-		return this.addWithCss(styleOrCssExp, ...args);
+		return this.addFrameWithCss(styleOrCssExp, ...args);
 	} else {
-		let frame = this.addFrom(args[0] || styleOrCssExp.time || 0, args[1] || styleOrCssExp.curve);
+		let frame = this.addFrame(args[0] || styleOrCssExp.time || 0, args[1] || styleOrCssExp.curve);
 		Object.assign(frame, styleOrCssExp);
 		return frame;
 	}
@@ -159,7 +159,7 @@ export function transition(
 	cb?: (e: ActionEvent)=>void
 ): KeyframeAction {
 	let action = new KeyframeAction(view.window);
-	action.addFrom(0).fetch(view); // add frame 0 and fetch frame style
+	action.addFrame(0).fetch(view); // add frame 0 and fetch frame style
 	action.add(styleOrCssExp); // add frame 1
 	view.action = action;
 
