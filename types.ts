@@ -512,7 +512,7 @@ export class Color extends Base<Color> {
 	}
 }
 initDefaults(Color, { r: 0, g: 0, b: 0, a: 255 });
-type ColorStrIn = `#${string}` | `rgb(${N},${N},${N})` | `rgba(${N},${N},${N},${N})`;
+export type ColorStrIn = `#${string}` | `rgb(${N},${N},${N})` | `rgba(${N},${N},${N},${N})`;
 export type ColorIn = ColorStrIn | N | Color;
 
 export class Shadow extends Base<Shadow> {
@@ -753,6 +753,8 @@ export function newTextColor(kind: TextValueKind, r: N, g: N, b: N, a: N) {
 export function newTextSize(kind: TextValueKind, value: N) {
 	return newBase(TextSize, { kind, value });
 }
+
+export const newTextLineHeight = newTextSize;
 
 export function newTextShadow(
 	kind: TextValueKind, offset_x: N, offset_y: N,

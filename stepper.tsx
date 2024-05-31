@@ -68,7 +68,7 @@ export class Stepper extends ViewController<{
 	initValue?: number,
 	onChange?:(value:number)=>void,
 }> {
-	private _value = 0;
+	private _value = this.props.initValue || 0;
 
 	get value() {
 		return this._value;
@@ -83,10 +83,6 @@ export class Stepper extends ViewController<{
 					this.triggerChange();
 			}
 		}
-	}
-
-	protected triggerLoad() {
-		this._value = this.props.initValue || 0;
 	}
 
 	protected triggerUpdate() {

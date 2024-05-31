@@ -51,7 +51,7 @@ declare class NativeApplication extends Notification<AEvent> {
 	maxResourceMemoryLimit: number; //!< get or set max resource memory limit
 	usedResourceMemory(): number; //!< current used resource memory
 	clear(all?: boolean): void; //!< clear resource memory
-	openURL(rul: string): void;
+	openURL(url: string): void;
 	sendEmail(recipient: string, subject: string, body?: string, cc?: string, bcc?: string): void;
 }
 

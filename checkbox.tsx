@@ -28,7 +28,7 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-import {createCss, ViewController,_CVD} from '.';
+import {createCss,ViewController,_CVD} from '.';
 
 createCss({
 	'.x_checkbox': {
@@ -123,17 +123,13 @@ createCss({
 	},
 });
 
-class Basic extends ViewController<{
+class Basic<P={},S={}> extends ViewController<{
 	class?: string,
 	disable?: boolean,
 	initSelected?: boolean,
 	onChange?:(value:boolean)=>void,
-}> {
-	private _selected: boolean;
-
-	triggerLoad() {
-		this._selected = !!this.props.initSelected;
-	}
+}&P,S> {
+	private _selected = !!this.props.initSelected;
 
 	triggerMounted() {
 		this.domAs().onClick.on(()=>{
@@ -159,7 +155,7 @@ class Basic extends ViewController<{
 	}
 }
 
-export class Checkbox extends Basic {
+export class Checkbox<P={},S={}> extends Basic<P,S> {
 	render() {
 		return (
 			<button class={['x_checkbox',this.props.class||'',this.selected?'on':'']}>
@@ -169,7 +165,7 @@ export class Checkbox extends Basic {
 	}
 }
 
-export class Switch extends Basic {
+export class Switch<P={},S={}> extends Basic<P,S> {
 	render() {
 		return (
 			<button class={['x_switch',this.props.class||'',this.selected?'on':'']}>

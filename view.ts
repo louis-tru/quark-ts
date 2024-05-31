@@ -31,13 +31,14 @@
 import util from './util';
 import event, {
 	Listen, NativeNotification, Notification, EventNoticer,
-	UIEvent, HighlightedEvent, KeyEvent, HighlightedStatus,
+	UIEvent, HighlightedEvent, KeyEvent,
 	ClickEvent, TouchEvent, MouseEvent, ActionEvent } from './event';
 import * as types from './types';
 import { StyleSheet, CStyleSheetsClass, CSSNameExp } from './css';
 import { Window } from './window';
 import { Action, KeyframeAction,createAction } from './action';
 import * as action from './action';
+import {ViewController} from 'ctr';
 
 export enum ViewType {
 	View,
@@ -63,10 +64,11 @@ export interface DOM {
 	readonly metaView: View; // mount point for view controller
 	appendTo(parent: View): View;
 	afterTo(prev: View): View;
-	remove(): void; // remove from parent view
+	destroy(owner: ViewController): void; // destroy from owner
 }
 
 export declare class View extends Notification<UIEvent> implements DOM {
+	private _children: (DOM|null)[]; // View | ViewController | null, JSX system specific
 	readonly onClick: EventNoticer<ClickEvent>;
 	readonly onBack: EventNoticer<ClickEvent>;
 	readonly onKeyDown: EventNoticer<KeyEvent>;
@@ -130,6 +132,7 @@ export declare class View extends Notification<UIEvent> implements DOM {
 	hashCode(): number;
 	appendTo(parent: View): this;
 	afterTo(prev: View): this;
+	destroy(owner: ViewController): void;
 	transition(style: StyleSheet|CSSNameExp, cb?: (e: ActionEvent)=>void): KeyframeAction;
 	constructor(win: Window);
 	static readonly isViewController: boolean;
@@ -176,8 +179,8 @@ export declare class Box extends View {
 	background: types.BoxFilter | null;
 	boxShadow: types.BoxShadow | null;
 	weight: number;
-	readonly contentSize: types.Vec2; // @safe Rt
-	readonly clientSize: types.Vec2; // @safe Rt
+	readonly contentSize: types.Vec2; // @safe Rt, width,height, no include padding
+	readonly clientSize: types.Vec2; // @safe Rt, border + padding + content
 }
 
 export declare class Flex extends Box {
@@ -425,7 +428,7 @@ declare global {
 			onActionKeyframe?: Listen<ActionEvent, View> | null;
 			onActionLoop?: Listen<ActionEvent, View> | null;
 			ref?: string;
-			key?: string;
+			key?: string|number;
 			style?: StyleSheet;
 			action?: action.ActionIn | null;
 			class?: string | string[];
@@ -631,6 +634,7 @@ class _View extends NativeNotification {
 	@event readonly onActionKeyframe: EventNoticer<ActionEvent>;
 	@event readonly onActionLoop: EventNoticer<ActionEvent>;
 
+	private _children: (DOM|undefined)[];
 	readonly ref: string;
 	get metaView() { return this }
 	get style() { return this as StyleSheet }
@@ -663,6 +667,20 @@ class _View extends NativeNotification {
 	afterTo(prev: View) {
 		prev.after(this as unknown as View);
 		return this;
+	}
+
+	destroy(owner: ViewController): void {
+		for (let dom of this._children) {
+			if (dom)
+				dom.destroy(owner);
+		}
+		let ref = this.ref;
+		if (ref) {
+			if (owner.refs[ref] === this as unknown as View) {
+				delete (owner.refs as Dict<DOM>)[ref];
+			}
+		}
+		(this as unknown as View).remove(); // remove from parent view
 	}
 
 	transition(style: StyleSheet | CSSNameExp, cb?: (e: ActionEvent)=>void) { // transition animate
@@ -706,10 +724,6 @@ class _View extends NativeNotification {
 	}
 }
 
-let test_v = new _View
-
-test_v.class
-
 class _Image {
 	@event readonly onLoad: EventNoticer<UIEvent>;
 	@event readonly onError: EventNoticer<UIEvent>;
@@ -730,6 +744,7 @@ class _Scroll {
 _ui.View.isViewController = false;
 _ui.View.prototype.ref = '';
 _ui.View.prototype.owner = null;
+_ui.View.prototype._children = [];
 util.extendClass(_ui.View, _View);
 util.extendClass(_ui.Scroll, _Scroll);
 util.extendClass(_ui.Image, _Image);

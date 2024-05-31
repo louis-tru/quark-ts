@@ -64,6 +64,7 @@ declare class NativeWindow extends Notification<WEvent> {
 	readonly fsp: number;
 	readonly atomPixel: number;
 	readonly root: Root;
+	readonly focusView: View;
 	size: types.Vec2;
 	backgroundColor: types.Color;
 	surfaceSize: types.Vec2;
@@ -80,9 +81,10 @@ export class Window extends (_ui.Window as typeof NativeWindow) {
 	@event readonly onChange: EventNoticer<WEvent>;
 	@event readonly onBackground: EventNoticer<WEvent>;
 	@event readonly onForeground: EventNoticer<WEvent>;
+	@event readonly onClose: EventNoticer<WEvent>;
 	readonly rootCtr: ViewController = new RootViewController(this);
 	render(vdom: VirtualDOM) {
-		vdom.newInstance(this.rootCtr).appendTo(this.root);
+		vdom.newDom(this.rootCtr).appendTo(this.root);
 		return this;
 	}
 }

@@ -60,8 +60,8 @@ export class List<T = any> {
 	get begin() {return this._end.next}
 	get end() {return this._end}
 	get length() {return this._length}
-	get front() {return this._end.next.value}
-	get back() {return this._end.prev.value}
+	get front(): T | undefined {return this._end.next.value}
+	get back(): T | undefined {return this._end.prev.value}
 
 	constructor() {
 		let end = { host: this as List<T> } as RemoveReadonly<ListIterator<T>>;
@@ -69,6 +69,16 @@ export class List<T = any> {
 		end.next = end;
 		this._end = end;
 		this._length = 0;
+	}
+
+	toArray(): T[] {
+		const arr = [] as T[];
+		let node = this.begin, end = this._end;
+		while (node !== end) {
+			arr.push(node.value);
+			node = node.next;
+		}
+		return arr;
 	}
 
 	remove(it: ListIterator<T>): ListIterator<T> {

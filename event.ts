@@ -69,7 +69,7 @@ export declare class ActionEvent extends UIEvent {
 }
 
 export declare class KeyEvent extends UIEvent {
-	readonly focusMove: View | null;
+	nextFocus: View | null;
 	readonly keycode: KeyboardKeyCode;
 	readonly keypress: number;
 	readonly repeat: number;

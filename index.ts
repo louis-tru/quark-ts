@@ -30,7 +30,6 @@
 
 import app from  './app';
 import css from './css';
-import ctr from './ctr';
 export * from './css';
 export * from './app';
 export * from './view';
