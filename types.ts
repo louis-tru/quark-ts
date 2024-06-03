@@ -183,6 +183,7 @@ export enum Align {
 };
 
 export enum BoxSizeKind {
+	None,    /* Do not use value */
 	Auto,    /* 包裹内容 wrap content */
 	Match,   /* 匹配父视图 match parent */
 	Rem,     /* 明确值  rem */

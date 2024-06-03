@@ -143,8 +143,10 @@ export declare class Box extends View {
 	align: types.Align;
 	width: types.BoxSize;
 	height: types.BoxSize;
-	widthLimit: types.BoxSize;
-	heightLimit: types.BoxSize;
+	minWidth: types.BoxSize;
+	minHeight: types.BoxSize;
+	maxWidth: types.BoxSize;
+	maxHeight: types.BoxSize;
 	margin: number[];
 	marginTop: number;
 	marginRight: number;
@@ -239,6 +241,7 @@ export interface TextOptions {
 	textLineHeight: types.TextSize;
 	textShadow: types.TextShadow;
 	textFamily: types.TextFamily;
+	computeLayoutSize(text: string): types.Vec2;
 }
 
 export declare class Text extends Box implements TextOptions {
@@ -256,6 +259,8 @@ export declare class Text extends Box implements TextOptions {
 	textLineHeight: types.TextSize;
 	textShadow: types.TextShadow;
 	textFamily: types.TextFamily;
+	value: string;
+	computeLayoutSize(text: string): types.Vec2;
 }
 
 export declare class Button extends Text {
@@ -278,6 +283,7 @@ export declare class Label extends View implements TextOptions {
 	textShadow: types.TextShadow;
 	textFamily: types.TextFamily;
 	value: string;
+	computeLayoutSize(text: string): types.Vec2;
 }
 
 export declare class Input extends Box implements TextOptions {
@@ -306,6 +312,7 @@ export declare class Input extends Box implements TextOptions {
 	value: string;
 	placeholder: string;
 	readonly textLength: number;
+	computeLayoutSize(text: string): types.Vec2;
 }
 
 export interface ScrollBase {
@@ -444,8 +451,10 @@ declare global {
 			align?: types.AlignIn;
 			width?: types.BoxSizeIn;
 			height?: types.BoxSizeIn;
-			widthLimit?: types.BoxSizeIn;
-			heightLimit?: types.BoxSizeIn;
+			minWidth?: types.BoxSizeIn;
+			minHeight?: types.BoxSizeIn;
+			maxWidth?: types.BoxSizeIn;
+			maxHeight?: types.BoxSizeIn;
 			margin?: number[] | number;
 			marginTop?: number;
 			marginRight?: number;
@@ -535,6 +544,7 @@ declare global {
 		}
 
 		interface TextJSX extends BoxJSX, TextOptionsJSX {
+			value?: string;
 		}
 
 		interface ButtonJSX extends TextJSX {

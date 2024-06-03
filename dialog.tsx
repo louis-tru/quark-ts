@@ -43,15 +43,16 @@ createCss({
 	'.x_dialog': {
 	},
 	'.x_dialog.main': {
-		width: 380, // min width
-		widthLimit: '40!',// max
-		heightLimit: '40!',//max
+		minWidth: 380, // min width
+		maxWidth: '40!',// max width
+		maxHeight: '40!',
 		align: 'centerCenter',
 		backgroundColor: '#fff',
 		borderRadius: 12,
 	},
 	'.x_dialog.sheet': {
 		width: 'match',
+		maxWidth: 'none',
 		margin: 10,
 		align: 'centerBottom',
 	},
@@ -133,45 +134,24 @@ export class Dialog<P={},S={}> extends Navigation<{
 	title?: string;
 	content?: string;
 	autoClose?: boolean;
+	buttons?: string[];
 }&P,S> {
-	private _buttons = [];
-
-	private _computeButtonsWidth() {
-		let self = this;
-		let len = self.length;
-		if (!len || !self.domAs().visible)
-			return;
-		// TODO ...
-		// if ( len == 1 ) {
-		// 	(self.find<Clip>('btns').first as Button).width = types.parseValue('full');
-		// } else  {
-		// 	let main_width = self.find<Indep>('main').finalWidth;
-		// 	if ( main_width ) {
-		// 		let btn = self.find<Clip>('btns').first as Button;
-		// 		while (btn) {
-		// 			btn.width = new types.Value(types.ValueType.PIXEL, (main_width / len) - ((len - 1) * px));
-		// 			btn.borderLeft = types.parseBorder(`${px} #9da1a0`);
-		// 			btn.borderTopWidth = px;
-		// 			btn = btn.next as Button;
-		// 		}
-		// 		(self.find<Clip>('btns').first as Button).borderLeftWidth = 0;
-		// 	}
-		// }
-	}
+	private _buttons = [] as string[];
 
 	private _autoClose() {
 		if (this.autoClose)
 			this.close();
 	}
 
-	@link title = '';
-	@link content = '';
-	@link autoClose = true;
-
 	get length() {
 		return this._buttons.length;
 	}
 
+	@link title = '';
+	@link content = '';
+	@link autoClose = true;
+
+	@link
 	get buttons() {
 		return this._buttons;
 	}
@@ -183,11 +163,6 @@ export class Dialog<P={},S={}> extends Navigation<{
 		}
 	}
 
-	protected triggerUpdate(a: VDom, b: VDom) {
-		this._computeButtonsWidth();
-		return super.triggerUpdate(a,b);
-	}
-
 	protected triggerAction(index: number) {
 		this.props.onAction?.call(null, index);
 		this._autoClose();
@@ -195,27 +170,9 @@ export class Dialog<P={},S={}> extends Navigation<{
 
 	protected render() {
 		return (
-			// <Indep width="100%" height="100%" backgroundColor="#0008" receive={true} visible={false} opacity={0}>
-			// 	<LimitIndep id="main" class="x_dialog main">
-			// 		<Hybrid id="title" class="title">{this.title}</Hybrid>
-			// 		<Hybrid id="con" class="content">{this.content||vdoms}</Hybrid>
-			// 		<Clip id="btns" class="buttons">
-			// 		{
-			// 			this.m_buttons.map((e, i)=>(
-			// 				<Button 
-			// 					index={i}
-			// 					class="button"
-			// 					borderTopWidth={px}
-			// 					onClick={(e:any)=>this._handleClick(e)}
-			// 					defaultHighlighted={0}>{e}</Button>
-			// 			))
-			// 		}
-			// 		</Clip>
-			// 	</LimitIndep>
-			// </Indep>
 			<box width="100%" height="100%" backgroundColor="#0008" receive={true} visible={false} opacity={0}>
 				<transform ref="main" class="x_dialog main">
-					<text ref="title" class="title">{this.title}</text>
+					<text ref="title" class="title" value={this.title} />
 					<text ref="con" class="content">{this.content||this.children}</text>
 					<box ref="btns" class="buttons">
 					{
@@ -225,7 +182,8 @@ export class Dialog<P={},S={}> extends Navigation<{
 								class="button"
 								borderWidthTop={px}
 								onClick={e=>this.triggerAction(i)}
-							>{e}</button>
+								value={e}
+							/>
 						))
 					}
 					</box>
@@ -239,7 +197,6 @@ export class Dialog<P={},S={}> extends Navigation<{
 			super.appendTo(this.window.root);
 			this.domAs().visible = true;
 			this.window.nextFrame(()=>{
-				this._computeButtonsWidth();
 				let main = this.refs.main as Transform;
 				let size = main.clientSize;
 				main.style.origin = [size.x / 2, size.y / 2];
@@ -302,41 +259,6 @@ export class Sheet<P={},S={}> extends Dialog<P,S> {
 		let content = this.content ? this.content :
 			this.children.length ? this.children: null;
 		return (
-			// <Indep width="100%" height="100%" backgroundColor="#0008" onClick={()=>this.navigationBack()} visible={0} opacity={0}>
-			// {content?
-			// 	<Indep id="main" class="x_dialog sheet">{content}</Indep>:
-			// 	<Indep id="main" class="x_dialog sheet">
-			// 		<Clip class="buttons">
-			// 		{
-			// 			length?
-			// 			this.buttons.slice().map((e,i)=>(
-			// 				<Button 
-			// 					index={length-i}
-			// 					class="button"
-			// 					width="100%"
-			// 					onClick={(e:any)=>this._handleClick(e)}
-			// 					borderTopWidth={i?px:0}
-			// 					defaultHighlighted={0}>{e}</Button>
-			// 			)):
-			// 			<Button 
-			// 				index={1}
-			// 				class="button"
-			// 				width="100%"
-			// 				onClick={(e:any)=>this._handleClick(e)}
-			// 				defaultHighlighted={0}>{CONSTS.OK}</Button>
-			// 		}
-			// 		</Clip>
-			// 		<Clip class="buttons">
-			// 			<Button 
-			// 				index={0}
-			// 				class="button gray"
-			// 				width="100%"
-			// 				onClick={(e:any)=>this._handleClick(e)}
-			// 				defaultHighlighted={0}>{CONSTS.CANCEL}</Button>
-			// 		</Clip>
-			// 	</Indep>
-			// }
-			// </Indep>
 			<box
 				width="100%" height="100%"
 				backgroundColor="#0008"
@@ -354,13 +276,15 @@ export class Sheet<P={},S={}> extends Dialog<P,S> {
 								width="100%"
 								onClick={e=>this.triggerAction(length-i)}
 								borderWidthTop={i?px:0}
-							>{e}</button>
+								value={e}
+							/>
 						)):
 						<button
 							class="button"
 							width="100%"
 							onClick={e=>this.triggerAction(1)}
-						>{Consts.Ok}</button>
+							value={Consts.Ok}
+						/>
 					}
 					</box>
 					<box class="buttons" clip={true}>
@@ -368,7 +292,8 @@ export class Sheet<P={},S={}> extends Dialog<P,S> {
 							class="button gray"
 							width="100%"
 							onClick={e=>this.triggerAction(0)}
-						>{Consts.Cancel}</button>
+							value={Consts.Cancel}
+						/>
 					</box>
 				</box>
 			}
@@ -434,32 +359,21 @@ export function prompt(window: Window, msg: string | {
 		message = {msg};
 	let { msg: _msg = '', text = '', placeholder = Consts.Placeholder, security = false } = message;
 	let dag: Dialog = (
-		<Dialog 
+		<Dialog
 			action_time={100}
 			buttons={[Consts.Cancel, Consts.Ok]} 
 			onAction={e=>cb(!!e, e ? (dag.refs.input as Input).value: '')}
 		>
-			{/* <Span>
-				{_msg}
-				<Input security={security} id="input" class="prompt"
-					returnType="done" onKeyEnter={()=>{
-						(dag as any).triggerAction(1);
-						(dag as any)._actionClose();
-					}}
-					value={text} placeholder={placeholder} />
-			</Span> */}
-			<box>
-				{_msg}
-				<input
-					security={security}
-					ref="input"
-					class="prompt"
-					returnType="done"
-					value={text}
-					placeholder={placeholder}
-					onKeyEnter={()=>(dag as any).triggerAction(1)}
-				/>
-			</box>
+			{_msg}
+			<input
+				security={security}
+				ref="input"
+				class="prompt"
+				returnType="done"
+				value={text}
+				placeholder={placeholder}
+				onKeyEnter={()=>(dag as any).triggerAction(1)}
+			/>
 		</Dialog>
 	).newDom(window.rootCtr);
 	dag.show();

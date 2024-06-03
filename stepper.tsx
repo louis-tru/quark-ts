@@ -28,7 +28,7 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-import {createCss, ViewController, _CVD, mainScreenScale} from '.';
+import {_CVD, createCss, ViewController, mainScreenScale} from '.';
 const px = 1 / mainScreenScale();
 
 createCss({
@@ -104,8 +104,8 @@ export class Stepper extends ViewController<{
 	render() {
 		return (
 			<box class={['x_stepper',this.props.class||'']}>
-				<button class="minus" onClick={()=>this._MinusClickHandle()}>{"\ued5e"}</button>
-				<button class="plus" onClick={()=>this._PlusClickHandle()}>{"\ued5d"}</button>
+				<button class="minus" onClick={()=>this._MinusClickHandle()} value="\ued5e"/>
+				<button class="plus" onClick={()=>this._PlusClickHandle()} value="\ued5d"/>
 			</box> 
 		);
 	}

@@ -289,14 +289,13 @@ export class Overlay<P={},S={}> extends Navigation<{
 			// </Indep>
 			<box width="match" height="match" backgroundColor="#0003" opacity={0} visible={false} >
 				<box width="match" height="match" onTouchStart={()=>this.fadeOut()} onMouseDown={()=>this.fadeOut()} ref="mask" />
-				<box ref="inl">
-
+				<transform ref="inl">
 					<transform ref="arrow"
 						width={arrowSize.width}
 						height={arrowSize.height}
 						originX={arrowSize.width/2} originY={arrowSize.height/2}
 					>
-						<transform ref="arrow_text" y={-10} x={-3}><label 
+						<transform ref="arrow_text" y={-10} x={-3}><label
 							textFamily='iconfont'
 							textLineHeight={36}
 							textSize={36}
@@ -311,7 +310,7 @@ export class Overlay<P={},S={}> extends Navigation<{
 						borderRadius={8}
 						clip={true}
 					>{this.children}</box>
-				</box>
+				</transform>
 			</box>
 		);
 	}

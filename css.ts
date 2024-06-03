@@ -45,8 +45,10 @@ export interface StyleSheet {
 	align?: types.AlignIn;
 	width?: types.BoxSizeIn;
 	height?: types.BoxSizeIn;
-	widthLimit?: types.BoxSizeIn;
-	heightLimit?: types.BoxSizeIn;
+	minWidth?: types.BoxSizeIn;
+	minHeight?: types.BoxSizeIn;
+	maxWidth?: types.BoxSizeIn;
+	maxHeight?: types.BoxSizeIn;
 	margin?: number[] | number;
 	marginTop?: number;
 	marginRight?: number;

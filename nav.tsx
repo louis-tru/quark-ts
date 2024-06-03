@@ -397,10 +397,10 @@ export class NavPageCollection<P={},S={}> extends Navigation<{
 
 	protected render() {
 		return (
-			<box width="100%" height="100%" clip={true}>
-				<box ref="navbar" width="100%" />
-				<box ref="page" width="100%" />
-				<box ref="toolbar" width="100%" />
+			<box width="match" height="match" clip={true}>
+				<box ref="navbar" width="match" />
+				<box ref="page" width="match" />
+				<box ref="toolbar" width="match" />
 			</box>
 		);
 	}
@@ -632,7 +632,7 @@ export class Navbar<P={},S={}> extends Bar<{
 		if ( self._defaultStyle ) {
 			
 			let back_text = (self.refs.back_text1 as Label).value;
-			let title_text = (self.refs.title_text_panel_label as Label).value;
+			let title_text = (self.refs.title_text_panel as Text).value;
 			let backIconVisible = self._backIconVisible;
 
 			if ( /*self._page &&*/ self.page.prevPage ) {
@@ -644,19 +644,14 @@ export class Navbar<P={},S={}> extends Bar<{
 			}
 
 			let nav_width = self.collection ? self.collection.domAs<Transform>().clientSize.x : 0;
-			// TODO ...
-			// let back_width = (self.refs.back_text1 as Label).simpleLayoutWidth(back_text) + 3; // 3间隔
-			// let title_width = (self.refs.title_text_panel as Label).simpleLayoutWidth(title_text);
-			let back_width = 0 + 3;
-			let title_width = 0;
+			let back_width = (self.refs.back_text1 as Label).computeLayoutSize(back_text).x + 3; // 3间隔
+			let title_width = (self.refs.title_text_panel as Text).computeLayoutSize(title_text).x;
 			let marginRight = Math.min(nav_width / 3, Math.max(self._titleMenuWidth, 0));
 			let marginLeft = 0;
 			let min_back_width = 6;
 
 			if ( backIconVisible ) {
-				// TODO ...
-				//min_back_width += (self.refs.back_text0 as Label).simpleLayoutWidth('\uedc5');
-				back_width += min_back_width;
+				min_back_width += (self.refs.back_text0 as Label).computeLayoutSize('\uedc5').x;
 			}
 
 			(self.refs.title_panel as Box).marginLeft = marginLeft;
@@ -669,7 +664,6 @@ export class Navbar<P={},S={}> extends Bar<{
 				if ( back_width <= title_x ) {
 					back_width = title_x;
 				} else { // back 的宽度超过title-x位置
-					//console.log(back_width, (nav_width - marginLeft - marginRight) - title_width);
 					back_width = Math.min(back_width, (nav_width - marginLeft - marginRight) - title_width);
 					back_width = Math.max(min_back_width, back_width);
 				}
@@ -767,20 +761,22 @@ export class Navbar<P={},S={}> extends Bar<{
 			// 			textStyle="bold" textOverflow="ellipsis" />
 			// 	</Indep>
 			// </Indep>
-			<transform width="100%" height={height} visible={false} align="centerBottom">
+			<transform width="match" height={height} visible={false} align="centerBottom">
 				{this.children}
-				<box ref="title_panel" width="match" height="100%" visible={false}>
+				<box ref="title_panel" width="match" height="match" visible={false}>
 					<box ref="back_text_panel" height="match">
-						<box widthLimit="100%">
+						<box maxWidth="match">
 							{/* textColor="#0079ff"*/}
 							<button ref="back_text_btn"
 								onClick={()=>this.collection.pop(true)}
 								textColor={this.backTextColor}
 								width="match"
+								paddingLeft={6}
 								textLineHeight={height}
 								textSize={textSize}
-								textWhiteSpace="noWrap" textOverflow="ellipsis">
-								<box width={6} />
+								textWhiteSpace="noWrap"
+								textOverflow="ellipsis"
+							>
 								<label ref="back_text0"
 									textLineHeight={0}
 									textSize={20}
@@ -797,7 +793,7 @@ export class Navbar<P={},S={}> extends Bar<{
 						textLineHeight={height}
 						textSize={textSize}
 						textWhiteSpace="noWrap"
-						textWeight="bold" textOverflow="ellipsis"><label ref="title_text_panel_label" /></text>
+						textWeight="bold" textOverflow="ellipsis" />
 				</box>
 			</transform>
 		);
@@ -815,7 +811,7 @@ export class Navbar<P={},S={}> extends Bar<{
 	 * @method $setTitleText # set navbar title text
 	 */
 	setTitleText(value: string) {
-		(this.refs.title_text_panel_label as Label).value = value;
+		(this.refs.title_text_panel as Text).value = value;
 		this._navbar_compute_title_layout();
 	}
 
@@ -895,7 +891,7 @@ export class Toolbar<P={},S={}> extends Bar<P,S> {
 
 	protected render() {
 		return (
-			<box width="100%" height="match" visible={false}>{this.children}</box>
+			<box width="match" height="match" visible={false}>{this.children}</box>
 		);
 	}
 
@@ -1045,7 +1041,7 @@ export class NavPage<P={},S={}> extends Navigation<{
 	protected render() {
 		return (
 			<box
-				width="100%"
+				width="match"
 				height="match"
 				backgroundColor={this.backgroundColor}
 				visible={false}
