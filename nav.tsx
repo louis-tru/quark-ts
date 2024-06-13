@@ -311,7 +311,9 @@ export class NavPageCollection<P={},S={}> extends Navigation<{
 				backgroundColor: toolbar.backgroundColor,
 				time,
 			});
-			(self.refs.page as View).transition({ height: `${navbar_height + toolbar_height}!`, time }, ()=>{
+			(self.refs.page as View).transition({
+				height: `${navbar_height + toolbar_height}!`, time
+			}, ()=>{
 				if ( navbarHidden ) (self.refs.navbar as View).visible = false;
 				if ( toolbarHidden ) (self.refs.toolbar as View).visible = false;
 			});
@@ -397,10 +399,10 @@ export class NavPageCollection<P={},S={}> extends Navigation<{
 
 	protected render() {
 		return (
-			<box width="match" height="match" clip={true}>
-				<box ref="navbar" width="match" />
-				<box ref="page" width="match" />
-				<box ref="toolbar" width="match" />
+			<box width="100%" height="100%" clip={true}>
+				<free ref="navbar" width="100%" />
+				<free ref="page" width="100%" />
+				<free ref="toolbar" width="100%" />
 			</box>
 		);
 	}
@@ -630,7 +632,6 @@ export class Navbar<P={},S={}> extends Bar<{
 	private _navbar_compute_title_layout() {
 		let self: Navbar = this;
 		if ( self._defaultStyle ) {
-			
 			let back_text = (self.refs.back_text1 as Label).value;
 			let title_text = (self.refs.title_text_panel as Text).value;
 			let backIconVisible = self._backIconVisible;
@@ -654,9 +655,7 @@ export class Navbar<P={},S={}> extends Bar<{
 				min_back_width += (self.refs.back_text0 as Label).computeLayoutSize('\uedc5').x;
 			}
 
-			(self.refs.title_panel as Box).marginLeft = marginLeft;
-			(self.refs.title_panel as Box).marginRight = marginRight;
-			(self.refs.title_panel as Box).visible = true;
+			(self.refs.title_panel as Box).style = {marginLeft,marginRight,visible:true};
 			(self.refs.back_text0 as Label).visible = backIconVisible;
 
 			if ( nav_width ) {
@@ -724,51 +723,21 @@ export class Navbar<P={},S={}> extends Bar<{
 		}
 	}
 
+	private _handleBack = ()=>{
+		this.collection.pop(true);
+	}
+
 	protected render() {
 		let height = this.height;
 		let textSize = 16;
 		return (
-			// <Indep width="100%" height={height} visible={0} alignY="bottom">
-			// 	{vdoms}
-			// 	<Indep id="title_panel" width="full" height="100%" visible={0}>
-			// 		<Div id="back_text_panel" height="full">
-			// 			<Limit maxWidth="100%">
-			// 				{/* textColor="#0079ff"*/}
-			// 				<Button id="back_text_btn" 
-			// 					onClick={()=>this.collection.pop(true)}
-			// 					textColor={this.backTextColor}
-			// 					width="full" 
-			// 					textLineHeight={height} 
-			// 					textSize={textSize}
-			// 					textWhiteSpace="no_wrap" textOverflow="ellipsis">
-			// 					<Div width={6} />
-			// 					<TextNode id="back_text0" 
-			// 						textLineHeight="auto" 
-			// 						textSize={20}
-			// 						height={26} y={2}
-			// 						textColor="inherit" 
-			// 						textFamily="icon" value={'\uedc5'} />
-			// 					<TextNode id="back_text1" />
-			// 				</Button>
-			// 			</Limit>
-			// 		</Div>
-			// 		<Text id="title_text_panel" 
-			// 			height="full"
-			// 			textColor={this.titleTextColor}
-			// 			textLineHeight={height} 
-			// 			textSize={textSize}
-			// 			textWhiteSpace="no_wrap" 
-			// 			textStyle="bold" textOverflow="ellipsis" />
-			// 	</Indep>
-			// </Indep>
-			<transform width="match" height={height} visible={false} align="centerBottom">
-				{this.children}
-				<box ref="title_panel" width="match" height="match" visible={false}>
-					<box ref="back_text_panel" height="match">
-						<box maxWidth="match">
-							{/* textColor="#0079ff"*/}
+			<transform width="100%" height={height} visible={false} align="centerBottom">
+				<free width="100%" height="100%">
+					{this.children}
+					<free ref="title_panel" width="match" height="100%" visible={false}>
+						<free ref="back_text_panel" height="100%" maxWidth="100%">
 							<button ref="back_text_btn"
-								onClick={()=>this.collection.pop(true)}
+								onClick={this._handleBack}
 								textColor={this.backTextColor}
 								width="match"
 								paddingLeft={6}
@@ -777,24 +746,28 @@ export class Navbar<P={},S={}> extends Bar<{
 								textWhiteSpace="noWrap"
 								textOverflow="ellipsis"
 							>
-								<label ref="back_text0"
+								<text ref="back_text0"
 									textLineHeight={0}
 									textSize={20}
-									// height={26} y={2}
+									height={26}
+									// y={2}
 									textColor="inherit"
-									textFamily="icon" value={'\uedc5'} />
+									textFamily="icon"
+									value="\uedc5"
+								/>
 								<label ref="back_text1" />
 							</button>
-						</box>
-					</box>
-					<text ref="title_text_panel"
-						height="match"
-						textColor={this.titleTextColor}
-						textLineHeight={height}
-						textSize={textSize}
-						textWhiteSpace="noWrap"
-						textWeight="bold" textOverflow="ellipsis" />
-				</box>
+						</free>
+						<text ref="title_text_panel"
+							height="100%"
+							textColor={this.titleTextColor}
+							textLineHeight={height}
+							textSize={textSize}
+							textWhiteSpace="noWrap"
+							textWeight="bold" textOverflow="ellipsis"
+						/>
+					</free>
+				</free>
 			</transform>
 		);
 	}
@@ -815,22 +788,25 @@ export class Navbar<P={},S={}> extends Bar<{
 		this._navbar_compute_title_layout();
 	}
 
-	intoLeave(time: number) { 
-		// if ( this.navStatus == 0 && time ) {
-			// TODO ...
-			// if ( this._defaultStyle ) {
-			// 	let back_icon_width = (this.refs.back_text0 as View).visible ? (this.refs.back_text0 as Label).clientWidth : 0;
-			// 	(this.refs.back_text1 as View).transition({ x: this._back_panel_width - back_icon_width, time });
-			// 	(this.refs.title_text_panel as View).transition({ 
-			// 		x: this._title_panel_width + this._titleMenuWidth, time: time,
-			// 	});
-			// }
-			// this.domAs().transition({ opacity: 0, time }, ()=>{
-			// 	this.destroy()
-			// });
-		// } else {
+	intoLeave(time: number) {
+		if ( this.navStatus == NavStatus.Foreground && time ) {
+			if ( this._defaultStyle ) {
+				let back_icon_width = (this.refs.back_text0 as View).visible ?
+					(this.refs.back_text0 as Text).clientSize.x : 0;
+
+				(this.refs.back_text1 as Label).transition({
+					x: this._back_panel_width - back_icon_width, time
+				});
+				(this.refs.title_text_panel as Text).transition({
+					x: this._title_panel_width + this._titleMenuWidth, time,
+				});
+			}
+			this.domAs().transition({ opacity: 0, time }, ()=>{
+				this.destroy()
+			});
+		} else {
 			this.destroy();
-		// }
+		}
 		super.intoLeave(time);
 	}
 
@@ -856,7 +832,7 @@ export class Navbar<P={},S={}> extends Bar<{
 		super.intoBackground(time);
 	}
 
-	intoForeground(time: number) { 
+	intoForeground(time: number) {
 		this.domAs().visible = true;
 		// if ( time ) {
 			// TODO ...
@@ -891,13 +867,13 @@ export class Toolbar<P={},S={}> extends Bar<P,S> {
 
 	protected render() {
 		return (
-			<box width="match" height="match" visible={false}>{this.children}</box>
+			<free width="match" height="match" visible={false}>{this.children}</free>
 		);
 	}
 
 	intoLeave(time: number) {
 		if ( getToolbarDom(this.collection.current) !== this ) {
-			if ( this.navStatus == 0 && time ) {
+			if ( this.navStatus == NavStatus.Foreground && time ) {
 				this.domAs().transition({ opacity: 0, time }, ()=>{
 					this.destroy();
 				});
@@ -915,8 +891,7 @@ export class Toolbar<P={},S={}> extends Bar<P,S> {
 					this.domAs().visible = false;
 				});
 			} else {
-				this.domAs().opacity = 0;
-				this.domAs().visible = false;
+				this.domAs().style = {opacity: 0, visible: false };
 			}
 		}
 		super.intoBackground(time);
@@ -931,8 +906,7 @@ export class Toolbar<P={},S={}> extends Bar<P,S> {
 				this.domAs().transition({ opacity: 1, time });
 			}
 		} else {
-			this.domAs().visible = true;
-			this.domAs().opacity = 1;
+			this.domAs().style = {opacity: 1, visible: true };
 		}
 		super.intoForeground(time);
 	}
@@ -1040,12 +1014,14 @@ export class NavPage<P={},S={}> extends Navigation<{
 	// @overwrite
 	protected render() {
 		return (
-			<box
-				width="match"
-				height="match"
-				backgroundColor={this.backgroundColor}
+			<free
+				width="100%"
+				height="100%"
 				visible={false}
-			>{this.children}</box>
+				backgroundColor={this.backgroundColor}
+			>
+				{this.children}
+			</free>
 		);
 	}
 
@@ -1069,7 +1045,7 @@ export class NavPage<P={},S={}> extends Navigation<{
 	intoLeave(time: number) {
 		this._navbarDom.intoLeave(time);
 		this._toolbarDom?.intoLeave(time);
-		if ( this.navStatus == 0 ) {
+		if ( this.navStatus == NavStatus.Foreground ) {
 			if ( time && this.domAs().parent!.level ) {
 				this.domAs().style = {
 					borderColorLeft: backgroundColorReverse(this),
@@ -1126,7 +1102,7 @@ export class NavPage<P={},S={}> extends Navigation<{
 				this.domAs().style = { x: 0, borderWidthLeft: 0, visible: true };
 			}
 		}
-		else if ( this.navStatus == 1 ) {
+		else if ( this.navStatus == NavStatus.Background ) {
 			if ( time && this.domAs().parent!.level ) {
 				this.domAs().visible = true;
 				this.domAs().transition({ x: 0, time: time });

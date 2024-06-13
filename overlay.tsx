@@ -51,6 +51,7 @@ export class Overlay<P={},S={}> extends Navigation<{
 	frail?: boolean;
 	backgroundColor?: types.ColorStrIn;
 	priority?: Priority,
+	borderRadius?: number;
 }&P,S> {
 	private _is_activate = false;
 	private _pos_x = 0;
@@ -59,19 +60,24 @@ export class Overlay<P={},S={}> extends Navigation<{
 	private _offset_y = 0;
 
 	/**
-	 * By default, clicking anywhere on the screen will disappear
+	 * @prop frail, By default clicking anywhere on the screen will disappear
 	 */
 	@link frail = true;
 
 	/**
-	 * Priority display location
+	 * @prop priority display location
 	 */
 	@link priority = Priority.Bottom;
 
 	/**
-	 * background color
+	 * @prop backgroundColor
 	*/
 	@link backgroundColor: types.ColorStrIn = '#fff';
+
+	/**
+	 * @prop borderRadius
+	*/
+	@link borderRadius = 8;
 
 	private _get_left(x: number, offset_x: number) {
 		let self = this;
@@ -269,33 +275,24 @@ export class Overlay<P={},S={}> extends Navigation<{
 		}
 	}
 
+	private _fadeOut = ()=>{
+		this.fadeOut();
+	};
+
 	protected render() {
 		return (
-			// <Indep visible={false} width="full" height="full" backgroundColor="#0003" opacity={0}>
-			// 	<Div width="full" height="full" onTouchStart={()=>this.fadeOut()} onMouseDown={()=>this.fadeOut()} id="mask" />
-			// 	<Indep id="inl">
-			// 		<Indep id="arrow" 
-			// 			width={arrow_size.width }
-			// 			height={arrow_size.height} 
-			// 			originX={arrow_size.width/2} originY={arrow_size.height/2}>
-			// 			<Text id="arrow_text" 
-			// 				y={-10} x={-3}
-			// 				textFamily='iconfont' 
-			// 				textLineHeight={36}
-			// 				textSize={36} textColor={this.backgroundColor} value={"\uedcb"} />
-			// 		</Indep>
-			// 		<Clip id="content" backgroundColor={this.backgroundColor} borderRadius={8}>{vdoms}</Clip>
-			// 	</Indep>
-			// </Indep>
-			<box width="match" height="match" backgroundColor="#0003" opacity={0} visible={false} >
-				<box width="match" height="match" onTouchStart={()=>this.fadeOut()} onMouseDown={()=>this.fadeOut()} ref="mask" />
+			<box
+				width="match" height="match"
+				backgroundColor="#0003" opacity={0} visible={false}
+				onTouchStart={this._fadeOut} onMouseDown={this._fadeOut}
+			>
 				<transform ref="inl">
 					<transform ref="arrow"
 						width={arrowSize.width}
 						height={arrowSize.height}
-						originX={arrowSize.width/2} originY={arrowSize.height/2}
+						originX={arrowSize.width/2} originY={arrowSize.height/0.5}
 					>
-						<transform ref="arrow_text" y={-10} x={-3}><label
+						<transform y={-10} x={-3}><label
 							textFamily='iconfont'
 							textLineHeight={36}
 							textSize={36}
@@ -303,13 +300,10 @@ export class Overlay<P={},S={}> extends Navigation<{
 							value="\uedcb"
 						/></transform>
 					</transform>
-
-					<box
-						ref="content"
+					<float
 						backgroundColor={this.backgroundColor}
-						borderRadius={8}
-						clip={true}
-					>{this.children}</box>
+						borderRadius={this.borderRadius}
+					>{this.children}</float>
 				</transform>
 			</box>
 		);
@@ -358,11 +352,11 @@ export class Overlay<P={},S={}> extends Navigation<{
 	/**
 	 * showOverlay(pos_x,pos_y[,offset_x[,offset_y]]) 通过位置显示
 	 */
-	showOverlay(pos_x: number, pos_y: number, offset_x?: number, offset_y?: number) {
+	showOverlay(x: number, y: number, offset_x?: number, offset_y?: number) {
 		let self = this;
 		let size = this.window.size;
-		let _x = Math.max(0, Math.min(size.x, pos_x));
-		let _y = Math.max(0, Math.min(size.y, pos_y));
+		let _x = Math.max(0, Math.min(size.x, x));
+		let _y = Math.max(0, Math.min(size.y, y));
 		let _offset_x = offset_x || 0;
 		let _offset_y = offset_y || 0;
 
@@ -405,5 +399,4 @@ export class Overlay<P={},S={}> extends Navigation<{
 	 */
 	navigationEnter(focus: View) {
 	}
-
 }

@@ -103,10 +103,10 @@ export class Stepper extends ViewController<{
 
 	render() {
 		return (
-			<box class={['x_stepper',this.props.class||'']}>
+			<free class={['x_stepper',this.props.class||'']}>
 				<button class="minus" onClick={()=>this._MinusClickHandle()} value="\ued5e"/>
 				<button class="plus" onClick={()=>this._PlusClickHandle()} value="\ued5d"/>
-			</box> 
+			</free> 
 		);
 	}
 }

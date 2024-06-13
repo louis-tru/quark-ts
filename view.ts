@@ -196,7 +196,7 @@ export declare class Flow extends Flex {
 	wrapAlign: types.WrapAlign;
 }
 
-export declare class Float extends Box {
+export declare class Free extends Box {
 }
 
 export declare class Image extends Box {
@@ -364,7 +364,7 @@ export declare class Textarea extends Input implements ScrollBase {
 	terminate(): void;
 }
 
-export declare class Scroll extends Float implements ScrollBase {
+export declare class Scroll extends Box implements ScrollBase {
 	readonly onScroll: EventNoticer<UIEvent>;
 	scrollbar: boolean;
 	bounce: boolean;
@@ -502,7 +502,7 @@ declare global {
 			wrapAlign?: types.WrapAlignIn;
 		}
 
-		interface FloatJSX extends BoxJSX {
+		interface FreeJSX extends BoxJSX {
 		}
 
 		interface ImageJSX extends BoxJSX {
@@ -590,7 +590,7 @@ declare global {
 			onScroll?: Listen<UIEvent, Textarea> | null;
 		}
 
-		interface ScrollJSX extends FloatJSX, ScrollBaseJSX {
+		interface ScrollJSX extends BoxJSX, ScrollBaseJSX {
 			onScroll?: Listen<UIEvent, Scroll> | null;
 		}
 
@@ -599,7 +599,7 @@ declare global {
 			box: BoxJSX;
 			flex: FlexJSX;
 			flow: FlexJSX;
-			float: FloatJSX;
+			free: FreeJSX;
 			image: ImageJSX;
 			transform: TransformJSX;
 			text: TextJSX;

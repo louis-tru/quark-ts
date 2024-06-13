@@ -169,7 +169,7 @@ export class Switch<P={},S={}> extends Basic<P,S> {
 	render() {
 		return (
 			<button class={['x_switch',this.props.class||'',this.selected?'on':'']}>
-				<box class="background" />
+				<free class="background" />
 				<transform class="button" />
 			</button>
 		);

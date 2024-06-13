@@ -311,8 +311,8 @@ export class VirtualDOM<T extends DOM = DOM> {
 
 	render<P = {}, S = {}>(owner: ViewController<P,S>, opts?: {
 		parent?: View | null,
-		vdom?: VirtualDOM | null, // prev vdom
-		dom?: DOM | null // prev dom
+		vdom?: VirtualDOM | null, // diff prev vdom
+		dom?: DOM | null // diff prev dom
 	}): T {
 		const {parent,vdom,dom} = opts||{};
 		let domNew: T;

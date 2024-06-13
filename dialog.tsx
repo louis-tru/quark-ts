@@ -30,7 +30,7 @@
 
 import util from './util';
 import {
-	_CVD,mainScreenScale,createCss,link, VDom,View,Transform,Input,
+	_CVD,mainScreenScale,createCss,link,View,Transform,Input,
 	ViewController
 } from '.';
 import {Navigation} from './nav';
@@ -170,11 +170,11 @@ export class Dialog<P={},S={}> extends Navigation<{
 
 	protected render() {
 		return (
-			<box width="100%" height="100%" backgroundColor="#0008" receive={true} visible={false} opacity={0}>
+			<free width="100%" height="100%" backgroundColor="#0008" receive={true} visible={false} opacity={0}>
 				<transform ref="main" class="x_dialog main">
 					<text ref="title" class="title" value={this.title} />
 					<text ref="con" class="content">{this.content||this.children}</text>
-					<box ref="btns" class="buttons">
+					<free ref="btns" class="buttons">
 					{
 						this._buttons.map((e,i)=>(
 							<button
@@ -186,9 +186,9 @@ export class Dialog<P={},S={}> extends Navigation<{
 							/>
 						))
 					}
-					</box>
+					</free>
 				</transform>
-			</box>
+			</free>
 		);
 	}
 
@@ -259,15 +259,15 @@ export class Sheet<P={},S={}> extends Dialog<P,S> {
 		let content = this.content ? this.content :
 			this.children.length ? this.children: null;
 		return (
-			<box
+			<free
 				width="100%" height="100%"
 				backgroundColor="#0008"
 				onClick={()=>this.navigationBack()} visible={false} opacity={0}
 			>
 			{content?
-				<box ref="main" class="x_dialog sheet">{content}</box>:
-				<box ref="main" class="x_dialog sheet">
-					<box class="buttons" clip={true}>
+				<free ref="main" class="x_dialog sheet">{content}</free>:
+				<free ref="main" class="x_dialog sheet">
+					<free class="buttons" clip={true}>
 					{
 						length?
 						this.buttons.slice().map((e,i)=>(
@@ -286,18 +286,18 @@ export class Sheet<P={},S={}> extends Dialog<P,S> {
 							value={Consts.Ok}
 						/>
 					}
-					</box>
-					<box class="buttons" clip={true}>
+					</free>
+					<free class="buttons" clip={true}>
 						<button
 							class="button gray"
 							width="100%"
-							onClick={e=>this.triggerAction(0)}
+							onClick={()=>this.triggerAction(0)}
 							value={Consts.Cancel}
 						/>
-					</box>
-				</box>
+					</free>
+				</free>
 			}
-			</box>
+			</free>
 		);
 	}
 
