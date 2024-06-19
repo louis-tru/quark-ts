@@ -108,7 +108,7 @@ export enum Repeat {
 };
 
 export enum FillPositionKind {
-	Rem,       /* 明确值  rem */
+	Value,     /* 明确值  rem */
 	Ratio,     /* 百分比  % */
 	Start,     /* 开始 start */
 	End,       /* 结束 end */
@@ -117,7 +117,7 @@ export enum FillPositionKind {
 
 export enum FillSizeKind {
 	Auto,      /* 自动值  auto */
-	Rem,       /* 明确值  rem */
+	Value,     /* 明确值  rem */
 	Ratio,     /* 百分比  % */
 };
 export type BoxOriginKind = FillSizeKind;
@@ -186,7 +186,7 @@ export enum BoxSizeKind {
 	None,    /* Do not use value */
 	Auto,    /* 包裹内容 wrap content */
 	Match,   /* 匹配父视图 match parent */
-	Rem,     /* 明确值  rem */
+	Value,     /* 明确值  rem */
 	Ratio,   /* 百分比 value % */
 	Minus,   /* 减法(parent-value) value ! */
 };
@@ -550,9 +550,9 @@ export class FillPosition extends Base<FillPosition> {
 	value: N;
 	kind: FillPositionKind;
 };
-initDefaults(FillPosition, { value: 0, kind: FillPositionKind.Rem });
+initDefaults(FillPosition, { value: 0, kind: FillPositionKind.Value });
 type FillPositionKindStr = 
-	Uncapitalize<keyof RemoveField<typeof FillPositionKind, 'Rem'|'Ratio'|number>>;
+	Uncapitalize<keyof RemoveField<typeof FillPositionKind, 'Value'|'Ratio'|number>>;
 export type FillPositionIn = N | FillPosition | `${number}%` | FillPositionKindStr;
 
 export class FillSize extends Base<FillSize> {
@@ -560,16 +560,16 @@ export class FillSize extends Base<FillSize> {
 	kind: FillSizeKind;
 };
 initDefaults(FillSize, { value: 0, kind: FillSizeKind.Auto });
-type FillSizeKindStr = Uncapitalize<keyof RemoveField<typeof FillSizeKind, 'Rem'|'Ratio'|number>>;
+type FillSizeKindStr = Uncapitalize<keyof RemoveField<typeof FillSizeKind, 'Value'|'Ratio'|number>>;
 export type FillSizeIn = N | FillSize | `${number}%` | FillSizeKindStr;
 
 export class BoxSize extends Base<BoxSize> {
 	value: N;
 	kind: BoxSizeKind;
 };
-initDefaults(BoxSize, { value: 0, kind: BoxSizeKind.Rem });
+initDefaults(BoxSize, { value: 0, kind: BoxSizeKind.Value });
 type BoxSizeKindStr = 
-	Uncapitalize<keyof RemoveField<typeof BoxSizeKind, 'Rem'|'Ratio'|'Minus'|number>>
+	Uncapitalize<keyof RemoveField<typeof BoxSizeKind, 'Value'|'Ratio'|'Minus'|number>>
 export type BoxSizeIn = N | BoxSize | `${number}%` | `${number}!` | BoxSizeKindStr;
 
 export class BoxOrigin extends Base<BoxSize> {
@@ -577,7 +577,7 @@ export class BoxOrigin extends Base<BoxSize> {
 	kind: BoxOriginKind;
 };
 type BoxOriginKindStr = FillSizeKindStr;
-initDefaults(BoxOrigin, { value: 0, kind: FillSizeKind.Rem });
+initDefaults(BoxOrigin, { value: 0, kind: FillSizeKind.Value });
 export type BoxOriginIn = N | BoxOrigin | `${number}%` | BoxOriginKindStr;
 
 const TextBase_toString = [
@@ -1124,7 +1124,7 @@ export function parseFillPosition(val: FillPositionIn, desc?: string): FillPosit
 		}
 		let m = val.match(/^\s*(-?(?:\d+)?\.?\d+)(%)?\s*$/);
 		if (m) {
-			let kind = m[3] ? FillPositionKind.Ratio: FillPositionKind.Rem;
+			let kind = m[3] ? FillPositionKind.Ratio: FillPositionKind.Value;
 			return newFillPosition(kind, parseFloat(m[1]));
 		}
 	} else if (val instanceof FillPosition) {
@@ -1141,7 +1141,7 @@ export function parseFillSize(val: FillSizeIn, desc?: string): FillSize {
 		}
 		let m = val.match(/^\s*(-?(?:\d+)?\.?\d+)(%)?\s*$/);
 		if (m) {
-			let kind = m[3] ? FillSizeKind.Ratio: FillSizeKind.Rem;
+			let kind = m[3] ? FillSizeKind.Ratio: FillSizeKind.Value;
 			return newFillSize(kind, parseFloat(m[1]));
 		}
 	} else if (val instanceof FillSize) {
@@ -1158,7 +1158,7 @@ export function parseBoxOrigin(val: BoxOriginIn, desc?: string): BoxOrigin {
 		}
 		let m = val.match(/^\s*(-?(?:\d+)?\.?\d+)(%)?\s*$/);
 		if (m) {
-			let kind = m[3] ? FillSizeKind.Ratio: FillSizeKind.Rem;
+			let kind = m[3] ? FillSizeKind.Ratio: FillSizeKind.Value;
 			return newBoxOrigin(kind, parseFloat(m[1]));
 		}
 	} else if (val instanceof BoxOrigin) {
@@ -1175,7 +1175,7 @@ export function parseBoxSize(val: BoxSizeIn, desc?: string): BoxSize {
 		}
 		let m = val.match(/^\s*(-?(?:\d+)?\.?\d+)(%|!)?\s*$/);
 		if (m) {
-			let kind = m[3] ? m[3] == '%' ? BoxSizeKind.Ratio: BoxSizeKind.Minus: BoxSizeKind.Rem;
+			let kind = m[3] ? m[3] == '%' ? BoxSizeKind.Ratio: BoxSizeKind.Minus: BoxSizeKind.Value;
 			return newBoxSize(kind, parseFloat(m[1]));
 		}
 	} else if (val instanceof BoxSize) {

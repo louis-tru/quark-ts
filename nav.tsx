@@ -716,7 +716,7 @@ export class Navbar<P={},S={}> extends Bar<{
 	refreshStyle(time: number) {
 		if (this.isCurrent) {
 			this.domAs<Transform>().align = types.Align.CenterBottom;
-			this.domAs<Transform>().height = types.newBoxSize(types.BoxSizeKind.Rem, this.height);
+			this.domAs<Transform>().height = types.newBoxSize(types.BoxSizeKind.Value, this.height);
 			(this.refs.title_text_panel as Text).style.textLineHeight = this.height;
 			(this.refs.back_text_btn as Button).style.textLineHeight = this.height;
 			super.refreshStyle(time);
