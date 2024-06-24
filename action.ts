@@ -37,14 +37,16 @@ import * as types from './types';
 
 Object.assign(exports, __binding__('_action'));
 
+export type KeyframeIn = StyleSheet | CSSNameExp;
+
 export type ActionIn = Action | {
 	playing?: boolean;
 	loop?: number;
 	speed?: number;
 	spawn?: ActionIn[];
 	seq?: ActionIn[];
-	keyframe?: (StyleSheet | CSSNameExp)[];
-} | (StyleSheet | CSSNameExp)[];
+	keyframe?: (KeyframeIn)[];
+} | (KeyframeIn)[];
 
 export declare class Keyframe extends StyleSheet {
 	readonly index: number;
@@ -60,11 +62,11 @@ export declare abstract class Action {
 	playing: boolean;
 	loop: number;
 	speed: number;
-	play(): void;
-	stop(): void;
-	seek(time: number): void;
-	seekPlay(time: number): void;
-	seekStop(time: number): void;
+	play(): this;
+	stop(): this;
+	seek(time: number): this;
+	seekPlay(time: number): this;
+	seekStop(time: number): this;
 	before(action: Action): void;
 	after(action: Action): void;
 	remove(): void;
@@ -82,10 +84,10 @@ export declare class KeyframeAction extends Action {
 	readonly [index: number]: Keyframe; // get keyframe for index
 	addFrame(time: number, curve?: types.CurveIn): Keyframe; // add new keyframe
 	addFrameWithCss(cssExp: CSSNameExp, time?: number, curve?: types.CurveIn): Keyframe;
-	add(styleOrCssExp: StyleSheet | CSSNameExp, time?: number, curve?: types.CurveIn): Keyframe;
+	add(styleOrCssExp: KeyframeIn, time?: number, curve?: types.CurveIn): Keyframe;
 }
 (exports.KeyframeAction as typeof KeyframeAction).prototype.add =
-function(styleOrCssExp: StyleSheet | CSSNameExp, ...args: any[]): Keyframe {
+function(styleOrCssExp: KeyframeIn, ...args: any[]): Keyframe {
 	if (typeof styleOrCssExp == 'string') {
 		return this.addFrameWithCss(styleOrCssExp, ...args);
 	} else {
@@ -146,6 +148,8 @@ export function createAction(win: Window, arg: ActionIn, parent?: Action) {
 	return action;
 }
 
+export type ActionCb = (e: ActionEvent)=>void;
+
 /**
 	* @method transition(view,style,delay?,cb?)
 	* @param view   {View}
@@ -155,13 +159,25 @@ export function createAction(win: Window, arg: ActionIn, parent?: Action) {
 	*/
 export function transition(
 	view: View,
-	styleOrCssExp: StyleSheet | CSSNameExp,
-	cb?: (e: ActionEvent)=>void
+	to: KeyframeIn,
+	fromOrCb?: KeyframeIn | ActionCb,
+	cb?: ActionCb
 ): KeyframeAction {
 	let action = new KeyframeAction(view.window);
-	action.addFrame(0).fetch(view); // add frame 0 and fetch frame style
-	action.add(styleOrCssExp); // add frame 1
-	view.action = action;
+
+	if (fromOrCb) {
+		if (typeof fromOrCb == 'function') {
+			cb = fromOrCb;
+			action.addFrame(0).fetch(view); // add frame 0 and fetch frame style
+		} else {
+			action.add(fromOrCb);
+		}
+	} else {
+		action.addFrame(0).fetch(view); // add frame 0
+	}
+	action.add(to); // add frame 1
+
+	view.action = action.play(); // start play
 
 	if ( cb ) {
 		view.onActionKeyframe.on(function(evt) {
@@ -174,7 +190,6 @@ export function transition(
 			view.onActionKeyframe.off('transition-1');
 		}, 'transition-1');
 	}
-	action.play(); // start play
 
 	return action;
 }

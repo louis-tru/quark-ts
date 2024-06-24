@@ -171,12 +171,16 @@ export enum Align {
 	Start,
 	Center,
 	End,
+	Baseline = Auto, // box vertical align in text
+	Top, // box vertical align in text
+	Middle, // box vertical align in text
+	Bottom, // box vertical align in text
 	LeftTop = Start,
 	CenterTop,
 	RightTop,
-	LeftCenter,
-	CenterCenter,
-	RightCenter,
+	LeftMiddle,
+	CenterMiddle,
+	RightMiddle,
 	LeftBottom,
 	CenterBottom,
 	RightBottom,
@@ -642,6 +646,17 @@ export declare class BoxFilter {
 	readonly type: N;
 	next: BoxFilter | null;
 }
+
+/**
+Examples:
+```
+src(res/image.png, auto 100%, x=start, y=20%, repeat)
+
+radial(#ff00ff 0%, #ff0 50%, #00f 100%)
+
+linear(90, #ff00ff 0%, #ff0 50%, #00f 100%)
+```
+*/
 export type BoxFilterIn = string | string[] | BoxFilter;
 
 export declare class FillImage extends BoxFilter {
@@ -672,6 +687,17 @@ export declare class BoxShadow extends BoxFilter {
 	value: Shadow;
 	constructor(value: Shadow);
 }
+
+/**
+Examples:
+ ```
+ 10 10 2 #ff00aa
+
+ ['10 10 2 #ff00aa']
+
+ 10 10 2 rgba(255,255,0,255)
+ ```
+ */
 export type BoxShadowIn = ShadowIn | ShadowIn[] | BoxShadow;
 
 // -------------------------------------------------------------------------------------

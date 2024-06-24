@@ -80,6 +80,23 @@ export function link(target: any, name: string) {
 	}
 }
 
+/**
+ * @method link ViewController prop and define prop accessor
+*/
+export function linkAcc(target: any, name: string) {
+	link(target, name);
+	Object.defineProperty(target, name, {
+		get: function() { return this[`_name`] },
+		set: function(val) {
+			this[`_name`] = val;
+			if (this.isMounted)
+				this.update(); // update ViewController
+		}
+	})
+}
+
+link.acc = linkAcc;
+
 function getkey(vdom: VirtualDOM, autoKey: number): string|number {
 	let key: string;
 	let key_ = vdom.props.key;
@@ -596,6 +613,10 @@ export class ViewController<P = {}, S = {}> implements DOM {
 		return this.dom as T;
 	}
 
+	refAs<T extends ViewController | View = View>(ref: string): T {
+		return this.refs[ref] as T;
+	}
+
 	hashCode() {
 		return Function.prototype.hashCode.call(this);
 	}
@@ -670,8 +691,8 @@ declare global {
 const DOMConstructors: { [ key in JSX.IntrinsicElementsName ]: DOMConstructor<DOM> } = {
 	view: view.View, box: view.Box,
 	flex: view.Flex, flow: view.Flow,
-	float: view.Float, image: view.Image,
-	transform: view.Transform, text: view.Text,
+	free: view.Free, image: view.Image, img: view.Image,
+	matrix: view.Matrix, text: view.Text,
 	button: view.Button, label: view.Label,
 	input: view.Input, textarea: view.Textarea, scroll: view.Scroll,
 };

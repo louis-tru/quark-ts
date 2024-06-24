@@ -80,7 +80,7 @@ createCss({
 	'.x_switch .background': {
 		backgroundColor: '#eee',
 		borderRadius: 16,
-		align: 'centerCenter',
+		align: 'centerMiddle',
 	},
 	'.x_switch:normal .background': {
 		width: 46,
@@ -170,7 +170,7 @@ export class Switch<P={},S={}> extends Basic<P,S> {
 		return (
 			<button class={['x_switch',this.props.class||'',this.selected?'on':'']}>
 				<free class="background" />
-				<transform class="button" />
+				<matrix class="button" />
 			</button>
 		);
 	}

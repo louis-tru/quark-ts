@@ -28,7 +28,7 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-import {_CVD,link,View,Box,Transform} from '.';
+import {_CVD,link,View,Box,Matrix} from '.';
 import { Navigation } from './nav';
 import * as types from './types';
 
@@ -150,7 +150,7 @@ export class Overlay<P={},S={}> extends Navigation<{
 	private _attempt_top(x: number, y: number, offset_x: number, offset_y: number, force?: boolean) {
 		let self = this;
 		let inl = self.refs.inl as Box;
-		let arrow = self.refs.arrow as Transform;
+		let arrow = self.refs.arrow as Matrix;
 		let height = inl.clientSize.y;
 		let top = y - height - arrowSize.height;
 		if (top - border > 0 || force) {
@@ -174,7 +174,7 @@ export class Overlay<P={},S={}> extends Navigation<{
 	private _attempt_right(x: number, y: number, offset_x: number, offset_y: number, force?: boolean) {
 		let self = this;
 		let inl = self.refs.inl as Box;
-		let arrow = self.refs.arrow as Transform;
+		let arrow = self.refs.arrow as Matrix;
 		let width = inl.clientSize.x;
 		let left = x + offset_x + arrowSize.height;
 		if (left + width + border <= this.window.size.x || force) {
@@ -198,7 +198,7 @@ export class Overlay<P={},S={}> extends Navigation<{
 	private _attempt_bottom(x: number, y: number, offset_x: number, offset_y: number, force?: boolean) {
 		let self = this;
 		let inl = self.refs.inl as Box;
-		let arrow = self.refs.arrow as Transform;
+		let arrow = self.refs.arrow as Matrix;
 		let height = inl.clientSize.y;
 		let top = y + offset_y + arrowSize.height;
 		if (top + height + border <= this.window.size.y || force) {
@@ -222,7 +222,7 @@ export class Overlay<P={},S={}> extends Navigation<{
 	private _attempt_left(x: number, y: number, offset_x: number, offset_y: number, force?: boolean) {
 		let self = this;
 		let inl = self.refs.inl as Box;
-		let arrow = self.refs.arrow as Transform;
+		let arrow = self.refs.arrow as Matrix;
 		let width = inl.clientSize.x;
 		let left = x - width - arrowSize.height;
 		if (left - border > 0 || force) {
@@ -281,31 +281,34 @@ export class Overlay<P={},S={}> extends Navigation<{
 
 	protected render() {
 		return (
-			<box
-				width="match" height="match"
-				backgroundColor="#0003" opacity={0} visible={false}
-				onTouchStart={this._fadeOut} onMouseDown={this._fadeOut}
+			<free
+				width="100%"
+				height="100%"
+				backgroundColor="#0003"
+				opacity={0}
+				visible={false}
+				onTouchStart={this._fadeOut}
+				onMouseDown={this._fadeOut}
 			>
-				<transform ref="inl">
-					<transform ref="arrow"
+				<matrix ref="inl">
+					<matrix
+						ref="arrow"
 						width={arrowSize.width}
 						height={arrowSize.height}
 						originX={arrowSize.width/2} originY={arrowSize.height/0.5}
 					>
-						<transform y={-10} x={-3}><label
+						<text
+							marginTop={-10}
+							marginLeft={-3}
 							textFamily='iconfont'
 							textLineHeight={36}
 							textSize={36}
 							textColor={this.backgroundColor}
-							value="\uedcb"
-						/></transform>
-					</transform>
-					<float
-						backgroundColor={this.backgroundColor}
-						borderRadius={this.borderRadius}
-					>{this.children}</float>
-				</transform>
-			</box>
+							value="\uedcb" />
+					</matrix>
+					<free backgroundColor={this.backgroundColor} borderRadius={this.borderRadius}>{this.children}</free>
+				</matrix>
+			</free>
 		);
 	}
 

@@ -39,7 +39,8 @@ createCss({
 		textSize: 20,
 		textColor: '#727272',
 	},
-	'.x_stepper .minus, .x_stepper .plus': {
+	'.x_stepper .minus,\
+	.x_stepper .plus': {
 		width: 45,
 		height: 28,
 		border: `${px} #727272`,
@@ -55,7 +56,8 @@ createCss({
 		borderRadiusRightTop: 6,
 		borderRadiusRightBottom: 6,
 	},
-	'.x_stepper .minus:down, .x_stepper .plus:down': {
+	'.x_stepper .minus:down,\
+	.x_stepper .plus:down': {
 		backgroundColor: '#eee',
 	},
 });
@@ -103,10 +105,10 @@ export class Stepper extends ViewController<{
 
 	render() {
 		return (
-			<free class={['x_stepper',this.props.class||'']}>
+			<box class={['x_stepper',this.props.class||'']}>
 				<button class="minus" onClick={()=>this._MinusClickHandle()} value="\ued5e"/>
 				<button class="plus" onClick={()=>this._PlusClickHandle()} value="\ued5d"/>
-			</free> 
+			</box> 
 		);
 	}
 }

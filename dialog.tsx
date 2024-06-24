@@ -30,7 +30,7 @@
 
 import util from './util';
 import {
-	_CVD,mainScreenScale,createCss,link,View,Transform,Input,
+	_CVD,mainScreenScale,createCss,link,View,Matrix,Input,
 	ViewController
 } from '.';
 import {Navigation} from './nav';
@@ -46,7 +46,7 @@ createCss({
 		minWidth: 380, // min width
 		maxWidth: '40!',// max width
 		maxHeight: '40!',
-		align: 'centerCenter',
+		align: 'centerMiddle',
 		backgroundColor: '#fff',
 		borderRadius: 12,
 	},
@@ -171,7 +171,7 @@ export class Dialog<P={},S={}> extends Navigation<{
 	protected render() {
 		return (
 			<free width="100%" height="100%" backgroundColor="#0008" receive={true} visible={false} opacity={0}>
-				<transform ref="main" class="x_dialog main">
+				<matrix ref="main" class="x_dialog main">
 					<text ref="title" class="title" value={this.title} />
 					<text ref="con" class="content">{this.content||this.children}</text>
 					<free ref="btns" class="buttons">
@@ -187,7 +187,7 @@ export class Dialog<P={},S={}> extends Navigation<{
 						))
 					}
 					</free>
-				</transform>
+				</matrix>
 			</free>
 		);
 	}
@@ -197,7 +197,7 @@ export class Dialog<P={},S={}> extends Navigation<{
 			super.appendTo(this.window.root);
 			this.domAs().visible = true;
 			this.window.nextFrame(()=>{
-				let main = this.refs.main as Transform;
+				let main = this.refs.main as Matrix;
 				let size = main.clientSize;
 				main.style.origin = [size.x / 2, size.y / 2];
 				main.scale = new types.Vec2({x:0.2, y:0.2});
@@ -211,7 +211,7 @@ export class Dialog<P={},S={}> extends Navigation<{
 
 	close() {
 		if ( this.domAs().visible ) {
-			let main = this.refs.main as Transform;
+			let main = this.refs.main as Matrix;
 			let size = main.clientSize;
 			main.style.origin = [size.x / 2, size.y / 2];
 			main.transition({ scale : '0.2 0.2', time: 300 });
@@ -306,7 +306,7 @@ export class Sheet<P={},S={}> extends Dialog<P,S> {
 			ViewController.prototype.appendTo.call(this, this.window.root);
 			this.domAs().visible = true;
 			this.window.nextFrame(()=>{
-				let main = this.refs.main as Transform;
+				let main = this.refs.main as Matrix;
 				main.y = main.clientSize.y;
 				main.transition({ y: 0, time: 250 });
 				this.domAs().opacity = 0.3;
@@ -318,7 +318,7 @@ export class Sheet<P={},S={}> extends Dialog<P,S> {
 
 	close() {
 		if ( this.domAs().visible ) {
-			let main = this.refs.main as Transform;
+			let main = this.refs.main as Matrix;
 			main.transition({ y: main.clientSize.y, time: 250 });
 			this.domAs().transition({ opacity : 0.15, time: 250 }, ()=>{ this.destroy() });
 			this.unregisterNavigation(0);

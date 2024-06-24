@@ -34,9 +34,9 @@ import event, {
 	UIEvent, HighlightedEvent, KeyEvent,
 	ClickEvent, TouchEvent, MouseEvent, ActionEvent } from './event';
 import * as types from './types';
-import { StyleSheet, CStyleSheetsClass, CSSNameExp } from './css';
+import { StyleSheet, CStyleSheetsClass } from './css';
 import { Window } from './window';
-import { Action, KeyframeAction,createAction } from './action';
+import { Action, KeyframeAction,createAction,KeyframeIn,ActionCb } from './action';
 import * as action from './action';
 import {ViewController} from 'ctr';
 
@@ -45,7 +45,7 @@ export enum ViewType {
 	Box,
 	Flex,
 	Flow,
-	Float,
+	Free,
 	Image,
 	Video,
 	Input,
@@ -54,7 +54,7 @@ export enum ViewType {
 	Scroll,
 	Text,
 	Button,
-	Transform,
+	Matrix,
 	Root,
 	Enum_Counts,
 }
@@ -99,7 +99,7 @@ export declare class View extends Notification<UIEvent> implements DOM {
 	readonly first: View | null;
 	readonly last: View | null;
 	readonly window: Window;
-	readonly transform: Transform | null; // top transform view
+	readonly matrix: Matrix | null; // top matrix view
 	readonly level: number;
 	readonly layoutWeight: number;
 	readonly layoutAlign: types.Align;
@@ -121,6 +121,8 @@ export declare class View extends Notification<UIEvent> implements DOM {
 	isFocus: boolean;
 	focus(): boolean;
 	blur(): boolean;
+	show(): void; // visible = true
+	hide(): void; // visible = false
 	isSelfChild(child: View): boolean;
 	before(view: View): void;
 	after(view: View): void;
@@ -133,7 +135,7 @@ export declare class View extends Notification<UIEvent> implements DOM {
 	appendTo(parent: View): this;
 	afterTo(prev: View): this;
 	destroy(owner: ViewController): void;
-	transition(style: StyleSheet|CSSNameExp, cb?: (e: ActionEvent)=>void): KeyframeAction;
+	transition(to: KeyframeIn, from?: KeyframeIn | ActionCb, cb?: ActionCb): KeyframeAction;
 	constructor(win: Window);
 	static readonly isViewController: boolean;
 }
@@ -207,7 +209,7 @@ export declare class Image extends Box {
 	src: string;
 }
 
-export declare class Transform extends Box {
+export declare class Matrix extends Box {
 	translate: types.Vec2;
 	scale: types.Vec2;
 	skew: types.Vec2;
@@ -222,10 +224,10 @@ export declare class Transform extends Box {
 	skewX: number;
 	skewY: number;
 	origin: types.BoxOrigin[];
-	readonly matrix: types.Mat;
+	readonly mat: types.Mat;
 }
 
-export declare class Root extends Transform {
+export declare class Root extends Matrix {
 }
 
 export interface TextOptions {
@@ -397,15 +399,18 @@ Object.assign(exports, {
 	View: _ui.View,
 	Box: _ui.Box,
 	Flex: _ui.Flex,
+	Flow: _ui.Flow,
+	Free: _ui.Free,
 	Image: _ui.Image,
-	Transform: _ui.Transform,
-	Root: _ui.Root,
-	Text: _ui.Text,
-	Button: _ui.Button,
-	Label: _ui.Label,
+	Video: _ui.Video,
 	Input: _ui.Input,
 	Textarea: _ui.Textarea,
+	Label: _ui.Label,
 	Scroll: _ui.Scroll,
+	Text: _ui.Text,
+	Button: _ui.Button,
+	Matrix: _ui.Matrix,
+	Root: _ui.Root,
 });
 
 // JSX IntrinsicElements
@@ -513,7 +518,7 @@ declare global {
 			src?: string;
 		}
 
-		interface TransformJSX extends BoxJSX {
+		interface MatrixJSX extends BoxJSX {
 			translate?: types.Vec2In;
 			scale?: types.Vec2In;
 			skew?: types.Vec2In;
@@ -603,7 +608,8 @@ declare global {
 			flow: FlexJSX;
 			free: FreeJSX;
 			image: ImageJSX;
-			transform: TransformJSX;
+			img: ImageJSX;
+			matrix: MatrixJSX;
 			text: TextJSX;
 			button: ButtonJSX;
 			label: LabelJSX;
@@ -646,7 +652,7 @@ class _View extends NativeNotification {
 	@event readonly onActionKeyframe: EventNoticer<ActionEvent>;
 	@event readonly onActionLoop: EventNoticer<ActionEvent>;
 
-	private _children: (DOM|undefined)[];
+	private _children: (DOM|undefined)[]; // jsx children dom
 	readonly ref: string;
 	get metaView() { return this }
 	get style() { return this as StyleSheet }
@@ -665,6 +671,14 @@ class _View extends NativeNotification {
 			View_action.set!.call(this, createAction((this as unknown as View).window, value));
 		else
 			View_action.set!.call(this, null);
+	}
+
+	show() {
+		(this as unknown as View).visible = true;
+	}
+
+	hide() {
+		(this as unknown as View).visible = false;
 	}
 
 	hashCode() {
@@ -695,8 +709,8 @@ class _View extends NativeNotification {
 		(this as unknown as View).remove(); // remove from parent view
 	}
 
-	transition(style: StyleSheet | CSSNameExp, cb?: (e: ActionEvent)=>void) { // transition animate
-		return action.transition(this as unknown as View, style, cb);
+	transition(to: KeyframeIn, from?: KeyframeIn | ActionCb, cb?: ActionCb) { // transition animate
+		return action.transition(this as unknown as View, to, from, cb);
 	}
 
 	toStringStyled(indent?: number) {

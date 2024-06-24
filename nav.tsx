@@ -32,7 +32,7 @@ import util from './util';
 import { List,ListIterator,ClickType } from './event';
 import { KeyboardKeyCode } from './keyboard';
 import index, {
-	_CVD,link,ViewController,View,Label,Transform,Text,Button,
+	_CVD,link,ViewController,View,Label,Free,Text,
 	mainScreenScale,Window,VDom,assertDom,Box,VirtualDOM } from '.';
 import * as types from './types';
 
@@ -252,86 +252,34 @@ export class Navigation<P={},S={}> extends NavigationStatus<{
 	}
 }
 
-function refresh_bar_style(self: NavPageCollection, time: number) {
-	(self as any)._refresh_bar_style(time);
-}
-
 /**
  * @class NavPageCollection
  */
 export class NavPageCollection<P={},S={}> extends Navigation<{
-	onPush?: ()=>void,
-	onPop?: ()=>void,
 	enableAnimate?: boolean,
 	padding?: number;
+	navbarHeight?: number;
 	navbarHidden?: boolean;
-	toolbarHidden?: boolean;
-	defaultToolbar?: VDom<Toolbar>;
+	clip?: boolean; // clip box render
+	onPush?: (page: NavPage)=>void,
+	onPop?: (page: NavPage)=>void,
 }&P,S> {
-	private _padding = index.app.screen.statusBarHeight; // ios/android, 20
 	private _substack = new List<NavPage>();
-	private _defaultToolbar?: VDom<Toolbar>;
 	private _busy = false;
-	private _navbarHidden = false;
-	private _toolbarHidden = false;
+
+	/**
+	 * @prop enableAnimate
+	 */
+	@link     enableAnimate: boolean = true;
+	@link.acc padding = index.app.screen.statusBarHeight; // ios/android, 20;
+	@link.acc navbarHeight = 44;
+	@link.acc navbarHidden = false;
 
 	get length() { return this._substack.length }
 	get pages() { return this._substack.toArray() }
 	get current() {
 		util.assert(this.length, 'Empty NavPageCollection');
 		return this._substack.back!;
-	}
-
-	private _refresh_bar_style(time: number) {
-		let self: NavPageCollection = this;
-		if ( !self.refs.navbar || !self.length )
-			return;
-		time = self.enableAnimate ? time: 0;
-		let navbar =  getNavbarDom(self.current);
-		let toolbar = getToolbarDom(self.current) || {
-			hidden: true, height: 0, border: 0, backgroundColor: '#0000', borderColor: '#0000'
-		};
-		let navbarHidden = self._navbarHidden || navbar.hidden; // private props visit
-		let toolbarHidden = self._toolbarHidden || toolbar.hidden; // private props visit
-		let navbar_height = navbarHidden ? 0 : navbar.height + self._padding + navbar.border; // private props visit
-		let toolbar_height = toolbarHidden ? 0 : toolbar.height + toolbar.border;
-
-		if ( time ) {
-			if ( !navbarHidden ) (self.refs.navbar as View).visible = true;
-			if ( !toolbarHidden ) (self.refs.toolbar as View).visible = true;
-			(self.refs.navbar as View).transition({
-				height: Math.max(0, navbar_height - navbar.border),
-				borderBottom: `${navbar.border} ${navbar.borderColor}`,
-				backgroundColor: navbar.backgroundColor,
-				time,
-			});
-			(self.refs.toolbar as View).transition({
-				height: Math.max(0, toolbar_height - toolbar.border),
-				borderTop: `${toolbar.border} ${toolbar.borderColor}`,
-				backgroundColor: toolbar.backgroundColor,
-				time,
-			});
-			(self.refs.page as View).transition({
-				height: `${navbar_height + toolbar_height}!`, time
-			}, ()=>{
-				if ( navbarHidden ) (self.refs.navbar as View).visible = false;
-				if ( toolbarHidden ) (self.refs.toolbar as View).visible = false;
-			});
-		} else {
-			(self.refs.navbar as View).style = {
-				height: Math.max(0, navbar_height - navbar.border),
-				borderBottom: `${navbar.border} ${navbar.borderColor}`,
-				backgroundColor: navbar.backgroundColor,
-				visible: !navbarHidden,
-			};
-			(self.refs.toolbar as View).style = {
-				height: Math.max(0, toolbar_height - toolbar.border),
-				borderTop: `${toolbar.border} ${toolbar.borderColor}`,
-				backgroundColor: toolbar.backgroundColor, 
-				visible: !toolbarHidden,
-			};
-			(self.refs.page as View).style = { height: `${navbar_height + toolbar_height}!` };
-		}
 	}
 
 	/**
@@ -341,69 +289,27 @@ export class NavPageCollection<P={},S={}> extends Navigation<{
 		return this._substack.back === page;
 	}
 
-	/**
-	 * @field enableAnimate
-	 */
-	@link enableAnimate: boolean = true;
-
-	/**
-	 * @prop defaultToolbar {Toolbar} Set default toolbar
-	 */
-	@link
-	get defaultToolbar() { return this._defaultToolbar }
-	set defaultToolbar(value) {
-		if (value)
-			assertDom(value, Toolbar);
-		this._defaultToolbar = value;
-	}
-
-	@link
-	get padding() { return this._padding }
-	set padding(value) {
-		util.assert(typeof value == 'number');
-		this._padding = Math.max(value, 0);
-		this._refresh_bar_style(0);
-	}
-
-	@link
-	get navbarHidden() { return this._navbarHidden }
-	set navbarHidden(value) { this.setNavbarHidden(value, false) }
-
-	@link
-	get toolbarHidden() { return this._toolbarHidden }
-	set toolbarHidden(value) { this.setToolbarHidden(value, false) }
-
-	/**
-	 * @method setNavbarHidden
-	 */
-	setNavbarHidden(value: boolean, animate?: boolean) {
-		this._navbarHidden = !!value;
-		this._refresh_bar_style(animate ? Transition_Time : 0);
-	}
-
-	/**
-	 * @method setToolbarHidden
-	 */
-	setToolbarHidden(value: boolean, animate?: boolean) {
-		this._toolbarHidden = !!value;
-		this._refresh_bar_style(animate ? Transition_Time : 0);
-	}
-
 	protected triggerPush(page: NavPage) {
-		this.props.onPush?.call(null);
+		this.props.onPush?.call(null, page);
 	}
 
 	protected triggerPop(page: NavPage) {
-		this.props.onPop?.call(null);
+		this.props.onPop?.call(null, page);
 	}
 
 	protected render() {
 		return (
-			<box width="100%" height="100%" clip={true}>
-				<free ref="navbar" width="100%" />
-				<free ref="page" width="100%" />
-				<free ref="toolbar" width="100%" />
-			</box>
+			<free width="100%" height="100%" clip={!!this.props.clip}>
+				<free ref="page" width="100%" height="100%" />
+				<free
+					ref="navbar"
+					width="100%"
+					height={this.navbarHeight}
+					paddingTop={Math.max(this.padding, 0)}
+					visible={!this.navbarHidden}
+					receive={false} // no receive event
+				/>
+			</free>
 		);
 	}
 
@@ -449,8 +355,6 @@ export class NavPageCollection<P={},S={}> extends Navigation<{
 		}
 		getNavbarDom(page).setBackText(prev ? prev.title : '');
 
-		this._refresh_bar_style(time);
-
 		page.registerNavigation(time);
 
 		// switch and animate
@@ -477,7 +381,6 @@ export class NavPageCollection<P={},S={}> extends Navigation<{
 		if ( time ) {
 			setTimeout(()=>{ this._busy = false }, time);
 		}
-		this._refresh_bar_style(time);
 
 		next.unregisterNavigation(time);
 
@@ -528,282 +431,104 @@ export class NavPageCollection<P={},S={}> extends Navigation<{
 }
 
 /**
- * @class Bar
- */
-class Bar<P={},S={}> extends NavigationStatus<{
-	height?: number
-	hidden?: boolean;
-	border?: number;
-	borderColor?: types.ColorStrIn;
-	backgroundColor?: types.ColorStrIn;
-}&P,S> {
-	protected _height = 44;
-	protected _hidden = false;
-	protected _border = px;
-	protected _borderColor: types.ColorStrIn = '#b3b3b3';
-	protected _backgroundColor: types.ColorStrIn = '#f9f9f9';
-
-	get isCurrent() { return this.page.isCurrent }
-	get collection() { return this.page.collection }
-	get page() { return this.owner as NavPage }
-
-	@link
-	get height() { return this._height }
-	set height(value) {
-		util.assert(typeof value == 'number');
-		this._height = value;
-		this.refreshStyle(0);
-	}
-
-	@link
-	get hidden() { return this._hidden }
-	set hidden(value) {
-		this._hidden = !!value;
-		this.refreshStyle(0);
-	}
-
-	@link
-	get border() { return this._border }
-	set border(value: number) {
-		util.assert(typeof value == 'number');
-		this._border = value;
-		this.refreshStyle(0);
-	}
-
-	@link
-	get borderColor(): types.ColorStrIn { return this._borderColor }
-	set borderColor(value) {
-		this._borderColor = value;
-		this.refreshStyle(0);
-	}
-
-	@link
-	get backgroundColor(): types.ColorStrIn { return this._backgroundColor }
-	set backgroundColor(value) {
-		this._backgroundColor = value;
-		this.refreshStyle(0);
-	}
-
-	get visible() { return this.domAs().visible }
-	set visible(value) {
-		if ( value ) {
-			if (this.isCurrent) {
-				this.domAs().visible = true;
-			}
-		} else {
-			if (!this.isCurrent) {
-				this.domAs().visible = false;
-			}
-		}
-	}
-
-	setHidden(value: boolean, animate?: boolean) {
-		this._hidden = !!value;
-		this.refreshStyle(animate ? Transition_Time : 0);
-	}
-
-	refreshStyle(time: number) {
-		if (this.isCurrent) {
-			refresh_bar_style(this.collection, time);
-		}
-	}
-}
-
-/**
  * @class Navbar
  */
-export class Navbar<P={},S={}> extends Bar<{
-	defaultStyle?: boolean;
+export class Navbar<P={},S={}> extends NavigationStatus<{
+	hidden?: boolean;
 	backIconVisible?: boolean;
-	titleMenuWidth?: number;
+	backTextVisible?: boolean;
 	backTextColor?: types.ColorStrIn;
 	titleTextColor?: types.ColorStrIn;
 }&P,S> {
-	private   _back_panel_width = 0;
-	private   _title_panel_width = 0;
-	protected _defaultStyle = true;
-	protected _backIconVisible = true;
-	protected _titleMenuWidth = 40; // display right menu button width
-	protected _backgroundColor: types.ColorStrIn = '#2c86e5'; // 3c89fb
+	private _backText: string = '';
+	private _titleText: string = '';
+
+	@link hidden = false;
+	@link backIconVisible = true;
+	@link backTextVisible = false;
+	@link backTextColor: types.ColorStrIn = '#fff';
+	@link titleTextColor: types.ColorStrIn = '#147EFF';
+
+	get page() { return this.owner as NavPage }
 
 	/**
-	 * @method _navbar_compute_title_layout
+	 * @method setBackText() set navbar back text
 	 */
-	private _navbar_compute_title_layout() {
-		let self: Navbar = this;
-		if ( self._defaultStyle ) {
-			let back_text = (self.refs.back_text1 as Label).value;
-			let title_text = (self.refs.title_text_panel as Text).value;
-			let backIconVisible = self._backIconVisible;
-
-			if ( /*self._page &&*/ self.page.prevPage ) {
-				(self.refs.back_text_btn as View).visible = true;
-			} else {
-				(self.refs.back_text_btn as View).visible = false;
-				back_text = '';
-				backIconVisible = false;
-			}
-
-			let nav_width = self.collection ? self.collection.domAs<Transform>().clientSize.x : 0;
-			let back_width = (self.refs.back_text1 as Label).computeLayoutSize(back_text).x + 3; // 3间隔
-			let title_width = (self.refs.title_text_panel as Text).computeLayoutSize(title_text).x;
-			let marginRight = Math.min(nav_width / 3, Math.max(self._titleMenuWidth, 0));
-			let marginLeft = 0;
-			let min_back_width = 6;
-
-			if ( backIconVisible ) {
-				min_back_width += (self.refs.back_text0 as Label).computeLayoutSize('\uedc5').x;
-			}
-
-			(self.refs.title_panel as Box).style = {marginLeft,marginRight,visible:true};
-			(self.refs.back_text0 as Label).visible = backIconVisible;
-
-			if ( nav_width ) {
-				let title_x = nav_width / 2 - title_width / 2 - marginLeft;
-				if ( back_width <= title_x ) {
-					back_width = title_x;
-				} else { // back 的宽度超过title-x位置
-					back_width = Math.min(back_width, (nav_width - marginLeft - marginRight) - title_width);
-					back_width = Math.max(min_back_width, back_width);
-				}
-				title_width = nav_width - back_width -  marginLeft - marginRight;
-				self._back_panel_width = back_width;// - min_back_width;
-				self._title_panel_width = title_width;
-			} else {
-				self._back_panel_width = 0;
-				self._title_panel_width = 0;
-				back_width = 30;
-				title_width = 70;
-			}
-
-			let back_text_num = back_width / (back_width + title_width);
-			let titl_text_num = title_width / (back_width + title_width);
-
-			// 为保证浮点数在转换后之和不超过100,向下保留三位小数
-			(self.refs.back_text_panel as Box).width = types.newBoxSize(types.BoxSizeKind.Ratio, back_text_num);
-			(self.refs.title_text_panel as Box).width = types.newBoxSize(types.BoxSizeKind.Ratio, titl_text_num);
-
-		} else {
-			(self.refs.title_panel as View).visible = false; // hide title text and back text
-		}
+	setBackText(value: string) {
+		if (!this.hidden)
+			this.refAs<Label>('back_text').value = value;
+		this._backText = value;
 	}
 
-	@link backTextColor: types.ColorStrIn = '#fff';
-	@link titleTextColor: types.ColorStrIn = '#fff';
-
-	@link
-	get defaultStyle() { return this._defaultStyle }
-	set defaultStyle(value) {
-		this._defaultStyle = !!value;
-		this._navbar_compute_title_layout();
-	}
-
-	@link
-	get backIconVisible() { return this._backIconVisible }
-	set backIconVisible(value) {
-		this._backIconVisible = !!value;
-		this._navbar_compute_title_layout();
-	}
-
-	@link
-	get titleMenuWidth() { return this._titleMenuWidth }
-	set titleMenuWidth(value) {
-		util.assert(typeof value == 'number');
-		this._titleMenuWidth = value;
-		this._navbar_compute_title_layout();
-	}
-
-	refreshStyle(time: number) {
-		if (this.isCurrent) {
-			this.domAs<Transform>().align = types.Align.CenterBottom;
-			this.domAs<Transform>().height = types.newBoxSize(types.BoxSizeKind.Value, this.height);
-			(this.refs.title_text_panel as Text).style.textLineHeight = this.height;
-			(this.refs.back_text_btn as Button).style.textLineHeight = this.height;
-			super.refreshStyle(time);
-		}
+	/**
+	 * @method setTitleText() set navbar title text
+	 */
+	setTitleText(value: string) {
+		if (!this.hidden)
+			this.refAs<Text>('title').value = value;
+		this._titleText = value;
 	}
 
 	private _handleBack = ()=>{
-		this.collection.pop(true);
+		this.page.collection.pop(true);
 	}
 
 	protected render() {
-		let height = this.height;
-		let textSize = 16;
 		return (
-			<transform width="100%" height={height} visible={false} align="centerBottom">
-				<free width="100%" height="100%">
-					{this.children}
-					<free ref="title_panel" width="match" height="100%" visible={false}>
-						<free ref="back_text_panel" height="100%" maxWidth="100%">
-							<button ref="back_text_btn"
-								onClick={this._handleBack}
-								textColor={this.backTextColor}
-								width="match"
-								paddingLeft={6}
-								textLineHeight={height}
-								textSize={textSize}
-								textWhiteSpace="noWrap"
-								textOverflow="ellipsis"
-							>
-								<text ref="back_text0"
-									textLineHeight={0}
-									textSize={20}
-									height={26}
-									// y={2}
-									textColor="inherit"
-									textFamily="icon"
-									value="\uedc5"
-								/>
-								<label ref="back_text1" />
-							</button>
-						</free>
-						<text ref="title_text_panel"
+			this.hidden ? null:
+			<free width="100%" height="100%" align="centerBottom" visible={false}>
+				<flex width="100%" height="100%">
+					<button
+						minWidth="10%"
+						maxWidth="40%"
+						height="100%"
+						paddingLeft={5}
+						textColor={this.backTextColor}
+						textLineHeight={1} // 100%
+						textSize={16}
+						onClick={this._handleBack}
+					>
+						<text
+							align="middle" textColor={this.backTextColor}
+							textFamily="icon" textSize={20} value="\uedc5" visible={this.backIconVisible}
+						/>
+						<label ref="back_text" textOverflow="ellipsis" visible={this.backTextVisible} value={this._backText} />
+					</button>
+					<matrix ref="title_mat" weight={1} height="100%" marginLeft={5}>
+						<text
+							ref="title"
+							width="100%"
 							height="100%"
 							textColor={this.titleTextColor}
-							textLineHeight={height}
-							textSize={textSize}
+							textLineHeight={1}
+							textSize={16}
 							textWhiteSpace="noWrap"
-							textWeight="bold" textOverflow="ellipsis"
+							textWeight="bold"
+							textOverflow="ellipsisCenter"
+							textAlign="center"
+							value={this._titleText}
 						/>
-					</free>
-				</free>
-			</transform>
+					</matrix>
+					<box
+						minWidth="10%"
+						maxWidth="40%"
+						height="100%"
+						marginLeft={5}
+					>{this.children}</box>
+				</flex>
+				{this.renderBody()}
+			</free>
 		);
 	}
 
-	/**
-	 * @method setBackText # set navbar back text
-	 */
-	setBackText(value: string) {
-		(this.refs.back_text1 as Label).value = value;
-		this._navbar_compute_title_layout();
-	}
-	
-	/**
-	 * @method $setTitleText # set navbar title text
-	 */
-	setTitleText(value: string) {
-		(this.refs.title_text_panel as Text).value = value;
-		this._navbar_compute_title_layout();
-	}
+	protected renderBody() {}
 
 	intoLeave(time: number) {
-		if ( this.navStatus == NavStatus.Foreground && time ) {
-			if ( this._defaultStyle ) {
-				let back_icon_width = (this.refs.back_text0 as View).visible ?
-					(this.refs.back_text0 as Text).clientSize.x : 0;
-
-				(this.refs.back_text1 as Label).transition({
-					x: this._back_panel_width - back_icon_width, time
-				});
-				(this.refs.title_text_panel as Text).transition({
-					x: this._title_panel_width + this._titleMenuWidth, time,
-				});
-			}
-			this.domAs().transition({ opacity: 0, time }, ()=>{
-				this.destroy()
-			});
+		if ( this.navStatus == NavStatus.Foreground && time &&
+			!this.hidden &&
+			this.domAs().parent!.level
+		) {
+			this.domAs().transition({ opacity: 0, time }, ()=>this.destroy());
 		} else {
 			this.destroy();
 		}
@@ -811,102 +536,28 @@ export class Navbar<P={},S={}> extends Bar<{
 	}
 
 	intoBackground(time: number) {
-		// if ( time ) {
-			// TODO ...
-			// if ( this._defaultStyle ) {
-			// 	let back_icon_width = (this.refs.back_text0 as View).visible ? (this.refs.back_text0 as Label).clientWidth : 0;
-			// 	(this.refs.back_text1 as View).transition({
-			// 		x: -(this.refs.back_text1 as Label).clientWidth, time: time,
-			// 	});
-			// 	(this.refs.title_text_panel as Text).transition({
-			// 		x: -this._back_panel_width + back_icon_width, time: time,
-			// 	});
-			// }
-			// this.domAs().transition({ opacity: 0, time: time }, ()=>{
-			// 	this.domAs().visible = false
-			// });
-		// } else {
+		if ( time && !this.hidden && this.domAs().parent!.level ) {
+			this.domAs().transition({ opacity: 0, visible: false, time });
+		} else {
 			this.domAs().opacity = 0;
 			this.domAs().visible = false;
-		// }
+		}
 		super.intoBackground(time);
 	}
 
 	intoForeground(time: number) {
 		this.domAs().visible = true;
-		// if ( time ) {
-			// TODO ...
-		// 	if ( this._defaultStyle ) {
-		// 		let back_icon_width = 0; // this.refs.back_text0.visible ? 20 : 0;
-		// 		if ( this.navStatus == -1 ) {
-		// 			(this.refs.back_text1 as View).x = this._back_panel_width - back_icon_width;
-		// 			(this.refs.title_text_panel as View).x = this._title_panel_width + this._titleMenuWidth;
-		// 		}
-		// 		(this.refs.back_text1 as View).transition({ x: 0, time });
-		// 		(this.refs.title_text_panel as View).transition({ x: 0, time });
-		// 	} else {
-		// 		(this.refs.back_text1 as View).x = 0;
-		// 		(this.refs.title_text_panel as View).x = 0;
-		// 	}
-		// 	this.domAs().opacity = 0;
-		// 	this.domAs().transition({ opacity: 1, time });
-		// } else {
-			this.domAs().opacity = 1;
-			// (this.refs.back_text1 as View).x = 0;
-			// (this.refs.title_text_panel as View).x = 0;
-		// }
-		super.intoForeground(time);
-	}
-}
-
-/**
- * @class Toolbar
- */
-export class Toolbar<P={},S={}> extends Bar<P,S> {
-	protected _height = 49;
-
-	protected render() {
-		return (
-			<free width="match" height="match" visible={false}>{this.children}</free>
-		);
-	}
-
-	intoLeave(time: number) {
-		if ( getToolbarDom(this.collection.current) !== this ) {
-			if ( this.navStatus == NavStatus.Foreground && time ) {
-				this.domAs().transition({ opacity: 0, time }, ()=>{
-					this.destroy();
-				});
-			} else {
-				this.destroy();
+		if ( time && !this.hidden && this.domAs().parent!.level ) {
+			if (this.navStatus == NavStatus.Init) {
+				let x = (this.domAs().parent! as Box).clientSize.x;
+				this.domAs().transition({ opacity: 1, time }, {opacity:0});
+				this.refAs('title_mat').transition({x: 0, time}, {x: x * 0.3 });
 			}
-		}
-		super.intoLeave(time);
-	}
-
-	intoBackground(time: number) {
-		if ( getToolbarDom(this.collection.current) !== this ) {
-			if ( time ) {
-				this.domAs().transition({ opacity: 0, time }, ()=>{
-					this.domAs().visible = false;
-				});
-			} else {
-				this.domAs().style = {opacity: 0, visible: false };
-			}
-		}
-		super.intoBackground(time);
-	}
-
-	intoForeground(time: number) {
-		if ( time ) {
-			let page = (this.page.nextPage || this.page.prevPage);
-			if (!page || getToolbarDom(page) !== this) {
-				this.domAs().visible = true;
-				this.domAs().opacity = 0;
+			else { // NavStatus.Background
 				this.domAs().transition({ opacity: 1, time });
 			}
 		} else {
-			this.domAs().style = {opacity: 1, visible: true };
+			this.domAs().opacity = 1;
 		}
 		super.intoForeground(time);
 	}
@@ -914,10 +565,6 @@ export class Toolbar<P={},S={}> extends Bar<P,S> {
 
 function getNavbarDom(page: NavPage): Navbar {
 	return (page as any)._navbarDom;
-}
-
-function getToolbarDom(page: NavPage): Toolbar | undefined {
-	return (page as any)._toolbarDom;
 }
 
 function backgroundColorReverse(self: NavPage) {
@@ -932,16 +579,13 @@ function backgroundColorReverse(self: NavPage) {
 export class NavPage<P={},S={}> extends Navigation<{
 	title?: string;
 	navbar?: VDom<Navbar>;
-	toolbar?: VDom<Toolbar>;
 	backgroundColor?: types.ColorStrIn;
 }&P,{}&S> {
 	private _title = '';
 	private _navbar: VDom<Navbar> = <Navbar />;
-	private _toolbar?: VDom<Toolbar>;
 	private _prevPage: NavPage | null = null;
 	private _nextPage: NavPage | null = null;
 	private _navbarDom: Navbar;
-	private _toolbarDom?: Toolbar;
 
 	get prevPage() { return this._prevPage }
 	get nextPage() { return this._nextPage }
@@ -971,18 +615,6 @@ export class NavPage<P={},S={}> extends Navigation<{
 		this._navbar = value;
 	}
 
-	@link
-	get toolbar() { return this._toolbar }
-	set toolbar(value) {
-		if (value)
-			assertDom(value, Toolbar);
-		value || (this.owner as NavPageCollection).defaultToolbar;
-		if (this.isMounted) {
-			this.renderToolbar(value);
-		}
-		this._toolbar = value;
-	}
-
 	private renderNavbar(navbar: VDom<Navbar>) {
 		this._navbarDom = navbar.render(this, {
 			parent: this.collection.refs.navbar as View,
@@ -992,68 +624,44 @@ export class NavPage<P={},S={}> extends Navigation<{
 		(this._navbarDom as any)._page = this;
 		this._navbarDom.setTitleText(this._title);
 		this._navbarDom.setBackText(this.prevPage ? this.prevPage.title : '');
-		this._navbarDom.refreshStyle(0);
+		this.update();
 	}
 
-	private renderToolbar(toolbar?: VDom<Toolbar>) {
-		if (toolbar) {
-			this._toolbarDom = toolbar.render(this, {
-				parent: this.collection.refs.navbar as View,
-				vdom: this._toolbar,
-				dom: this._toolbarDom,
-			});
-			this._toolbarDom.refreshStyle(0);
-		} else {
-			if (this._toolbarDom) {
-				this._toolbarDom.destroy();
-				this._toolbarDom = undefined;
-			}
-		}
-	}
-
-	// @overwrite
 	protected render() {
+		let padding = this.collection.navbarHidden || this._navbar.props.hidden ? 0:
+			this.collection.padding + this.collection.navbarHeight;
 		return (
-			<free
+			<matrix
 				width="100%"
-				height="100%"
+				height="match"
 				visible={false}
 				backgroundColor={this.backgroundColor}
+				padding={padding}
 			>
 				{this.children}
-			</free>
+			</matrix>
 		);
 	}
 
 	protected triggerMounted() {
 		this.renderNavbar(this._navbar);
-		this.renderToolbar(this._toolbar);
 	}
 
-	// @overwrite
 	protected triggerDestroy() {
-		if (this._navbarDom) {
-			this._navbarDom.destroy();
-		}
-		if (this._toolbarDom) {
-			this._toolbarDom.destroy();
-		}
+		this._navbarDom?.destroy();
 		return super.triggerDestroy();
 	}
 
-	// @overwrite
 	intoLeave(time: number) {
 		this._navbarDom.intoLeave(time);
-		this._toolbarDom?.intoLeave(time);
 		if ( this.navStatus == NavStatus.Foreground ) {
 			if ( time && this.domAs().parent!.level ) {
+				let x = (this.domAs().parent! as Box).clientSize.x;
 				this.domAs().style = {
 					borderColorLeft: backgroundColorReverse(this),
 					borderWidthLeft: px,
 				};
-				this.domAs().transition({
-					x: (this.domAs().parent! as Box).clientSize.x, visible: false, time
-				}, ()=>{
+				this.domAs().transition({ x: x, visible: false, time }, ()=>{
 					this.destroy();
 				});
 				super.intoLeave(time);
@@ -1064,38 +672,36 @@ export class NavPage<P={},S={}> extends Navigation<{
 		this.destroy();
 	}
 
-	// @overwrite
 	intoBackground(time: number) {
 		if ( !this._nextPage )
 			return;
 		this._navbarDom.intoBackground(time);
-		this._toolbarDom?.intoBackground(time);
 		if ( this.navStatus != NavStatus.Background ) {
+			let x = (this.domAs().parent as Box).clientSize.x || 100;
 			if ( time && this.domAs().parent!.level ) {
-				this.domAs().transition({x: (this.domAs().parent as Box).clientSize.x / -3, visible: false, time });
+				this.domAs().transition({x: x / -3, visible: false, time });
 			} else {
-				this.domAs().style = { x: ((this.domAs().parent as Box).clientSize.x || 100) / -3, visible: false };
+				this.domAs().style = { x: x / -3, visible: false };
 			}
 		}
 		super.intoBackground(time);
 	}
 
-	// @overwrite
 	intoForeground(time: number) {
 		if ( this.navStatus == NavStatus.Foreground )
 			return;
 		this._navbarDom.intoForeground(time);
-		this._toolbarDom?.intoForeground(time);
 		this._nextPage = null;
+
 		if ( this.navStatus == NavStatus.Init ) {
 			if ( time && this.domAs().parent!.level ) {
+				let x = (this.domAs().parent! as Box).clientSize.x;
 				this.domAs().style = {
+					visible: true,
 					borderColorLeft: backgroundColorReverse(this),
 					borderWidthLeft: px,
-					x: (this.domAs().parent! as Box).clientSize.x,
-					visible: true,
 				};
-				this.domAs().transition({ x: 0, time: time }, ()=>{
+				this.domAs().transition({ x: 0, time: time }, {x}, ()=>{
 					this.domAs<Box>().borderWidthLeft = 0;
 				});
 			} else {
@@ -1105,7 +711,7 @@ export class NavPage<P={},S={}> extends Navigation<{
 		else if ( this.navStatus == NavStatus.Background ) {
 			if ( time && this.domAs().parent!.level ) {
 				this.domAs().visible = true;
-				this.domAs().transition({ x: 0, time: time });
+				this.domAs().transition({ x: 0, time });
 			} else {
 				this.domAs().style = { x: 0, visible: true };
 			}
@@ -1113,7 +719,6 @@ export class NavPage<P={},S={}> extends Navigation<{
 		super.intoForeground(time);
 	}
 
-	// @overwrite
 	navigationBack() {
 		if ( this._prevPage ) {
 			this.collection.pop(true);

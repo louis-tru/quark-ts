@@ -31,18 +31,18 @@
 const _storage = __binding__('_storage');
 
 export function get(key: string) {
-	var rv = _storage.get(`__${key}`);
+	var rv = _storage.get(key);
 	if ( rv ) {
 		return JSON.parse(rv);
 	}
 }
 
 export function set(key: string, value: any) {
-	_storage.set(`__${key}`, JSON.stringify(value));
+	_storage.set(key, JSON.stringify(value));
 }
 
 export function remove(key: string) {
-	_storage.remove(`__${key}`);
+	_storage.remove(key);
 }
 
 export function clear() {
